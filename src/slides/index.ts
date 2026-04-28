@@ -8,6 +8,8 @@ import { Slide06 } from './Slide06.tsx';
 import { Slide07 } from './Slide07.tsx';
 import { Slide08 } from './Slide08.tsx';
 import { Slide09 } from './Slide09.tsx';
+import { Slide10 } from './Slide10.tsx';
+import { Slide11 } from './Slide11.tsx';
 
 export type SlideComponent = ComponentType;
 
@@ -21,4 +23,6 @@ export const slides: SlideComponent[] = [
   Slide07,
   Slide08,
   Slide09,
+  Slide10,
+  Slide11,
 ];
