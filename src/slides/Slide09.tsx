@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import type { ReactElement } from "react";
 import { SlideShell } from "../components/SlideShell.tsx";
 import { SlideLabel } from "../components/SlideLabel.tsx";
 import { GradientText } from "../components/GradientText.tsx";
@@ -161,8 +162,9 @@ const CARDS: {
   th: string;
   grad: [string, string];
   ringColor: string;
+  hoverShadow: string;
   cardDelay: number;
-  Icon: (props: { delay: number }) => JSX.Element;
+  Icon: (props: { delay: number }) => ReactElement;
 }[] = [
   {
     num: "01",
@@ -173,6 +175,7 @@ const CARDS: {
     th: "Pipeline ที่เน้นการสกัดเนื้อหาอย่างละเอียด ใช้เทคนิค Graph-based Chunking เพื่อรักษาโครงสร้างของเอกสาร",
     grad: ["#7C3AED", "#A855F7"],
     ringColor: "rgba(196,181,253,0.5)",
+    hoverShadow: "0 16px 48px rgba(124,58,237,0.28)",
     cardDelay: 0.28,
     Icon: IconLayers,
   },
@@ -185,6 +188,7 @@ const CARDS: {
     th: "ไม่เพียงแค่ Vector Embeddings แต่ยังใช้ Graph-relation เพื่อทำ GraphRAG",
     grad: ["#06B6D4", "#3B82F6"],
     ringColor: "rgba(147,210,249,0.5)",
+    hoverShadow: "0 16px 48px rgba(6,182,212,0.28)",
     cardDelay: 0.42,
     Icon: IconGraph,
   },
@@ -197,6 +201,7 @@ const CARDS: {
     th: "Event Driven Pipeline คอยอัปเดทข้อมูลใน RAG อยู่ตลอดเวลาแบบอัตโนมัติ",
     grad: ["#10B981", "#059669"],
     ringColor: "rgba(110,231,183,0.5)",
+    hoverShadow: "0 16px 48px rgba(16,185,129,0.28)",
     cardDelay: 0.56,
     Icon: IconSync,
   },
@@ -251,32 +256,70 @@ export function Slide09() {
       </motion.div>
 
       {/* ── 3 Cards ── */}
-      <div style={{ flex: 1, display: "flex", gap: 16, minHeight: 0 }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          gap: 16,
+          minHeight: 0,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         {CARDS.map((card) => (
           <motion.div
             key={card.title}
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: card.cardDelay, ease: EASE }}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            variants={{
+              hidden: { opacity: 0, y: 28 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.7,
+                  delay: card.cardDelay,
+                  ease: EASE,
+                },
+              },
+              hover: {
+                y: -6,
+                transition: { duration: 0.2, ease: "easeOut" },
+              },
+            }}
             style={{
               flex: 1,
               display: "flex",
               flexDirection: "column",
-              borderRadius: 20,
-              overflow: "hidden",
-              border: "1px solid #EBEBF5",
+              alignItems: "center",
+              gap: 22,
+              padding: "24px 16px 12px",
+              cursor: "default",
             }}
           >
-            {/* ── Animated icon area ── */}
-            <div
+            {/* ── Circle icon ── */}
+            <motion.div
+              variants={{
+                visible: {
+                  boxShadow: `0 4px 24px rgba(${card.gapRgb},0.18), 0 0 0 3px rgba(${card.gapRgb},0.12)`,
+                },
+                hover: {
+                  boxShadow:
+                    card.hoverShadow + `, 0 0 0 4px rgba(${card.gapRgb},0.22)`,
+                },
+              }}
               style={{
-                flex: "0 0 58%",
+                width: 170,
+                height: 170,
+                borderRadius: "50%",
                 background: `linear-gradient(145deg, ${card.grad[0]}, ${card.grad[1]})`,
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
+                flexShrink: 0,
               }}
             >
               {/* Dot grid */}
@@ -286,24 +329,9 @@ export function Slide09() {
                   inset: 0,
                   backgroundImage:
                     "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-                  backgroundSize: "22px 22px",
+                  backgroundSize: "18px 18px",
                 }}
               />
-              {/* Ghost number */}
-              <div
-                style={{
-                  position: "absolute",
-                  fontSize: 130,
-                  fontWeight: 900,
-                  color: "rgba(255,255,255,0.05)",
-                  lineHeight: 1,
-                  top: -8,
-                  right: 8,
-                  userSelect: "none",
-                }}
-              >
-                {card.num}
-              </div>
               {/* Pulse rings + icon */}
               <div
                 style={{
@@ -321,38 +349,21 @@ export function Slide09() {
                 />
                 <card.Icon delay={card.cardDelay + 0.2} />
               </div>
-              {/* Solution label */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 12,
-                  left: 16,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: "rgba(255,255,255,0.65)",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                }}
-              >
-                Solution {card.num}
-              </div>
-            </div>
+            </motion.div>
 
-            {/* ── Content area ── */}
+            {/* ── Text below circle ── */}
             <div
               style={{
-                flex: 1,
-                padding: "16px 18px 18px",
                 display: "flex",
                 flexDirection: "column",
-                gap: 10,
-                background: "#FAFAFA",
+                alignItems: "center",
+                gap: 8,
+                textAlign: "center",
               }}
             >
               {/* Gap badge */}
               <span
                 style={{
-                  alignSelf: "flex-start",
                   fontSize: 11,
                   fontWeight: 700,
                   color: card.gapColor,
@@ -392,20 +403,12 @@ export function Slide09() {
                   color: "#6B7280",
                   margin: 0,
                   lineHeight: 1.65,
-                  flex: 1,
+                  maxWidth: 260,
                 }}
               >
                 <ThaiText>{card.th}</ThaiText>
               </p>
             </div>
-
-            {/* Bottom accent bar */}
-            <div
-              style={{
-                height: 3,
-                background: `linear-gradient(90deg, ${card.grad[0]}, ${card.grad[1]})`,
-              }}
-            />
           </motion.div>
         ))}
       </div>
