@@ -7,6 +7,13 @@ import {
   Pill,
   SlideHeader,
   SlideShell,
+  DotPoint,
+  QueryIcon,
+  HydeIcon,
+  RetIcon,
+  ReactAgentIcon,
+  ToolIcon,
+  AnswerIcon,
 } from "../components/index.ts";
 import {
   DISTANCE,
@@ -208,89 +215,6 @@ const NS = {
     sub: "streamed via SSE",
   },
 };
-
-function QueryIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-function HydeIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.87L12 17.77l-6.18 3.24 1.18-6.87-5-4.87 6.91-1.01L12 2z"
-        stroke="white"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-function RetIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <circle cx="11" cy="11" r="8" stroke="white" strokeWidth="2" />
-      <path
-        d="M21 21l-4.35-4.35"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-function ReactAgentIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
-        stroke="white"
-        strokeWidth="2"
-      />
-      <path
-        d="M12 8v4l3 3"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-function ToolIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-function AnswerIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <polyline
-        points="20 6 9 17 4 12"
-        stroke="white"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 type NodeId = keyof typeof NS;
 const ICONS: Record<NodeId, () => ReactElement> = {
@@ -669,64 +593,106 @@ export function Slide17() {
           </motion.div>
         </div>
 
-        {/* ── Right: cards + stats ── */}
+        {/* ── Right: redesigned panel ── */}
         <div
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            gap: 14,
+            gap: 12,
             minHeight: 0,
           }}
         >
-          <AnnotationCard
-            title="ReAct Pattern"
-            color="#EC4899"
-            rgb="236,72,153"
-            grad={["#EC4899", "#7C3AED"]}
-            delay={0.38}
-            points={[
-              "Interleaves Thought → Action → Observation steps",
-              "Re-ranks retrieved chunks at each reasoning pass",
-              "Terminates when confidence threshold is satisfied",
-            ]}
-          />
+          {/* ── Card 1: ReAct Pattern ── */}
+          <motion.div
+            {...fadeInUp(0.36, { distance: 16, duration: DURATION.med })}
+            style={{
+              flex: 1,
+              borderRadius: 18,
+              border: "1px solid rgba(236,72,153,0.18)",
+              background: "linear-gradient(135deg, rgba(236,72,153,0.06) 0%, rgba(124,58,237,0.04) 100%)",
+              padding: "14px 16px",
+              position: "relative",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            {/* top gradient bar */}
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#EC4899,#7C3AED)", borderRadius: "18px 18px 0 0" }} />
+            {/* header row */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 2 }}>
+              <IconBadge gradient={["#EC4899", "#7C3AED"]} shadow="rgba(236,72,153,0.35)" size={32} radius={9}>
+                <ReactAgentIcon />
+              </IconBadge>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>ReAct Pattern</div>
+                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>Reason → Act → Observe</div>
+              </div>
+              <Pill color="#EC4899" rgb="236,72,153" fontSize={8} padding="2px 8px" style={{ marginLeft: "auto" }}>CrewAI</Pill>
+            </div>
+            {/* bullets */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {[
+                "Interleaves Thought → Action → Observation steps",
+                "Re-ranks retrieved chunks at each reasoning pass",
+                "Terminates when confidence threshold is satisfied",
+              ].map((pt) => (
+                <DotPoint key={pt} gradient={["#EC4899", "#7C3AED"]}>
+                  {pt}
+                </DotPoint>
+              ))}
+            </div>
+          </motion.div>
 
-          <AnnotationCard
-            title="HyDE · Hypothetical Doc Embedding"
-            color="#7C3AED"
-            rgb="124,58,237"
-            grad={["#7C3AED", "#A855F7"]}
-            delay={0.48}
-            points={[
-              "LLM synthesises an ideal hypothetical answer first",
-              "Embeds the hypothesis instead of the sparse query",
-              "Lands inside the document cluster — sim ≈ 0.89 vs 0.31",
-            ]}
-          />
+          {/* ── Card 2: MCP Tools ── */}
+          <motion.div
+            {...fadeInUp(0.46, { distance: 16, duration: DURATION.med })}
+            style={{
+              flex: 1,
+              borderRadius: 18,
+              border: "1px solid rgba(245,158,11,0.18)",
+              background: "linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(249,115,22,0.04) 100%)",
+              padding: "14px 16px",
+              position: "relative",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#F59E0B,#F97316)", borderRadius: "18px 18px 0 0" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 2 }}>
+              <IconBadge gradient={["#F59E0B", "#F97316"]} shadow="rgba(245,158,11,0.35)" size={32} radius={9}>
+                <ToolIcon />
+              </IconBadge>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>MCP Tools</div>
+                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>Model Context Protocol</div>
+              </div>
+              <Pill color="#F59E0B" rgb="245,158,11" fontSize={8} padding="2px 8px" style={{ marginLeft: "auto" }}>Custom Tools</Pill>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {[
+                "Standardizes integration of external capabilities via protocol",
+                "Enables selective reading of granular structural metadata",
+                "Equips the agent with specialized document search",
+              ].map((pt) => (
+                <DotPoint key={pt} gradient={["#F59E0B", "#F97316"]}>
+                  {pt}
+                </DotPoint>
+              ))}
+            </div>
+          </motion.div>
 
-          {/* Stat row */}
-          <div style={{ display: "flex", gap: 10, flex: "0 0 auto" }}>
+          {/* ── Stats row ── */}
+          <div style={{ display: "flex", gap: 8, flex: "0 0 auto" }}>
             {(
               [
-                {
-                  val: "0.97",
-                  label: "Answer Relevancy",
-                  grad: ["#10B981", "#059669"] as [string, string],
-                  rgb: "16,185,129",
-                },
-                {
-                  val: "0.99",
-                  label: "Context Precision",
-                  grad: ["#3B82F6", "#7C3AED"] as [string, string],
-                  rgb: "59,130,246",
-                },
-                {
-                  val: "+20.6%",
-                  label: "vs Baseline",
-                  grad: ["#F59E0B", "#F97316"] as [string, string],
-                  rgb: "245,158,11",
-                },
+                { val: "0.97", label: "Answer Relevancy", sub: "RAGAS", grad: ["#10B981", "#059669"] as [string, string], rgb: "16,185,129" },
+                { val: "0.99", label: "Context Precision", sub: "RAGAS", grad: ["#3B82F6", "#7C3AED"] as [string, string], rgb: "59,130,246" },
+                { val: "+20.6%", label: "vs Baseline", sub: "improvement", grad: ["#F59E0B", "#F97316"] as [string, string], rgb: "245,158,11" },
               ] as const
             ).map((s, i) => (
               <motion.div
@@ -736,41 +702,21 @@ export function Slide17() {
                   flex: 1,
                   borderRadius: 14,
                   border: `1px solid rgba(${s.rgb},0.2)`,
-                  background: `rgba(${s.rgb},0.04)`,
-                  padding: "12px 14px",
+                  background: `rgba(${s.rgb},0.05)`,
+                  padding: "10px 12px",
                   position: "relative",
                   overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
                 }}
               >
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 2.5,
-                    background: `linear-gradient(90deg,${s.grad[0]},${s.grad[1]})`,
-                    borderRadius: "14px 14px 0 0",
-                  }}
-                />
-                <GradientText
-                  from={s.grad[0]}
-                  to={s.grad[1]}
-                  style={{
-                    fontSize: 26,
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    display: "block",
-                    marginBottom: 3,
-                  }}
-                >
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2.5, background: `linear-gradient(90deg,${s.grad[0]},${s.grad[1]})`, borderRadius: "14px 14px 0 0" }} />
+                <GradientText from={s.grad[0]} to={s.grad[1]} style={{ fontSize: 22, fontWeight: 900, lineHeight: 1, display: "block" }}>
                   {s.val}
                 </GradientText>
-                <div
-                  style={{ fontSize: 10, fontWeight: 700, color: "#374151" }}
-                >
-                  {s.label}
-                </div>
+                <div style={{ fontSize: 9.5, fontWeight: 700, color: "#374151", lineHeight: 1.2 }}>{s.label}</div>
+                <div style={{ fontSize: 8, color: "#9CA3AF" }}>{s.sub}</div>
               </motion.div>
             ))}
           </div>

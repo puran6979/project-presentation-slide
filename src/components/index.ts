@@ -27,6 +27,7 @@ export { ThaiText } from "./primitives/ThaiText.tsx";
 export { AccentLine } from "./primitives/AccentLine.tsx";
 export { AnimatedBeam } from "./primitives/AnimatedBeam.tsx";
 export type { AnimatedBeamProps } from "./primitives/AnimatedBeam.tsx";
+export { DotPoint } from "./primitives/DotPoint.tsx";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 export { ZapIcon, ParadoxIcon } from "./icons/BackgroundIcons.tsx";
@@ -51,3 +52,11 @@ export {
   StorageIcon,
   WebhookIcon,
 } from "./icons/ServiceIcons.tsx";
+export {
+  QueryIcon,
+  HydeIcon,
+  RetIcon,
+  ReactAgentIcon,
+  ToolIcon,
+  AnswerIcon,
+} from "./icons/AIFlowIcons.tsx";
