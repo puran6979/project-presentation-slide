@@ -15,7 +15,7 @@ import {
   fadeInRight,
   stagger,
 } from "../lib/motion.ts";
-import messyBox from "../assets/messy-box.png";
+import messyBox from "../assets/images/problems/messy-box.png";
 
 const GLOWS = [
   { top: -300, right: -160, size: 800, color: "124,58,237", opacity: 0.13 },

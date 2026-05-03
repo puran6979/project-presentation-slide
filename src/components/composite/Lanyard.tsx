@@ -20,8 +20,8 @@ import type { RigidBodyProps } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
 
-import cardGLB from "../../assets/card.glb";
-import lanyard from "../../assets/lanyard.png";
+import cardGLB from "../../assets/models/card.glb";
+import lanyard from "../../assets/images/textures/lanyard.png";
 
 import "./Lanyard.css";
 
@@ -50,7 +50,7 @@ function roundRect(
   ctx.closePath();
 }
 
-function useCardTexture(name: string): THREE.CanvasTexture {
+function useCardTexture(name: string, image?: HTMLImageElement | null): THREE.CanvasTexture {
   return useMemo(() => {
     const W = 1024,
       H = 1440;
@@ -66,12 +66,9 @@ function useCardTexture(name: string): THREE.CanvasTexture {
     ctx.scale(-1, -1);
 
     // Draw the card face design into a given half of the texture.
-    // xOffset=0 → front face half, xOffset=HALF → back face half.
-    // mirror=true flips horizontally (for the back face).
     function drawFace(xOffset: number, mirror = false) {
       ctx.save();
       if (mirror) {
-        // translate to right edge of this half, then flip X
         ctx.translate(xOffset + HALF, 0);
         ctx.scale(-0.5, 0.85);
       } else {
@@ -80,21 +77,21 @@ function useCardTexture(name: string): THREE.CanvasTexture {
       }
 
       // ── Background ──
-      ctx.fillStyle = "#0D1117";
+      ctx.fillStyle = "#faeaf2ff"; // Soft lavender tint
       ctx.fillRect(0, 0, W, H);
 
       // ── Purple header band ──
       const headerGrad = ctx.createLinearGradient(0, 0, W, 0);
       headerGrad.addColorStop(0, "#7C3AED");
-      headerGrad.addColorStop(1, "#4C1D95");
+      headerGrad.addColorStop(1, "#A855F7");
       ctx.fillStyle = headerGrad;
-      ctx.fillRect(0, 0, W, 400);
+      ctx.fillRect(0, 0, W, 380);
 
       // Small target icon top-right
       const ix = W - 90,
         iy = 60,
         ir = 36;
-      ctx.strokeStyle = "rgba(255,255,255,0.25)";
+      ctx.strokeStyle = "rgba(255,255,255,0.4)";
       ctx.lineWidth = 4;
       [ir, ir * 0.6, ir * 0.22].forEach((r) => {
         ctx.beginPath();
@@ -104,88 +101,101 @@ function useCardTexture(name: string): THREE.CanvasTexture {
 
       // ── Avatar circle ──
       const ax = W / 2,
-        ay = 400;
+        ay = 380;
 
-      ctx.strokeStyle = "#0D1117";
-      ctx.lineWidth = 14;
+      // Outer ring
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.lineWidth = 18;
       ctx.beginPath();
-      ctx.arc(ax, ay, 162, 0, Math.PI * 2);
+      ctx.arc(ax, ay, 168, 0, Math.PI * 2);
       ctx.stroke();
 
-      const avatarGrad = ctx.createRadialGradient(
-        ax - 40,
-        ay - 40,
-        0,
-        ax,
-        ay,
-        162,
-      );
-      avatarGrad.addColorStop(0, "#A78BFA");
-      avatarGrad.addColorStop(1, "#7C3AED");
-      ctx.fillStyle = avatarGrad;
-      ctx.beginPath();
-      ctx.arc(ax, ay, 155, 0, Math.PI * 2);
-      ctx.fill();
+      if (image) {
+        // Draw profile image
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ax, ay, 155, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(image, ax - 155, ay - 155, 310, 310);
+        ctx.restore();
+      } else {
+        // Fallback to initial
+        const avatarGrad = ctx.createRadialGradient(
+          ax - 40,
+          ay - 40,
+          0,
+          ax,
+          ay,
+          162,
+        );
+        avatarGrad.addColorStop(0, "#C4B5FD");
+        avatarGrad.addColorStop(1, "#7C3AED");
+        ctx.fillStyle = avatarGrad;
+        ctx.beginPath();
+        ctx.arc(ax, ay, 155, 0, Math.PI * 2);
+        ctx.fill();
 
-      ctx.fillStyle = "white";
-      ctx.font = "bold 210px system-ui, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("A", ax, ay + 8);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 210px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(name.charAt(0).toUpperCase() || "A", ax, ay + 8);
+      }
 
       // ── Name ──
-      ctx.font = "bold 118px system-ui, sans-serif";
-      ctx.fillStyle = "white";
+      ctx.font = "bold 110px system-ui, sans-serif";
+      ctx.fillStyle = "#1E1B4B"; // Deep indigo/black
       ctx.textBaseline = "alphabetic";
-      ctx.fillText(name, ax, 690);
+      ctx.textAlign = "center";
+      ctx.fillText(name, ax, 680);
 
       // ── Title ──
-      ctx.font = "600 56px system-ui, sans-serif";
-      ctx.fillStyle = "#64748B";
-      ctx.fillText("PROJECT MANAGER", ax, 778);
+      ctx.font = "600 52px system-ui, sans-serif";
+      ctx.fillStyle = "#7C3AED"; // Purple title
+      ctx.fillText("PROJECT MANAGER", ax, 758);
 
       // ── AINGO pill ──
-      const pW = 310,
-        pH = 64,
+      const pW = 280,
+        pH = 60,
         pX = ax - pW / 2,
-        pY = 828;
-      ctx.fillStyle = "rgba(124,58,237,0.14)";
-      roundRect(ctx, pX, pY, pW, pH, 32);
+        pY = 820;
+      ctx.fillStyle = "#F5F3FF"; // Very light purple
+      roundRect(ctx, pX, pY, pW, pH, 30);
       ctx.fill();
-      ctx.strokeStyle = "rgba(124,58,237,0.38)";
-      ctx.lineWidth = 2.5;
-      roundRect(ctx, pX, pY, pW, pH, 32);
+      ctx.strokeStyle = "#DDD6FE";
+      ctx.lineWidth = 2;
+      roundRect(ctx, pX, pY, pW, pH, 30);
       ctx.stroke();
 
-      ctx.fillStyle = "#A78BFA";
+      ctx.fillStyle = "#7C3AED";
       ctx.beginPath();
-      ctx.arc(pX + 42, pY + pH / 2, 9, 0, Math.PI * 2);
+      ctx.arc(pX + 38, pY + pH / 2, 8, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = "#A78BFA";
-      ctx.font = "bold 46px system-ui, monospace";
+      ctx.fillStyle = "#7C3AED";
+      ctx.font = "bold 42px system-ui, monospace";
       ctx.textBaseline = "middle";
       ctx.fillText("AINGO", ax + 14, pY + pH / 2);
 
       // ── Divider ──
-      ctx.strokeStyle = "rgba(255,255,255,0.07)";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#F1F5F9";
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(100, 960);
-      ctx.lineTo(W - 100, 960);
+      ctx.moveTo(120, 940);
+      ctx.lineTo(W - 120, 940);
       ctx.stroke();
 
       // ── Company ──
-      ctx.fillStyle = "#475569";
-      ctx.font = "52px system-ui, sans-serif";
+      ctx.fillStyle = "#64748B";
+      ctx.font = "500 48px system-ui, sans-serif";
       ctx.textBaseline = "alphabetic";
-      ctx.fillText("Company X", ax, 1060);
+      ctx.fillText("AINGO TECHNOLOGIES", ax, 1040);
 
       // ── ID ──
-      ctx.fillStyle = "#1E293B";
-      ctx.font = "40px monospace";
+      ctx.fillStyle = "#94A3B8";
+      ctx.font = "bold 36px monospace";
       const idPrefix = name.toUpperCase().slice(0, 2);
-      ctx.fillText(`#${idPrefix}-PM-2024`, ax, 1160);
+      ctx.fillText(`#${idPrefix}-PM-2024`, ax, 1120);
 
       ctx.restore();
     }
@@ -197,7 +207,7 @@ function useCardTexture(name: string): THREE.CanvasTexture {
     const tex = new THREE.CanvasTexture(canvas);
     tex.anisotropy = 16;
     return tex;
-  }, []);
+  }, [name, image]);
 }
 
 // ─── Lanyard component ────────────────────────────────────────────────────────
@@ -208,6 +218,7 @@ interface LanyardProps {
   fov?: number;
   transparent?: boolean;
   name?: string;
+  profileImage?: string;
 }
 
 export default function Lanyard({
@@ -216,6 +227,7 @@ export default function Lanyard({
   fov = 20,
   transparent = true,
   name = "Atom",
+  profileImage,
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState<boolean>(
     () => typeof window !== "undefined" && window.innerWidth < 768,
@@ -239,7 +251,7 @@ export default function Lanyard({
       >
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-          <Band isMobile={isMobile} name={name} />
+          <Band isMobile={isMobile} name={name} profileImage={profileImage} />
         </Physics>
         <Environment blur={0.75}>
           <Lightformer
@@ -281,9 +293,10 @@ interface BandProps {
   minSpeed?: number;
   isMobile?: boolean;
   name: string;
+  profileImage?: string;
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, name }: BandProps) {
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, name, profileImage }: BandProps) {
   const band = useRef<any>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
@@ -306,8 +319,21 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, name }: BandProps
 
   const { nodes, materials } = useGLTF(cardGLB) as any;
   const texture = useTexture(lanyard);
+
+  const [imgElement, setImgElement] = useState<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (profileImage) {
+      const img = new Image();
+      img.src = profileImage;
+      img.onload = () => setImgElement(img);
+    } else {
+      setImgElement(null);
+    }
+  }, [profileImage]);
+
   // Canvas-drawn card face replaces the default baked-in map
-  const cardTexture = useCardTexture(name);
+  const cardTexture = useCardTexture(name, imgElement);
 
   const [curve] = useState(
     () =>
@@ -465,7 +491,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, name }: BandProps
       <mesh ref={band}>
         <meshLineGeometry />
         <meshLineMaterial
-          color="white"
+          color="#7C3AED"
           depthTest={false}
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
           useMap

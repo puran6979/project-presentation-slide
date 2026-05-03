@@ -17,6 +17,7 @@ import {
   ThaiText,
 } from "../components/index.ts";
 import { fadeIn, fadeInRight } from "../lib/motion.ts";
+import atomProfile from "../assets/images/profile/atom-close.jpeg";
 
 const GLOWS = [
   { bottom: -260, left: -140, size: 680, color: "239,68,68", opacity: 0.07 },
@@ -47,6 +48,7 @@ export function Slide04() {
               fov={22}
               transparent
               name="Atom"
+              profileImage={atomProfile}
             />
           </div>
           

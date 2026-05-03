@@ -3,12 +3,13 @@ import {
   BeforeAfterRow,
   BenefitItem,
   IconBadge,
-  ImagePlaceholder,
   SlideHeader,
   SlideShell,
   ThaiText,
 } from "../components/index.ts";
 import { DISTANCE, DURATION, fadeInUp, scaleIn } from "../lib/motion.ts";
+import relaxImg from "../assets/images/results/relax.png";
+import frustImg from "../assets/images/results/frust.png";
 
 const GLOWS = [
   { top: -220, right: -100, size: 680, color: "16,185,129", opacity: 0.09 },
@@ -71,8 +72,12 @@ export function Slide10() {
           })}
           style={{ display: "flex", gap: 14, flex: 1, minHeight: 0 }}
         >
-          <ImagePlaceholder variant="dashed" label="Image Placeholder" />
-          <ImagePlaceholder variant="dashed" label="Image Placeholder" />
+          <div style={{ flex: 1, overflow: "hidden" }}>
+            <img src={frustImg} alt="Frustrated User" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          </div>
+          <div style={{ flex: 1, overflow: "hidden" }}>
+            <img src={relaxImg} alt="Relaxed User" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          </div>
         </motion.div>
 
         {/* ── Before / After ── */}
@@ -85,8 +90,7 @@ export function Slide10() {
               eyebrow: "Before",
               body: (
                 <ThaiText>
-                  Alex
-                  ใช้เวลาหลายชั่วโมงในการค้นหาและประเมินเอกสารที่กระจัดกระจายหลายฉบับ
+                  <strong>Atom</strong> ใช้เวลาหลายชั่วโมงในการค้นหาและประเมินเอกสารที่กระจัดกระจายหลายฉบับ
                 </ThaiText>
               ),
               color: "#EF4444",
@@ -109,7 +113,7 @@ export function Slide10() {
               eyebrow: "After",
               body: (
                 <ThaiText>
-                  Alex ถามคำถามและได้รับคำตอบที่ถูกต้องสมบูรณ์
+                  <strong>Atom</strong> ถามคำถามและได้รับคำตอบที่ถูกต้องสมบูรณ์
                   พร้อมอ้างอิงแหล่งที่มา ทันที
                 </ThaiText>
               ),

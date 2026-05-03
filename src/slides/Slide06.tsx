@@ -11,13 +11,27 @@ import {
   ThaiText,
 } from "../components/index.ts";
 import { cardRise, stagger } from "../lib/motion.ts";
+import keywordImg from "../assets/images/evolution/keyword.jpeg";
+import ragImg from "../assets/images/evolution/rag.jpeg";
+import proposeImg from "../assets/images/evolution/propose.jpeg";
 
 const GLOWS = [
   { top: -280, right: -140, size: 760, color: "124,58,237", opacity: 0.11 },
   { bottom: -180, left: -60, size: 560, color: "16,185,129", opacity: 0.07 },
 ];
 
-const LEVELS = [
+interface LevelData {
+  num: string;
+  label: string;
+  accent: string;
+  accentRgb: string;
+  status: string;
+  desc: string;
+  icon: React.ReactNode;
+  image?: string;
+}
+
+const LEVELS: LevelData[] = [
   {
     num: "01",
     label: "Legacy Keyword Search",
@@ -26,6 +40,7 @@ const LEVELS = [
     status: "Legacy",
     desc: "ปัญหา: ใช้ Keyword ค้นหาเอกสาร ทำให้ไม่รู้ intent จริงๆ ของผู้ใช้ ได้ผลเป็นเอกสารมากมาย แต่ไม่ตรงกับที่หา",
     icon: <LegacySearchIcon />,
+    image: keywordImg,
   },
   {
     num: "02",
@@ -35,6 +50,7 @@ const LEVELS = [
     status: "Partial",
     desc: "ปัญหา: ตอบคำถามด้วย Natural-Language ได้ แต่ยังขาด Context/Meta ที่ดีของข้อมูล",
     icon: <NaiveRagIcon />,
+    image: ragImg,
   },
   {
     num: "03",
@@ -44,6 +60,7 @@ const LEVELS = [
     status: "Aingo",
     desc: "อัปเกรด Data Pipeline ทำให้ได้ Data ที่มีความเที่ยงตรง มี Agent ที่ฉลาดสำหรับการตอบคำถาม",
     icon: <ProposedSystemIcon />,
+    image: proposeImg,
   },
 ];
 
@@ -92,21 +109,38 @@ export function Slide06() {
                 overflow: "hidden",
               }}
             >
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `radial-gradient(circle, rgba(${lvl.accentRgb},0.1) 1px, transparent 1px)`,
-                  backgroundSize: "22px 22px",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: `linear-gradient(160deg, rgba(${lvl.accentRgb},0.1) 0%, transparent 65%)`,
-                }}
-              />
+              {lvl.image ? (
+                <img
+                  src={lvl.image}
+                  alt={lvl.label}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <>
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      backgroundImage: `radial-gradient(circle, rgba(${lvl.accentRgb},0.1) 1px, transparent 1px)`,
+                      backgroundSize: "22px 22px",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: `linear-gradient(160deg, rgba(${lvl.accentRgb},0.1) 0%, transparent 65%)`,
+                    }}
+                  />
+                </>
+              )}
+              
               {/* Watermark number */}
               <BigGhostNumber
                 rgb={lvl.accentRgb}
@@ -117,10 +151,12 @@ export function Slide06() {
                   bottom: -8,
                   right: 12,
                   letterSpacing: "-6px",
+                  zIndex: 1,
                 }}
               >
                 {lvl.num}
               </BigGhostNumber>
+              
               <div
                 style={{
                   position: "absolute",
@@ -130,31 +166,51 @@ export function Slide06() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
+                  zIndex: 2,
                 }}
               >
-                <IconTile
-                  size={60}
-                  radius={16}
-                  rgb={lvl.accentRgb}
-                  bgOpacity={0.1}
-                  borderOpacity={0.22}
+                {!lvl.image && (
+                  <IconTile
+                    size={60}
+                    radius={16}
+                    rgb={lvl.accentRgb}
+                    bgOpacity={0.1}
+                    borderOpacity={0.22}
+                    style={{
+                      boxShadow: `0 4px 20px rgba(${lvl.accentRgb},0.15)`,
+                    }}
+                  >
+                    {lvl.icon}
+                  </IconTile>
+                )}
+                
+                <div
                   style={{
-                    boxShadow: `0 4px 20px rgba(${lvl.accentRgb},0.15)`,
+                    position: "absolute",
+                    bottom: 16,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 4,
                   }}
                 >
-                  {lvl.icon}
-                </IconTile>
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    color: `rgba(${lvl.accentRgb},0.5)`,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Level {lvl.num}
-                </span>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: `rgba(${lvl.accentRgb},0.6)`,
+                      letterSpacing: "0.15em",
+                      textTransform: "uppercase",
+                      background: `rgba(${lvl.accentRgb}, 0.05)`,
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                    }}
+                  >
+                    Level {lvl.num}
+                  </span>
+                </div>
               </div>
             </div>
 
