@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useAnimationControls } from "framer-motion";
+import { useEffect } from "react";
 import {
   BigGhostNumber,
   GradientText,
@@ -7,6 +8,8 @@ import {
   SlideShell,
 } from "../components/index.ts";
 import { DISTANCE, DURATION, fadeInUp, scaleIn, stagger } from "../lib/motion.ts";
+
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 const GLOWS = [
   { top: -200, right: -120, size: 680, color: "124,58,237", opacity: 0.1 },
@@ -60,6 +63,38 @@ function DocCluster() {
 }
 
 function StandardRagDiagram() {
+  const lineCtrl  = useAnimationControls();
+  const badgeCtrl = useAnimationControls();
+  const queryCtrl = useAnimationControls();
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      while (alive) {
+        lineCtrl.set({ pathLength: 0, opacity: 0 });
+        badgeCtrl.set({ opacity: 0, scale: 0.85 });
+        // pulse query dot
+        queryCtrl.start({ scale: [1, 1.3, 1], transition: { duration: 0.5 } });
+        await wait(200);
+        if (!alive) break;
+        // weak similarity line draws in
+        await lineCtrl.start({ pathLength: 1, opacity: 0.75, transition: { duration: 1.2, ease: "easeOut" } });
+        if (!alive) break;
+        // score badge pops in
+        await badgeCtrl.start({ opacity: 1, scale: 1, transition: { duration: 0.35, type: "spring", bounce: 0.4 } });
+        if (!alive) break;
+        await wait(1800);
+        if (!alive) break;
+        await Promise.all([
+          lineCtrl.start({ opacity: 0, transition: { duration: 0.45 } }),
+          badgeCtrl.start({ opacity: 0, scale: 0.85, transition: { duration: 0.35 } }),
+        ]);
+        await wait(500);
+      }
+    })();
+    return () => { alive = false; };
+  }, [lineCtrl, badgeCtrl, queryCtrl]);
+
   const q = STANDARD_QUERY;
   const nearest = DOC_POINTS[4];
   return (
@@ -68,17 +103,70 @@ function StandardRagDiagram() {
       <DocCluster />
       <ellipse cx={q.x} cy={q.y} rx="22" ry="18" fill="rgba(245,158,11,0.06)" stroke="rgba(245,158,11,0.2)" strokeWidth="1" strokeDasharray="3 2" />
       <text x={q.x} y={q.y + 28} textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(245,158,11,0.7)">Query Space</text>
-      <line x1={q.x + 10} y1={q.y - 4} x2={nearest.x - 6} y2={nearest.y} stroke="#EF4444" strokeWidth="1" strokeDasharray="4 2" opacity="0.6" />
-      <rect x="68" y="54" width="42" height="13" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.3)" strokeWidth="0.8" />
-      <text x="89" y="63.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#EF4444">sim ≈ 0.31</text>
-      <circle cx={q.x} cy={q.y} r="5.5" fill="#F59E0B" />
-      <circle cx={q.x} cy={q.y} r="5.5" fill="none" stroke="rgba(245,158,11,0.4)" strokeWidth="4" />
+      {/* Animated weak similarity line */}
+      <motion.path
+        d={`M${q.x + 10},${q.y - 4} L${nearest.x - 6},${nearest.y}`}
+        stroke="#EF4444" strokeWidth="1.5" strokeDasharray="4 2" fill="none"
+        animate={lineCtrl}
+        initial={{ pathLength: 0, opacity: 0 }}
+      />
+      {/* Animated score badge */}
+      <motion.g animate={badgeCtrl} initial={{ opacity: 0, scale: 0.85 }} style={{ transformOrigin: "89px 61px" }}>
+        <rect x="68" y="54" width="42" height="13" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.3)" strokeWidth="0.8" />
+        <text x="89" y="63.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#EF4444">sim ≈ 0.31</text>
+      </motion.g>
+      {/* Animated query dot */}
+      <motion.g animate={queryCtrl} style={{ transformOrigin: `${q.x}px ${q.y}px` }}>
+        <circle cx={q.x} cy={q.y} r="5.5" fill="#F59E0B" />
+        <circle cx={q.x} cy={q.y} r="5.5" fill="none" stroke="rgba(245,158,11,0.4)" strokeWidth="4" />
+      </motion.g>
       <text x={q.x} y={q.y - 10} textAnchor="middle" fontSize="6.5" fontWeight="700" fill="#F59E0B">{q.label}</text>
     </svg>
   );
 }
 
 function HydeDiagram() {
+  const arcCtrl   = useAnimationControls();
+  const dotCtrl   = useAnimationControls();
+  const lineCtrl  = useAnimationControls();
+  const badgeCtrl = useAnimationControls();
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      while (alive) {
+        arcCtrl.set({ pathLength: 0, opacity: 0 });
+        dotCtrl.set({ scale: 0, opacity: 0 });
+        lineCtrl.set({ pathLength: 0, opacity: 0 });
+        badgeCtrl.set({ opacity: 0 });
+        await wait(300);
+        if (!alive) break;
+        // 1. LLM arc draws (query → hypothetical)
+        await arcCtrl.start({ pathLength: 1, opacity: 0.7, transition: { duration: 0.9, ease: "easeInOut" } });
+        if (!alive) break;
+        // 2. Hypothetical dot springs in
+        await dotCtrl.start({ scale: 1, opacity: 1, transition: { duration: 0.4, type: "spring", bounce: 0.55 } });
+        if (!alive) break;
+        // 3. Strong similarity line draws
+        await lineCtrl.start({ pathLength: 1, opacity: 0.85, transition: { duration: 0.65, ease: "easeOut" } });
+        if (!alive) break;
+        // 4. Score badge fades in
+        await badgeCtrl.start({ opacity: 1, transition: { duration: 0.3 } });
+        if (!alive) break;
+        await wait(2200);
+        if (!alive) break;
+        await Promise.all([
+          arcCtrl.start({ opacity: 0, transition: { duration: 0.4 } }),
+          dotCtrl.start({ scale: 0, opacity: 0, transition: { duration: 0.35 } }),
+          lineCtrl.start({ opacity: 0, transition: { duration: 0.4 } }),
+          badgeCtrl.start({ opacity: 0, transition: { duration: 0.3 } }),
+        ]);
+        await wait(400);
+      }
+    })();
+    return () => { alive = false; };
+  }, [arcCtrl, dotCtrl, lineCtrl, badgeCtrl]);
+
   const q = STANDARD_QUERY;
   const h = HYPOTHETICAL;
   const nearest = DOC_POINTS[0];
@@ -86,20 +174,37 @@ function HydeDiagram() {
     <svg viewBox="0 0 200 130" style={{ width: "100%", height: "100%", overflow: "visible" }}>
       <ScatterGrid />
       <DocCluster />
+      {/* Faded original query (always visible) */}
       <circle cx={q.x} cy={q.y} r="4" fill="rgba(107,114,128,0.4)" />
       <text x={q.x} y={q.y - 8} textAnchor="middle" fontSize="6" fill="rgba(107,114,128,0.5)">Original Query</text>
       <text x={q.x} y={q.y + 14} textAnchor="middle" fontSize="6" fill="rgba(107,114,128,0.4)">{q.label}</text>
-      <line x1={h.x} y1={h.y} x2={nearest.x} y2={nearest.y} stroke="#10B981" strokeWidth="1.5" opacity="0.7" />
-      <rect x="131" y="17" width="42" height="13" rx="4" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.35)" strokeWidth="0.8" />
-      <text x="152" y="26.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#10B981">sim ≈ 0.89</text>
-      <path
+      {/* LLM arc label */}
+      <text x="80" y="10" textAnchor="middle" fontSize="6.5" fill="rgba(124,58,237,0.6)">LLM generates</text>
+      {/* Animated LLM arc */}
+      <motion.path
         d={`M${q.x + 10},${q.y - 6} C70,10 110,10 ${h.x - 12},${h.y - 8}`}
-        fill="none" stroke="#7C3AED" strokeWidth="1" strokeDasharray="3 2" opacity="0.5"
+        fill="none" stroke="#7C3AED" strokeWidth="1.5" strokeDasharray="3 2"
+        animate={arcCtrl}
+        initial={{ pathLength: 0, opacity: 0 }}
       />
-      <text x="80" y="10" textAnchor="middle" fontSize="6.5" fill="rgba(124,58,237,0.7)">LLM generates</text>
-      <circle cx={h.x} cy={h.y} r="6" fill="#7C3AED" />
-      <circle cx={h.x} cy={h.y} r="6" fill="none" stroke="rgba(124,58,237,0.45)" strokeWidth="5" />
-      <text x={h.x + 14} y={h.y + 3} textAnchor="start" fontSize="6.5" fontWeight="700" fill="#7C3AED">{h.label}</text>
+      {/* Animated strong similarity line */}
+      <motion.path
+        d={`M${h.x},${h.y} L${nearest.x},${nearest.y}`}
+        stroke="#10B981" strokeWidth="1.5" fill="none"
+        animate={lineCtrl}
+        initial={{ pathLength: 0, opacity: 0 }}
+      />
+      {/* Animated score badge */}
+      <motion.g animate={badgeCtrl} initial={{ opacity: 0 }}>
+        <rect x="131" y="17" width="42" height="13" rx="4" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.35)" strokeWidth="0.8" />
+        <text x="152" y="26.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#10B981">sim ≈ 0.89</text>
+      </motion.g>
+      {/* Animated hypothetical dot */}
+      <motion.g animate={dotCtrl} initial={{ scale: 0, opacity: 0 }} style={{ transformOrigin: `${h.x}px ${h.y}px` }}>
+        <circle cx={h.x} cy={h.y} r="6" fill="#7C3AED" />
+        <circle cx={h.x} cy={h.y} r="6" fill="none" stroke="rgba(124,58,237,0.45)" strokeWidth="5" />
+        <text x={h.x + 14} y={h.y + 3} textAnchor="start" fontSize="6.5" fontWeight="700" fill="#7C3AED">{h.label}</text>
+      </motion.g>
     </svg>
   );
 }
@@ -181,7 +286,7 @@ function ConceptCard({
         background: `rgba(${concept.rgb},0.03)`,
         padding: "14px 16px",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         gap: 14,
         position: "relative",
         overflow: "hidden",
@@ -200,8 +305,8 @@ function ConceptCard({
         }}
       />
 
-      {/* Left: text */}
-      <div style={{ flex: "0 0 52%", display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
+      {/* Text */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Pill color={concept.pillColor} rgb={concept.pillRgb} fontSize={9} padding="2px 8px">
             {concept.pill}
@@ -215,10 +320,11 @@ function ConceptCard({
         </p>
       </div>
 
-      {/* Right: SVG scatter visualization */}
+      {/* Below: SVG scatter visualization */}
       <div
         style={{
           flex: 1,
+          minHeight: 0,
           borderRadius: 10,
           background: "rgba(0,0,0,0.025)",
           border: "1px solid rgba(0,0,0,0.07)",
