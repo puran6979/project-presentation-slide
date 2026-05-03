@@ -28,16 +28,16 @@ const S3Icon = () => <SVGWrap><rect x="2" y="2" width="20" height="20" rx="2" ry
 const QdrantIcon = () => <SVGWrap><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></SVGWrap>;
 
 const NS = {
-  frontend: { color: "#A855F7", rgb: "168,85,247", grad: ["#A855F7", "#D946EF"] as [string, string], label: "Frontend | Backend", icon: FrontendIcon },
-  webhook: { color: "#EF4444", rgb: "239,68,68", grad: ["#EF4444", "#F87171"] as [string, string], label: "SharePoint Webhook", icon: WebhookIcon },
-  storage: { color: "#6366F1", rgb: "99,102,241", grad: ["#6366F1", "#818CF8"] as [string, string], label: "File Storage Service", icon: StorageIcon },
-  mq: { color: "#F43F5E", rgb: "244,63,94", grad: ["#F43F5E", "#FB7185"] as [string, string], label: "Message Queues", icon: MqIcon },
-  ingestion: { color: "#10B981", rgb: "16,185,129", grad: ["#10B981", "#34D399"] as [string, string], label: "Data Ingestion Service", icon: IngestIcon },
-  embedding: { color: "#F59E0B", rgb: "245,158,11", grad: ["#F59E0B", "#FBBF24"] as [string, string], label: "Embedding Service", icon: EmbeddingIcon },
-  ai: { color: "#3B82F6", rgb: "59,130,246", grad: ["#3B82F6", "#8B5CF6"] as [string, string], label: "AI Engine", icon: AiIcon },
-  sharepoint: { color: "#0D9488", rgb: "13,148,136", grad: ["#0D9488", "#14B8A6"] as [string, string], label: "SharePoint", icon: SharepointIcon },
-  s3: { color: "#0EA5E9", rgb: "14,165,233", grad: ["#0EA5E9", "#38BDF8"] as [string, string], label: "Internal S3 Storage", icon: S3Icon },
-  qdrant: { color: "#84CC16", rgb: "132,204,22", grad: ["#84CC16", "#A3E635"] as [string, string], label: "Vector Database", icon: QdrantIcon },
+  frontend: { color: "#D946EF", rgb: "217,70,239", grad: ["#C084FC", "#E879F9"] as [string, string], label: "Frontend | Backend", icon: FrontendIcon },
+  webhook: { color: "#F87171", rgb: "248,113,113", grad: ["#F87171", "#FCA5A5"] as [string, string], label: "SharePoint Webhook", icon: WebhookIcon },
+  storage: { color: "#818CF8", rgb: "129,140,248", grad: ["#818CF8", "#A5B4FC"] as [string, string], label: "File Storage Service", icon: StorageIcon },
+  mq: { color: "#FB7185", rgb: "251,113,133", grad: ["#FB7185", "#FDA4AF"] as [string, string], label: "Message Queues", icon: MqIcon },
+  ingestion: { color: "#34D399", rgb: "52,211,153", grad: ["#34D399", "#6EE7B7"] as [string, string], label: "Data Ingestion Service", icon: IngestIcon },
+  embedding: { color: "#FBBF24", rgb: "251,191,36", grad: ["#FBBF24", "#FCD34D"] as [string, string], label: "Embedding Service", icon: EmbeddingIcon },
+  ai: { color: "#38BDF8", rgb: "56,189,248", grad: ["#38BDF8", "#F472B6"] as [string, string], label: "AI Engine", icon: AiIcon },
+  sharepoint: { color: "#2DD4BF", rgb: "45,212,191", grad: ["#2DD4BF", "#5EEAD4"] as [string, string], label: "SharePoint", icon: SharepointIcon },
+  s3: { color: "#38BDF8", rgb: "56,189,248", grad: ["#38BDF8", "#7DD3FC"] as [string, string], label: "Internal S3 Storage", icon: S3Icon },
+  qdrant: { color: "#A3E635", rgb: "163,230,53", grad: ["#A3E635", "#BEF264"] as [string, string], label: "Vector Database", icon: QdrantIcon },
 };
 
 function FlowNode({
