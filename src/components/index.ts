@@ -42,3 +42,12 @@ export {
   DataIngestionIcon,
   ChatUIIcon,
 } from "./icons/ObjectiveScopeIcons.tsx";
+export {
+  FrontendIcon,
+  BackendIcon,
+  AIEngineIcon,
+  EmbeddingIcon,
+  IngestionIcon,
+  StorageIcon,
+  WebhookIcon,
+} from "./icons/ServiceIcons.tsx";

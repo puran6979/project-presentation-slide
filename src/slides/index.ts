@@ -11,6 +11,10 @@ import { Slide09 } from './Slide09.tsx';
 import { Slide10 } from './Slide10.tsx';
 import { Slide11 } from './Slide11.tsx';
 import { Slide12 } from './Slide12.tsx';
+import { Slide13 } from './Slide13.tsx';
+import { Slide14 } from './Slide14.tsx';
+import { Slide15 } from './Slide15.tsx';
+import { Slide16 } from './Slide16.tsx';
 
 export type SlideComponent = ComponentType;
 
@@ -27,4 +31,8 @@ export const slides: SlideComponent[] = [
   Slide10,
   Slide11,
   Slide12,
+  Slide13,
+  Slide14,
+  Slide15,
+  Slide16,
 ];

@@ -1,15 +1,31 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-export function GradientText({ children }: { children: ReactNode }) {
+export function GradientText({
+  children,
+  from = "#7C3AED",
+  to = "#EC4899",
+  via,
+  style,
+}: {
+  children: ReactNode;
+  from?: string;
+  to?: string;
+  via?: string;
+  style?: CSSProperties;
+}) {
+  const gradient = via
+    ? `linear-gradient(120deg, ${from} 0%, ${via} 50%, ${to} 100%)`
+    : `linear-gradient(120deg, ${from} 0%, ${to} 100%)`;
+
   return (
     <span
       style={{
-        background:
-          "linear-gradient(120deg, #7C3AED 0%, #A855F7 45%, #EC4899 100%)",
+        background: gradient,
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
         backgroundClip: "text",
         display: "inline-block",
+        ...style,
       }}
     >
       {children}
