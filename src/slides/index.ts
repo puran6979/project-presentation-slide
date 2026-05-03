@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { Slide01 } from './Slide01.tsx';
+import { TOCSlide } from './TOCSlide.tsx';
 import { Slide02 } from './Slide02.tsx';
 import { Slide03 } from './Slide03.tsx';
 import { Slide04 } from './Slide04.tsx';
@@ -21,11 +22,13 @@ import { Slide19 } from './Slide19.tsx';
 import { Slide20 } from './Slide20.tsx';
 import { Slide21 } from './Slide21.tsx';
 import { Slide22 } from './Slide22.tsx';
+import { TempSlide } from './TempSlide.tsx';
 
 export type SlideComponent = ComponentType;
 
 export const slides: SlideComponent[] = [
   Slide01,
+  TOCSlide,
   Slide02,
   Slide03,
   Slide04,
@@ -47,4 +50,5 @@ export const slides: SlideComponent[] = [
   Slide20,
   Slide21,
   Slide22,
+  // TempSlide,
 ];

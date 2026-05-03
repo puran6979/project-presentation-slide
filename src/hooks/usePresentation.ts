@@ -6,6 +6,7 @@ export interface PresentationState {
   direction: 1 | -1;
   goNext: () => void;
   goPrev: () => void;
+  goTo: (index: number) => void;
   canGoNext: boolean;
   canGoPrev: boolean;
 }
@@ -28,6 +29,13 @@ export function usePresentation(total: number): PresentationState {
     }
   }, [currentIndex]);
 
+  const goTo = useCallback((index: number) => {
+    if (index >= 0 && index < total && index !== currentIndex) {
+      setDirection(index > currentIndex ? 1 : -1);
+      setCurrentIndex(index);
+    }
+  }, [currentIndex, total]);
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === ' ') {
@@ -48,6 +56,7 @@ export function usePresentation(total: number): PresentationState {
     direction,
     goNext,
     goPrev,
+    goTo,
     canGoNext: currentIndex < total - 1,
     canGoPrev: currentIndex > 0,
   };
