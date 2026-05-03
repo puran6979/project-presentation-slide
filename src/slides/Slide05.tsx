@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import {
   BigGhostNumber,
   Callout,
-  ImagePlaceholder,
   Pill,
   SlideHeader,
   SlideShell,
@@ -16,6 +15,7 @@ import {
   fadeInRight,
   stagger,
 } from "../lib/motion.ts";
+import messyBox from "../assets/messy-box.png";
 
 const GLOWS = [
   { top: -300, right: -160, size: 800, color: "124,58,237", opacity: 0.13 },
@@ -163,7 +163,101 @@ export function Slide05() {
             gap: 14,
           }}
         >
-          <ImagePlaceholder variant="dotted" label="Image placeholder" />
+          {/* Messy Data Scatter / Particle Stream */}
+          <div
+            style={{
+              position: "relative",
+              flex: 1,
+              minHeight: 0,
+              borderRadius: 16,
+              overflow: "hidden",
+            }}
+          >
+            {/* Chaos background grid lines */}
+            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.04 }}>
+              {[0,1,2,3,4].map(i => (
+                <line key={`h${i}`} x1="0" y1={`${i*25}%`} x2="100%" y2={`${i*25}%`} stroke="#7C3AED" strokeWidth="1" strokeDasharray="4 6"/>
+              ))}
+              {[0,1,2,3,4].map(i => (
+                <line key={`v${i}`} x1={`${i*25}%`} y1="0" x2={`${i*25}%`} y2="100%" stroke="#7C3AED" strokeWidth="1" strokeDasharray="4 6"/>
+              ))}
+            </svg>
+
+            {/* Particle items (flying out from behind) */}
+            {[
+              { label: "spec_v1.docx",      icon: "📄", left: "10%", delay: 0.0, dur: 4.5, xOff: -40, color: "#3B82F6" },
+              { label: "SharePoint",         icon: "🔗", left: "40%", delay: 1.2, dur: 5.2, xOff: 20,  color: "#0EA5E9" },
+              { label: "project_2023.xlsx",  icon: "📊", left: "25%", delay: 0.5, dur: 4.8, xOff: -10, color: "#10B981" },
+              { label: "Email Thread",       icon: "✉️", left: "60%", delay: 2.1, dur: 4.2, xOff: 50,  color: "#F59E0B" },
+              { label: "Drive/Archive",      icon: "🗂️", left: "15%", delay: 3.4, dur: 5.5, xOff: -30, color: "#6366F1" },
+              { label: "???.pdf",            icon: "📎", left: "45%", delay: 0.8, dur: 4.0, xOff: 10,  color: "#EF4444" },
+              { label: "Teams Chat",         icon: "💬", left: "70%", delay: 1.7, dur: 5.0, xOff: 40,  color: "#8B5CF6" },
+              { label: "README.txt",         icon: "📝", left: "35%", delay: 2.8, dur: 4.7, xOff: -20, color: "#64748B" },
+              { label: "Jira Ticket",        icon: "🎫", left: "20%", delay: 4.1, dur: 5.3, xOff: -50, color: "#F97316" },
+              { label: "Conf. Notes",        icon: "🗒️", left: "55%", delay: 1.5, dur: 4.4, xOff: 30,  color: "#EC4899" },
+              { label: "API_docs_OLD.json",  icon: "⚙️", left: "50%", delay: 3.1, dur: 5.1, xOff: 0,   color: "#14B8A6" },
+              { label: "backup_FINAL2.zip",  icon: "🗜️", left: "30%", delay: 0.3, dur: 4.6, xOff: -15, color: "#A855F7" },
+            ].map(({ label, icon, left, delay, dur, xOff, color }) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 120, x: 0, scale: 0.6 }}
+                animate={{
+                  opacity: [0, 1, 1, 0],
+                  y: [-30, -350],
+                  x: [0, xOff],
+                  scale: [0.6, 1, 1, 0.8],
+                }}
+                transition={{
+                  duration: dur,
+                  delay: delay,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                style={{
+                  position: "absolute",
+                  bottom: "20%",
+                  left: left,
+                  zIndex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  padding: "4px 10px 4px 7px",
+                  borderRadius: 999,
+                  border: `1px solid ${color}33`,
+                  background: "white",
+                  boxShadow: `0 4px 12px ${color}15`,
+                  fontSize: "0.62rem",
+                  fontFamily: "monospace",
+                  fontWeight: 600,
+                  color,
+                  whiteSpace: "nowrap",
+                  userSelect: "none",
+                }}
+              >
+                <span style={{ fontSize: "0.8rem", lineHeight: 1 }}>{icon}</span>
+                {label}
+              </motion.div>
+            ))}
+
+            {/* Messy box image at bottom (on top of particles) */}
+            <img
+              src={messyBox}
+              alt=""
+              style={{
+                position: "absolute",
+                bottom: -20,
+                left: 0,
+                width: "100%",
+                height: "60%",
+                objectFit: "contain",
+                objectPosition: "bottom",
+                opacity: 1,
+                pointerEvents: "none",
+                userSelect: "none",
+                zIndex: 2,
+              }}
+            />
+          </div>
 
           <Callout
             eyebrow={null}

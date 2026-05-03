@@ -8,6 +8,7 @@ import {
   IconCard,
   IconTile,
   Lanyard,
+  Pill,
   ScatterIcon,
   SearchFailIcon,
   SectionTitle,
@@ -29,13 +30,57 @@ export function Slide04() {
 
       <div style={{ flex: 1, display: "flex", gap: 24, minHeight: 0 }}>
         {/* Lanyard — left column */}
-        <motion.div {...fadeIn(0.3)} style={{ flex: 1, minHeight: 0 }}>
-          <Lanyard
-            position={[0, 0, 15]}
-            gravity={[0, -40, 0]}
-            fov={25}
-            transparent
-          />
+        <motion.div 
+          {...fadeIn(0.3)} 
+          style={{ 
+            flex: 1.1, 
+            minHeight: 0, 
+            display: "flex", 
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          <div style={{ flex: 1, width: "100%", position: "relative" }}>
+            <Lanyard
+              position={[0, 0, 11]}
+              gravity={[0, -40, 0]}
+              fov={22}
+              transparent
+              name="Atom"
+            />
+          </div>
+          
+          <motion.div
+            {...fadeIn(0.6)}
+            style={{
+              padding: "24px 28px",
+              background: "rgba(124, 58, 237, 0.03)",
+              borderRadius: "20px",
+              border: "1px solid rgba(124, 58, 237, 0.1)",
+              marginTop: "12px",
+              width: "100%",
+              maxWidth: "520px",
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              alignItems: "center"
+            }}
+          >
+            <Pill color="#7C3AED">Scenario</Pill>
+            
+            <p style={{ 
+              margin: 0, 
+              fontSize: "1.05rem", 
+              lineHeight: 1.65, 
+              color: "#4B5563",
+              textAlign: "center" 
+            }}>
+              <ThaiText>
+                พบกับ <strong>Atom</strong> ซึ่ง Project Manager หน้าใหม่ เข้ามาทำงานที่บริษัท <strong>AINGO</strong> และต้องการหา Technical Specifications ของโครงการที่เปิดตัวไปเมื่อไตรมาสที่แล้ว
+              </ThaiText>
+            </p>
+          </motion.div>
         </motion.div>
 
         {/* Content — right column */}

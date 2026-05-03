@@ -50,7 +50,7 @@ function roundRect(
   ctx.closePath();
 }
 
-function useCardTexture(): THREE.CanvasTexture {
+function useCardTexture(name: string): THREE.CanvasTexture {
   return useMemo(() => {
     const W = 1024,
       H = 1440;
@@ -137,7 +137,7 @@ function useCardTexture(): THREE.CanvasTexture {
       ctx.font = "bold 118px system-ui, sans-serif";
       ctx.fillStyle = "white";
       ctx.textBaseline = "alphabetic";
-      ctx.fillText("Alex", ax, 690);
+      ctx.fillText(name, ax, 690);
 
       // ── Title ──
       ctx.font = "600 56px system-ui, sans-serif";
@@ -184,7 +184,8 @@ function useCardTexture(): THREE.CanvasTexture {
       // ── ID ──
       ctx.fillStyle = "#1E293B";
       ctx.font = "40px monospace";
-      ctx.fillText("#AX-PM-2024", ax, 1160);
+      const idPrefix = name.toUpperCase().slice(0, 2);
+      ctx.fillText(`#${idPrefix}-PM-2024`, ax, 1160);
 
       ctx.restore();
     }
@@ -206,6 +207,7 @@ interface LanyardProps {
   gravity?: [number, number, number];
   fov?: number;
   transparent?: boolean;
+  name?: string;
 }
 
 export default function Lanyard({
@@ -213,6 +215,7 @@ export default function Lanyard({
   gravity = [0, -40, 0],
   fov = 20,
   transparent = true,
+  name = "Atom",
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState<boolean>(
     () => typeof window !== "undefined" && window.innerWidth < 768,
@@ -236,7 +239,7 @@ export default function Lanyard({
       >
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-          <Band isMobile={isMobile} />
+          <Band isMobile={isMobile} name={name} />
         </Physics>
         <Environment blur={0.75}>
           <Lightformer
@@ -277,9 +280,10 @@ interface BandProps {
   maxSpeed?: number;
   minSpeed?: number;
   isMobile?: boolean;
+  name: string;
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, name }: BandProps) {
   const band = useRef<any>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
@@ -303,7 +307,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
   const { nodes, materials } = useGLTF(cardGLB) as any;
   const texture = useTexture(lanyard);
   // Canvas-drawn card face replaces the default baked-in map
-  const cardTexture = useCardTexture();
+  const cardTexture = useCardTexture(name);
 
   const [curve] = useState(
     () =>
