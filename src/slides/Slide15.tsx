@@ -1,401 +1,425 @@
-import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
-import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
+import { motion, useAnimationControls } from "framer-motion";
+import { useEffect } from "react";
 import {
   BigGhostNumber,
-  IconBadge,
+  GradientText,
   Pill,
   SlideHeader,
   SlideShell,
   ThaiText,
 } from "../components/index.ts";
-import { DISTANCE, DURATION, fadeInLeft, fadeInRight, stagger } from "../lib/motion.ts";
-
-const GLOWS = [
-  { top: -200, right: -120, size: 680, color: "245,158,11", opacity: 0.1 },
-  { bottom: -160, left: -80, size: 540, color: "124,58,237", opacity: 0.08 },
-];
-
-const STEPS = [
-  {
-    num: "01",
-    title: "Structural Intersection",
-    body: "ตรวจจับขอบเขตของความหมายและโครงสร้าง เช่น หัวข้อหลักและหัวข้อย่อย เพื่อแบ่งข้อมูล (Chunks) ตามจุดแบ่งที่เหมาะสมโดยไม่ตัดกลางย่อหน้า",
-    color: "#F59E0B",
-    rgb: "245,158,11",
-    grad: ["#F59E0B", "#F97316"] as [string, string],
-  },
-  {
-    num: "02",
-    title: "Structural Serialization",
-    body: "สกัดหัวข้อเอกสารและเรียงร้อยเป็นเส้นทางบริบท (Breadcrumbs) (เช่น นโยบาย › ไอที › ความปลอดภัย) นำไปปะหน้าในทุกชุดข้อมูลย่อย",
-    color: "#7C3AED",
-    rgb: "124,58,237",
-    grad: ["#7C3AED", "#A855F7"] as [string, string],
-  },
-  {
-    num: "03",
-    title: "Token-Aware Merging",
-    body: "จำกัดขนาดข้อมูลที่ 512 โทเคน ข้อมูลย่อยที่เกี่ยวข้องกันจะถูกรวมเข้าด้วยกัน โดยมีเส้นทางบริบทปะหน้าก่อนแปลงเป็นเวกเตอร์",
-    color: "#10B981",
-    rgb: "16,185,129",
-    grad: ["#10B981", "#059669"] as [string, string],
-  },
-];
-
-// Stage highlight config
-const STAGE_CFG = [
-  { rgb: "245,158,11", color: "#F59E0B" },
-  { rgb: "245,158,11", color: "#F59E0B" },
-  { rgb: "124,58,237", color: "#7C3AED" },
-  { rgb: "16,185,129", color: "#10B981" },
-  { rgb: "59,130,246", color: "#3B82F6" },
-] as const;
+import { DISTANCE, DURATION, fadeInUp, scaleIn, stagger } from "../lib/motion.ts";
 
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-const FADE = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.2 } },
-  exit:    { opacity: 0, transition: { duration: 0.15 } },
-} as const;
+const GLOWS = [
+  { top: -200, right: -120, size: 680, color: "124,58,237", opacity: 0.1 },
+  { bottom: -160, left: -80, size: 540, color: "16,185,129", opacity: 0.08 },
+];
 
-function DocText({ children }: { children: string }) {
+// ── Mock embedding scatter data ──────────────────────────────────────────────
+
+/** Document cluster — same in both diagrams */
+const DOC_POINTS = [
+  { x: 154, y: 38, label: "Policy §2.1" },
+  { x: 168, y: 52, label: "Access §3.4" },
+  { x: 148, y: 62, label: "Password §1.2" },
+  { x: 162, y: 28, label: "Compliance" },
+  { x: 142, y: 74, label: "Network §5" },
+];
+
+const STANDARD_QUERY = { x: 28, y: 68, label: "\"find security policy\"" };
+const HYPOTHETICAL   = { x: 157, y: 55, label: "Hypothetical Answer" };
+
+// ── SVG Scatter Components ────────────────────────────────────────────────────
+
+function ScatterGrid() {
   return (
-    <p style={{ fontSize: 8.5, color: "#6B7280", lineHeight: 1.6, margin: 0, fontFamily: "monospace" }}>
-      {children}
-    </p>
-  );
-}
-
-const crumbStyle: CSSProperties = {
-  display: "inline-block",
-  padding: "2px 8px",
-  borderRadius: 20,
-  border: "1px solid rgba(124,58,237,0.3)",
-  background: "rgba(124,58,237,0.08)",
-  fontSize: 9,
-  color: "#7C3AED",
-  whiteSpace: "nowrap",
-  fontWeight: 600,
-};
-
-// ── Raw input card body variants ──────────────────────────────────────────
-function RawContent() {
-  return (
-    <motion.div key="raw" {...FADE}>
-      <DocText>{"This document establishes the information security policies for XYZ Corporation. All employees and contractors must adhere to these guidelines. Access to sensitive systems requires prior authorization from the IT Security team."}</DocText>
-    </motion.div>
-  );
-}
-
-function CutContent() {
-  return (
-    <motion.div key="cut" {...FADE}>
-      <DocText>{"This document establishes information security policies for XYZ Corporation. All employees must comply."}</DocText>
-      <div style={{ position: "relative", height: 20, margin: "5px 0" }}>
-        <motion.div
-          style={{ height: 2, background: "linear-gradient(90deg,#F59E0B,#EF4444)", borderRadius: 2, width: "100%", transformOrigin: "left center" }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: "easeInOut" }}
-        />
-        <motion.span
-          style={{ position: "absolute", fontSize: 13, userSelect: "none", pointerEvents: "none" }}
-          initial={{ left: 0, opacity: 0 }}
-          animate={{ left: "calc(100% - 18px)", opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 0.6, delay: 0.1, ease: "easeInOut", times: [0, 0.05, 0.85, 1] }}
-        >✂</motion.span>
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          style={{ position: "absolute", right: 0, fontSize: 8, fontWeight: 600, color: "#F59E0B", background: "rgba(245,158,11,0.1)", padding: "1px 6px", borderRadius: 4 }}
-        >
-          structural boundary
-        </motion.span>
-      </div>
-      <DocText>{"2.1 All users must authenticate using MFA. Password rotation is mandatory every 90 days."}</DocText>
-    </motion.div>
-  );
-}
-
-// ── Breadcrumb card body variants ─────────────────────────────────────────
-function BreadcrumbContent() {
-  return (
-    <motion.div key="bc" {...FADE}>
-      <div style={{ marginBottom: 8 }}>
-        <div style={crumbStyle}>Policy › IT Security › 2.1 Overview</div>
-      </div>
-      <DocText>{"2.1 Access control requires MFA for all users. Password rotation every 90 days. Privileged accounts need additional verification before system access."}</DocText>
-    </motion.div>
-  );
-}
-
-function PrependContent() {
-  return (
-    <motion.div key="prepend" {...FADE}>
-      <div style={{ position: "relative", height: 22, marginBottom: 8 }}>
-        {/* Section header fades/slides out */}
-        <motion.div
-          initial={{ opacity: 1, x: 0 }}
-          animate={{ opacity: 0, x: 12 }}
-          transition={{ duration: 0.32, delay: 0.1 }}
-          style={{ position: "absolute", fontSize: 10, fontWeight: 700, color: "#F59E0B", whiteSpace: "nowrap" }}
-        >
-          § 2 · IT Security Policy
-        </motion.div>
-        {/* Breadcrumb slides in from left */}
-        <motion.div
-          initial={{ opacity: 0, x: -14 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.35, delay: 0.3 }}
-          style={{ ...crumbStyle, position: "absolute" }}
-        >
-          Policy › IT Security › 2.1 Overview
-        </motion.div>
-      </div>
-      <DocText>{"2.1 All users must authenticate using MFA. Password rotation every 90 days. Privileged accounts require additional verification steps."}</DocText>
-    </motion.div>
-  );
-}
-
-// ── Chunks area variants ──────────────────────────────────────────────────
-function ChunksContent() {
-  return (
-    <motion.div key="chunks" {...FADE} style={{ display: "flex", gap: 10 }}>
-      {[
-        { bc: "Policy › IT Security › 2.1", text: "All users must use MFA. Password rotation every 90 days. Exceptions require written sign-off from IT Security manager." },
-        { bc: "Policy › IT Security › 2.2", text: "Network segmentation enforces zone-based traffic filtering. Inter-zone traffic must pass through approved firewall rules." },
-      ].map((c) => (
-        <div key={c.bc} style={{ flex: 1, borderRadius: 10, border: "1px solid rgba(16,185,129,0.25)", background: "rgba(16,185,129,0.05)", padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#10B981", letterSpacing: "0.06em", textTransform: "uppercase" }}>≤ 512 tokens</div>
-          <div style={{ fontSize: 8, color: "#10B981", fontFamily: "monospace" }}>[{c.bc}]</div>
-          <DocText>{c.text}</DocText>
-        </div>
+    <>
+      {[40, 80, 120].map((y) => (
+        <line key={`hy${y}`} x1="10" y1={y} x2="190" y2={y} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5" />
       ))}
-    </motion.div>
+      {[50, 100, 150].map((x) => (
+        <line key={`vx${x}`} x1={x} y1="10" x2={x} y2="110" stroke="rgba(0,0,0,0.05)" strokeWidth="0.5" />
+      ))}
+      <text x="100" y="125" textAnchor="middle" fontSize="7" fill="rgba(0,0,0,0.25)">semantic dimension 1</text>
+      <text x="6" y="65" textAnchor="middle" fontSize="7" fill="rgba(0,0,0,0.25)" transform="rotate(-90,6,65)">dim 2</text>
+    </>
   );
 }
 
-function MergeContent() {
-  const orphanCtrl = useAnimationControls();
-  const targetCtrl = useAnimationControls();
+function DocCluster() {
+  return (
+    <>
+      <ellipse cx="156" cy="52" rx="28" ry="26" fill="rgba(59,130,246,0.06)" stroke="rgba(59,130,246,0.15)" strokeWidth="1" strokeDasharray="3 2" />
+      <text x="156" y="90" textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(59,130,246,0.7)">Document Cluster</text>
+      {DOC_POINTS.map((p) => (
+        <g key={p.label}>
+          <circle cx={p.x} cy={p.y} r="4.5" fill="#3B82F6" opacity="0.85" />
+          <circle cx={p.x} cy={p.y} r="4.5" fill="none" stroke="rgba(59,130,246,0.4)" strokeWidth="3" />
+        </g>
+      ))}
+    </>
+  );
+}
+
+function StandardRagDiagram() {
+  const lineCtrl  = useAnimationControls();
+  const badgeCtrl = useAnimationControls();
+  const queryCtrl = useAnimationControls();
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      await wait(300);
-      if (!alive) return;
-      orphanCtrl.start({ y: -58, opacity: 0, scale: 0.82, transition: { duration: 0.42, ease: "easeIn" } });
-      await wait(320);
-      if (!alive) return;
-      await targetCtrl.start({ scale: [1, 1.04, 1], transition: { duration: 0.36, times: [0, 0.5, 1] } });
+      while (alive) {
+        lineCtrl.set({ pathLength: 0, opacity: 0 });
+        badgeCtrl.set({ opacity: 0, scale: 0.85 });
+        // pulse query dot
+        queryCtrl.start({ scale: [1, 1.3, 1], transition: { duration: 0.5 } });
+        await wait(200);
+        if (!alive) break;
+        // weak similarity line draws in
+        await lineCtrl.start({ pathLength: 1, opacity: 0.75, transition: { duration: 1.2, ease: "easeOut" } });
+        if (!alive) break;
+        // score badge pops in
+        await badgeCtrl.start({ opacity: 1, scale: 1, transition: { duration: 0.35, type: "spring", bounce: 0.4 } });
+        if (!alive) break;
+        await wait(1800);
+        if (!alive) break;
+        await Promise.all([
+          lineCtrl.start({ opacity: 0, transition: { duration: 0.45 } }),
+          badgeCtrl.start({ opacity: 0, scale: 0.85, transition: { duration: 0.35 } }),
+        ]);
+        await wait(500);
+      }
     })();
     return () => { alive = false; };
-  }, [orphanCtrl, targetCtrl]);
+  }, [lineCtrl, badgeCtrl, queryCtrl]);
 
-  const box: CSSProperties = { flex: 1, borderRadius: 10, border: "1px solid rgba(16,185,129,0.2)", background: "rgba(16,185,129,0.04)", padding: "10px 12px", display: "flex", flexDirection: "column", gap: 5 };
-  const orphanBox: CSSProperties = { ...box, border: "1px dashed rgba(245,158,11,0.45)", background: "rgba(245,158,11,0.03)" };
-
+  const q = STANDARD_QUERY;
+  const nearest = DOC_POINTS[4];
   return (
-    <motion.div key="merge" {...FADE} style={{ display: "flex", gap: 10 }}>
-      <motion.div animate={targetCtrl} style={box}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#10B981", letterSpacing: "0.06em", textTransform: "uppercase" }}>≤ 512 tokens</div>
-        <div style={{ fontSize: 8, color: "#10B981", fontFamily: "monospace" }}>[Policy › IT Security › 2.1]</div>
-        <DocText>{"All users must use MFA. Password rotation every 90 days."}</DocText>
-      </motion.div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-        <motion.div animate={orphanCtrl} style={orphanBox}>
-          <div style={{ fontSize: 8, fontFamily: "monospace" }}>
-            <span style={{ color: "#10B981" }}>[Policy › IT Security › 2.1]</span>
-            {"  "}<span style={{ color: "#F59E0B", fontSize: 7 }}>· 48 tokens</span>
+    <svg viewBox="0 0 200 130" style={{ width: "100%", height: "100%", overflow: "visible" }}>
+      <ScatterGrid />
+      <DocCluster />
+      <ellipse cx={q.x} cy={q.y} rx="22" ry="18" fill="rgba(245,158,11,0.06)" stroke="rgba(245,158,11,0.2)" strokeWidth="1" strokeDasharray="3 2" />
+      <text x={q.x} y={q.y + 28} textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(245,158,11,0.7)">Query Space</text>
+      {/* Animated weak similarity line */}
+      <motion.path
+        d={`M${q.x + 10},${q.y - 4} L${nearest.x - 6},${nearest.y}`}
+        stroke="#EF4444" strokeWidth="1.5" strokeDasharray="4 2" fill="none"
+        animate={lineCtrl}
+        initial={{ pathLength: 0, opacity: 0 }}
+      />
+      {/* Animated score badge */}
+      <motion.g animate={badgeCtrl} initial={{ opacity: 0, scale: 0.85 }} style={{ transformOrigin: "89px 61px" }}>
+        <rect x="68" y="54" width="42" height="13" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.3)" strokeWidth="0.8" />
+        <text x="89" y="63.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#EF4444">sim ≈ 0.31</text>
+      </motion.g>
+      {/* Animated query dot */}
+      <motion.g animate={queryCtrl} style={{ transformOrigin: `${q.x}px ${q.y}px` }}>
+        <circle cx={q.x} cy={q.y} r="5.5" fill="#F59E0B" />
+        <circle cx={q.x} cy={q.y} r="5.5" fill="none" stroke="rgba(245,158,11,0.4)" strokeWidth="4" />
+      </motion.g>
+      <text x={q.x} y={q.y - 10} textAnchor="middle" fontSize="6.5" fontWeight="700" fill="#F59E0B">{q.label}</text>
+    </svg>
+  );
+}
+
+function HydeDiagram() {
+  const arcCtrl   = useAnimationControls();
+  const dotCtrl   = useAnimationControls();
+  const lineCtrl  = useAnimationControls();
+  const badgeCtrl = useAnimationControls();
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      while (alive) {
+        arcCtrl.set({ pathLength: 0, opacity: 0 });
+        dotCtrl.set({ scale: 0, opacity: 0 });
+        lineCtrl.set({ pathLength: 0, opacity: 0 });
+        badgeCtrl.set({ opacity: 0 });
+        await wait(300);
+        if (!alive) break;
+        // 1. LLM arc draws (query → hypothetical)
+        await arcCtrl.start({ pathLength: 1, opacity: 0.7, transition: { duration: 0.9, ease: "easeInOut" } });
+        if (!alive) break;
+        // 2. Hypothetical dot springs in
+        await dotCtrl.start({ scale: 1, opacity: 1, transition: { duration: 0.4, type: "spring", bounce: 0.55 } });
+        if (!alive) break;
+        // 3. Strong similarity line draws
+        await lineCtrl.start({ pathLength: 1, opacity: 0.85, transition: { duration: 0.65, ease: "easeOut" } });
+        if (!alive) break;
+        // 4. Score badge fades in
+        await badgeCtrl.start({ opacity: 1, transition: { duration: 0.3 } });
+        if (!alive) break;
+        await wait(2200);
+        if (!alive) break;
+        await Promise.all([
+          arcCtrl.start({ opacity: 0, transition: { duration: 0.4 } }),
+          dotCtrl.start({ scale: 0, opacity: 0, transition: { duration: 0.35 } }),
+          lineCtrl.start({ opacity: 0, transition: { duration: 0.4 } }),
+          badgeCtrl.start({ opacity: 0, transition: { duration: 0.3 } }),
+        ]);
+        await wait(400);
+      }
+    })();
+    return () => { alive = false; };
+  }, [arcCtrl, dotCtrl, lineCtrl, badgeCtrl]);
+
+  const q = STANDARD_QUERY;
+  const h = HYPOTHETICAL;
+  const nearest = DOC_POINTS[0];
+  return (
+    <svg viewBox="0 0 200 130" style={{ width: "100%", height: "100%", overflow: "visible" }}>
+      <ScatterGrid />
+      <DocCluster />
+      {/* Faded original query (always visible) */}
+      <circle cx={q.x} cy={q.y} r="4" fill="rgba(107,114,128,0.4)" />
+      <text x={q.x} y={q.y - 8} textAnchor="middle" fontSize="6" fill="rgba(107,114,128,0.5)">Original Query</text>
+      <text x={q.x} y={q.y + 14} textAnchor="middle" fontSize="6" fill="rgba(107,114,128,0.4)">{q.label}</text>
+      {/* LLM arc label */}
+      <text x="80" y="10" textAnchor="middle" fontSize="6.5" fill="rgba(124,58,237,0.6)">LLM generates</text>
+      {/* Animated LLM arc */}
+      <motion.path
+        d={`M${q.x + 10},${q.y - 6} C70,10 110,10 ${h.x - 12},${h.y - 8}`}
+        fill="none" stroke="#7C3AED" strokeWidth="1.5" strokeDasharray="3 2"
+        animate={arcCtrl}
+        initial={{ pathLength: 0, opacity: 0 }}
+      />
+      {/* Animated strong similarity line */}
+      <motion.path
+        d={`M${h.x},${h.y} L${nearest.x},${nearest.y}`}
+        stroke="#10B981" strokeWidth="1.5" fill="none"
+        animate={lineCtrl}
+        initial={{ pathLength: 0, opacity: 0 }}
+      />
+      {/* Animated score badge */}
+      <motion.g animate={badgeCtrl} initial={{ opacity: 0 }}>
+        <rect x="131" y="17" width="42" height="13" rx="4" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.35)" strokeWidth="0.8" />
+        <text x="152" y="26.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#10B981">sim ≈ 0.89</text>
+      </motion.g>
+      {/* Animated hypothetical dot */}
+      <motion.g animate={dotCtrl} initial={{ scale: 0, opacity: 0 }} style={{ transformOrigin: `${h.x}px ${h.y}px` }}>
+        <circle cx={h.x} cy={h.y} r="6" fill="#7C3AED" />
+        <circle cx={h.x} cy={h.y} r="6" fill="none" stroke="rgba(124,58,237,0.45)" strokeWidth="5" />
+        <text x={h.x + 14} y={h.y + 3} textAnchor="start" fontSize="6.5" fontWeight="700" fill="#7C3AED">{h.label}</text>
+      </motion.g>
+    </svg>
+  );
+}
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+const CONCEPTS = [
+  {
+    pill: "Standard RAG",
+    pillColor: "#F59E0B",
+    pillRgb: "245,158,11",
+    heading: "The Problem",
+    headingColor: "#F59E0B",
+    body: "คำถามของผู้ใช้มักจะสั้นและขาดบริบท (Low-density) ต่างจากเอกสารองค์กรที่มีข้อมูลหนาแน่น ความแตกต่างนี้ทำให้การสืบค้นแบบเดิมมีค่าความคล้ายคลึงต่ำ ระบบจึงดึงข้อมูลที่ไม่ตรงกับความต้องการออกมา",
+    grad: ["#F59E0B", "#EF4444"] as [string, string],
+    rgb: "245,158,11",
+    Diagram: StandardRagDiagram,
+  },
+  {
+    pill: "AiQ HyDE",
+    pillColor: "#7C3AED",
+    pillRgb: "124,58,237",
+    heading: "The Solution",
+    headingColor: "#7C3AED",
+    body: "แทนที่จะใช้คำถามสั้น ๆ ไปค้นหาตรง ๆ ระบบจะให้ AI สร้าง 'คำตอบสมมติที่สมบูรณ์แบบ' ขึ้นมาก่อน แล้วจึงนำคำตอบนั้นไปสืบค้นข้อมูล ซึ่งจะตรงกับกลุ่มเอกสารที่เกี่ยวข้องมากกว่า ทำให้ดึงข้อมูลได้แม่นยำขึ้น",
+    grad: ["#7C3AED", "#10B981"] as [string, string],
+    rgb: "124,58,237",
+    Diagram: HydeDiagram,
+  },
+];
+
+const STATS = [
+  {
+    big: "+20.6%",
+    label: "Performance vs baseline",
+    sub: "เทียบกับการสืบค้นด้วยเวกเตอร์แบบปกติ",
+    color: "#10B981",
+    rgb: "16,185,129",
+    grad: ["#10B981", "#059669"] as [string, string],
+    ghost: "+",
+  },
+  {
+    big: "0.77",
+    label: "Faithfulness score",
+    sub: "เทียบกับระดับ 0.55–0.65 ของ RAG ทั่วไป",
+    color: "#7C3AED",
+    rgb: "124,58,237",
+    grad: ["#7C3AED", "#A855F7"] as [string, string],
+    ghost: "F",
+  },
+  {
+    big: "GraphRAG",
+    label: "Rejected",
+    sub: "ความล่าช้าในการซิงก์ 142 วินาที · HyDE ให้ความแม่นยำสูงกว่าและต้นทุนต่ำกว่า",
+    color: "#F59E0B",
+    rgb: "245,158,11",
+    grad: ["#F59E0B", "#F97316"] as [string, string],
+    ghost: "×",
+  },
+];
+
+// ── Components ────────────────────────────────────────────────────────────────
+
+function ConceptCard({
+  concept,
+  delay,
+}: {
+  concept: (typeof CONCEPTS)[number];
+  delay: number;
+}) {
+  return (
+    <motion.div
+      {...fadeInUp(delay, { distance: DISTANCE.sm, duration: DURATION.med })}
+      style={{
+        flex: 1,
+        minHeight: 0,
+        borderRadius: 16,
+        border: `1px solid rgba(${concept.rgb},0.2)`,
+        background: `rgba(${concept.rgb},0.03)`,
+        padding: "14px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Top accent bar */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: `linear-gradient(90deg, ${concept.grad[0]}, ${concept.grad[1]})`,
+          borderRadius: "16px 16px 0 0",
+        }}
+      />
+
+      {/* Text */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Pill color={concept.pillColor} rgb={concept.pillRgb} fontSize={9} padding="2px 8px">
+            {concept.pill}
+          </Pill>
+          <div style={{ fontSize: "var(--slide-card-heading)", fontWeight: 800, color: concept.headingColor }}>
+            {concept.heading}
           </div>
-          <DocText>{"Exceptions require written approval."}</DocText>
-        </motion.div>
-        <div style={{ ...box, flex: "none" }}>
-          <div style={{ fontSize: 8, color: "#10B981", fontFamily: "monospace" }}>[Policy › IT Security › 2.2]</div>
-          <DocText>{"Network segmentation enforces zone-based traffic filtering."}</DocText>
         </div>
+        <p style={{ fontSize: "var(--slide-body)", color: "#6B7280", margin: 0, lineHeight: 1.6 }}>
+          <ThaiText>{concept.body}</ThaiText>
+        </p>
+      </div>
+
+      {/* Below: SVG scatter visualization */}
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          borderRadius: 10,
+          background: "rgba(0,0,0,0.025)",
+          border: "1px solid rgba(0,0,0,0.07)",
+          padding: "6px 8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+        }}
+      >
+        <concept.Diagram />
       </div>
     </motion.div>
   );
 }
 
-// ── FlowArrow ─────────────────────────────────────────────────────────────
-function FlowArrow({ label, color = "#9CA3AF", traveling = false }: { label?: string; color?: string; traveling?: boolean }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0", flexShrink: 0 }}>
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
-        <div style={{ width: 1, height: 12, background: color }} />
-        {traveling && (
-          <motion.div
-            style={{ position: "absolute", top: 0, left: "50%", marginLeft: -3, width: 6, height: 6, borderRadius: "50%", background: color, boxShadow: `0 0 8px ${color}` }}
-            animate={{ y: [0, 12] }}
-            transition={{ duration: 0.35, repeat: Infinity, ease: "linear" }}
-          />
-        )}
-        <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
-          <path d="M4 6L0 0H8L4 6Z" fill={color} />
-        </svg>
-      </div>
-      {label && (
-        <span style={{ fontSize: 10, fontWeight: 600, color, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
-      )}
-    </div>
-  );
-}
+// ── Slide ─────────────────────────────────────────────────────────────────────
 
-// ── Slide ─────────────────────────────────────────────────────────────────
 export function Slide15() {
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => setTick((s) => (s + 1) % 9), 1100);
-    return () => clearInterval(t);
-  }, []);
-
-  const stageActive = (i: number) => tick === i * 2;
-  const arrowActive = (i: number) => tick === i * 2 + 1;
-
-  function stageGlow(i: number) {
-    const { rgb, color } = STAGE_CFG[i];
-    return stageActive(i)
-      ? { boxShadow: `0 0 0 1.5px ${color}, 0 0 16px rgba(${rgb},0.22)` }
-      : { boxShadow: "0 0 0 0px transparent" };
-  }
-
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader
         label="Aingo"
-        title="Ingestion"
-        highlight="Pipeline."
-        tagline="HybridChunker — structure-aware extraction via Docling"
+        title="HyDE &"
+        highlight="Density Gap."
+        tagline="Bridging the semantic mismatch between queries and enterprise documents"
         marginBottom={20}
       />
 
-      <div style={{ flex: 1, display: "flex", gap: 32, minHeight: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minHeight: 0 }}>
 
-        {/* ── Left: 3 step cards ── */}
-        <div style={{ width: "40%", flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
-          {STEPS.map((step, i) => (
-            <div key={step.num} style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-              <motion.div
-                {...fadeInLeft(stagger(0.28, 0.14, i), { distance: DISTANCE.sm, duration: DURATION.med })}
-                style={{ flex: 1, position: "relative", borderRadius: 16, border: `1px solid rgba(${step.rgb},0.18)`, background: `rgba(${step.rgb},0.03)`, padding: "14px 16px 14px 14px", overflow: "hidden", display: "flex", gap: 14, alignItems: "flex-start" }}
-              >
-                <BigGhostNumber rgb={step.rgb} size={72} opacity={0.07} style={{ position: "absolute", right: 12, bottom: -8, letterSpacing: "-4px" }}>
-                  {step.num}
-                </BigGhostNumber>
-                <IconBadge gradient={step.grad} shadow={`rgba(${step.rgb},0.3)`} size={36} radius={10} style={{ flexShrink: 0, marginTop: 2 }}>
-                  <span style={{ fontSize: 12, fontWeight: 900, color: "white", letterSpacing: "-0.5px" }}>{step.num}</span>
-                </IconBadge>
-                <div style={{ flex: 1, minWidth: 0, position: "relative" }}>
-                  <div style={{ fontSize: "var(--slide-card-heading)", fontWeight: 800, color: "#0A0A0A", lineHeight: 1.2, marginBottom: 6 }}>{step.title}</div>
-                  <p style={{ fontSize: "var(--slide-body)", color: "#6B7280", margin: 0, lineHeight: 1.6 }}>
-                    <ThaiText>{step.body}</ThaiText>
-                  </p>
-                </div>
-                <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, borderRadius: "16px 0 0 16px", background: `linear-gradient(180deg,${step.grad[0]},${step.grad[1]})` }} />
-              </motion.div>
-              {i < STEPS.length - 1 && (
-                <div style={{ display: "flex", justifyContent: "flex-start", paddingLeft: 32 }}>
-                  <FlowArrow color={`rgba(${STEPS[i + 1].rgb},0.45)`} />
-                </div>
-              )}
-            </div>
+        {/* ── Top row: two concept cards ── */}
+        <div style={{ display: "flex", gap: 20, flex: 1, minHeight: 0 }}>
+          {CONCEPTS.map((c, i) => (
+            <ConceptCard key={c.pill} concept={c} delay={stagger(0.28, 0.14, i)} />
           ))}
         </div>
 
-        {/* ── Right: full pipeline, all stages visible ── */}
-        <motion.div
-          {...fadeInRight(0.32, { distance: DISTANCE.sm, duration: DURATION.med })}
-          style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, borderRadius: 18, border: "1px solid rgba(0,0,0,0.07)", background: "rgba(250,250,252,0.8)", padding: "16px 20px", justifyContent: "space-between" }}
-        >
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>
-            Pipeline Visualization
-          </div>
-
-          {/* Stage 0 — Raw Input */}
-          <motion.div animate={stageGlow(0)} transition={{ duration: 0.35 }}
-            style={{ borderRadius: 12, border: "1px solid #E5E7EB", background: "white", padding: "10px 12px", flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <div style={{ width: 26, height: 26, borderRadius: 7, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.25)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" />
-                  <polyline points="14 2 14 8 20 8" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" />
-                </svg>
+        {/* ── Bottom row: 3 stat callout boxes ── */}
+        <div style={{ display: "flex", gap: 16, flex: "0 0 auto" }}>
+          {STATS.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              {...scaleIn(stagger(0.55, 0.12, i), { duration: DURATION.med })}
+              style={{
+                flex: 1,
+                borderRadius: 16,
+                border: `1px solid rgba(${stat.rgb},0.2)`,
+                background: `rgba(${stat.rgb},0.04)`,
+                padding: "16px 20px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <BigGhostNumber
+                rgb={stat.rgb}
+                size={80}
+                opacity={0.06}
+                style={{ position: "absolute", right: 8, bottom: -10, letterSpacing: "-4px" }}
+              >
+                {stat.ghost}
+              </BigGhostNumber>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 3,
+                  borderRadius: "16px 0 0 16px",
+                  background: `linear-gradient(180deg, ${stat.grad[0]}, ${stat.grad[1]})`,
+                }}
+              />
+              <div style={{ position: "relative" }}>
+                <GradientText
+                  from={stat.grad[0]}
+                  to={stat.grad[1]}
+                  style={{ fontSize: 28, fontWeight: 900, lineHeight: 1, display: "block", marginBottom: 4 }}
+                >
+                  {stat.big}
+                </GradientText>
+                <div style={{ fontSize: "var(--slide-card-heading)", fontWeight: 700, color: "#0A0A0A", marginBottom: 4 }}>
+                  {stat.label}
+                </div>
+                <div style={{ fontSize: "var(--slide-body)", color: "#9CA3AF", lineHeight: 1.5 }}>
+                  <ThaiText>{stat.sub}</ThaiText>
+                </div>
               </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#374151" }}>SharePoint / Xhive Document</div>
-                <div style={{ fontSize: 10, color: "#9CA3AF" }}>PDF · DOCX · PPTX · Images</div>
-              </div>
-              <Pill color="#F59E0B" rgb="245,158,11" fontSize={9} padding="2px 7px" style={{ marginLeft: "auto" }}>Raw Input</Pill>
-            </div>
-            {/* Raw text swaps to cut animation on tick 1 */}
-            <AnimatePresence mode="wait">
-              {tick === 1 ? <CutContent /> : <RawContent />}
-            </AnimatePresence>
-          </motion.div>
-
-          <FlowArrow label="Step 01 — Detect boundaries" color="rgba(245,158,11,0.7)" traveling={arrowActive(0)} />
-
-          {/* Stage 1 — Sectioned document */}
-          <motion.div animate={stageGlow(1)} transition={{ duration: 0.35 }}
-            style={{ borderRadius: 12, border: "1px solid rgba(245,158,11,0.25)", background: "rgba(245,158,11,0.03)", padding: "10px 14px", flexShrink: 0 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#F59E0B", marginBottom: 3 }}>§ 1 · Introduction</div>
-                <DocText>{"This document establishes information security policies. All employees must comply."}</DocText>
-                <div style={{ height: 1, background: "rgba(245,158,11,0.2)", marginTop: 5 }} />
-              </div>
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#F59E0B", marginBottom: 3 }}>§ 2 · IT Security Policy</div>
-                <DocText>{"2.1 All users must use MFA. Password rotation mandatory every 90 days."}</DocText>
-                <div style={{ height: 1, background: "rgba(245,158,11,0.2)", marginTop: 5 }} />
-              </div>
-            </div>
-          </motion.div>
-
-          <FlowArrow label="Step 02 — Serialize breadcrumbs" color="rgba(124,58,237,0.7)" traveling={arrowActive(1)} />
-
-          {/* Stage 2 — Breadcrumb chunk (swaps to prepend animation on tick 3) */}
-          <motion.div animate={stageGlow(2)} transition={{ duration: 0.35 }}
-            style={{ borderRadius: 12, border: "1px solid rgba(124,58,237,0.2)", background: "rgba(124,58,237,0.03)", padding: "10px 14px", flexShrink: 0, overflow: "hidden" }}>
-            <AnimatePresence mode="wait">
-              {tick === 3 ? <PrependContent /> : <BreadcrumbContent />}
-            </AnimatePresence>
-          </motion.div>
-
-          <FlowArrow label="Step 03 — Token-aware merging" color="rgba(16,185,129,0.7)" traveling={arrowActive(2)} />
-
-          {/* Stage 3 — Output chunks (swaps to merge animation on tick 5) */}
-          <motion.div animate={stageGlow(3)} transition={{ duration: 0.35 }}
-            style={{ borderRadius: 10, flexShrink: 0, overflow: "hidden" }}>
-            <AnimatePresence mode="wait">
-              {tick === 5 ? <MergeContent /> : <ChunksContent />}
-            </AnimatePresence>
-          </motion.div>
-
-          <FlowArrow label="Vectorize → Qdrant" color="rgba(59,130,246,0.7)" traveling={arrowActive(3)} />
-
-          {/* Stage 4 — Qdrant */}
-          <motion.div animate={stageGlow(4)} transition={{ duration: 0.35 }}
-            style={{ borderRadius: 10, border: "1px solid rgba(59,130,246,0.25)", background: "rgba(59,130,246,0.05)", padding: "8px 14px", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L22 7V17L12 22L2 17V7L12 2Z" stroke="#3B82F6" strokeWidth="1.8" strokeLinejoin="round" />
-                <path d="M12 2V22M2 7L12 12L22 7" stroke="#3B82F6" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#3B82F6" }}>Qdrant Vector Store</div>
-              <div style={{ fontSize: 10, color: "#9CA3AF" }}>Structure-aware embeddings · HNSW index</div>
-            </div>
-            <Pill color="#3B82F6" rgb="59,130,246" fontSize={9} padding="2px 7px" dot style={{ marginLeft: "auto" }}>Indexed</Pill>
-          </motion.div>
-        </motion.div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </SlideShell>
   );

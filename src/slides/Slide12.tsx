@@ -54,6 +54,8 @@ function FlowNode({
   return (
     <motion.div
       {...fadeIn(delay, { duration: DURATION.med })}
+      whileHover={{ scale: 1.05, y: -4, boxShadow: `0 16px 40px rgba(${s.rgb},0.4)`, zIndex: 20 }}
+      whileTap={{ scale: 0.95 }}
       style={{
         width: 188,
         height: 188,
@@ -69,6 +71,7 @@ function FlowNode({
         flexShrink: 0,
         position: "relative",
         zIndex: 10,
+        cursor: "pointer",
       }}
     >
       <div ref={anchorRef}>

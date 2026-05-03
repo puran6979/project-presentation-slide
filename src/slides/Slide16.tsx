@@ -1,279 +1,323 @@
-import { motion, useAnimationControls } from "framer-motion";
-import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { useRef, type ReactElement } from "react";
 import {
-  BigGhostNumber,
+  AnimatedBeam,
   GradientText,
+  IconBadge,
   Pill,
   SlideHeader,
   SlideShell,
+  DotPoint,
+  QueryIcon,
+  HydeIcon,
+  RetIcon,
+  ReactAgentIcon,
+  ToolIcon,
+  AnswerIcon,
   ThaiText,
 } from "../components/index.ts";
-import { DISTANCE, DURATION, fadeInUp, scaleIn, stagger } from "../lib/motion.ts";
-
-const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+import {
+  DISTANCE,
+  DURATION,
+  fadeIn,
+  fadeInUp,
+  scaleIn,
+  stagger,
+} from "../lib/motion.ts";
 
 const GLOWS = [
-  { top: -200, right: -120, size: 680, color: "124,58,237", opacity: 0.1 },
-  { bottom: -160, left: -80, size: 540, color: "16,185,129", opacity: 0.08 },
+  { top: -180, right: -100, size: 700, color: "236,72,153", opacity: 0.1 },
+  { bottom: -140, left: -60, size: 580, color: "124,58,237", opacity: 0.09 },
+  { top: "30%", left: "35%", size: 420, color: "59,130,246", opacity: 0.06 },
 ];
 
-// ── Mock embedding scatter data ──────────────────────────────────────────────
+const BEAM_STYLE = {
+  opacity: 0.16,
+  highlightOpacity: 0.52,
+  width: 1.9,
+};
 
-/** Document cluster — same in both diagrams */
-const DOC_POINTS = [
-  { x: 154, y: 38, label: "Policy §2.1" },
-  { x: 168, y: 52, label: "Access §3.4" },
-  { x: 148, y: 62, label: "Password §1.2" },
-  { x: 162, y: 28, label: "Compliance" },
-  { x: 142, y: 74, label: "Network §5" },
-];
+const BEAM_TIMING = {
+  duration: 0.95,
+  repeatDelay: 4.55,
+};
 
-const STANDARD_QUERY = { x: 28, y: 68, label: "\"find security policy\"" };
-const HYPOTHETICAL   = { x: 157, y: 55, label: "Hypothetical Answer" };
-
-// ── SVG Scatter Components ────────────────────────────────────────────────────
-
-function ScatterGrid() {
-  return (
-    <>
-      {[40, 80, 120].map((y) => (
-        <line key={`hy${y}`} x1="10" y1={y} x2="190" y2={y} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5" />
-      ))}
-      {[50, 100, 150].map((x) => (
-        <line key={`vx${x}`} x1={x} y1="10" x2={x} y2="110" stroke="rgba(0,0,0,0.05)" strokeWidth="0.5" />
-      ))}
-      <text x="100" y="125" textAnchor="middle" fontSize="7" fill="rgba(0,0,0,0.25)">semantic dimension 1</text>
-      <text x="6" y="65" textAnchor="middle" fontSize="7" fill="rgba(0,0,0,0.25)" transform="rotate(-90,6,65)">dim 2</text>
-    </>
-  );
-}
-
-function DocCluster() {
-  return (
-    <>
-      <ellipse cx="156" cy="52" rx="28" ry="26" fill="rgba(59,130,246,0.06)" stroke="rgba(59,130,246,0.15)" strokeWidth="1" strokeDasharray="3 2" />
-      <text x="156" y="90" textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(59,130,246,0.7)">Document Cluster</text>
-      {DOC_POINTS.map((p) => (
-        <g key={p.label}>
-          <circle cx={p.x} cy={p.y} r="4.5" fill="#3B82F6" opacity="0.85" />
-          <circle cx={p.x} cy={p.y} r="4.5" fill="none" stroke="rgba(59,130,246,0.4)" strokeWidth="3" />
-        </g>
-      ))}
-    </>
-  );
-}
-
-function StandardRagDiagram() {
-  const lineCtrl  = useAnimationControls();
-  const badgeCtrl = useAnimationControls();
-  const queryCtrl = useAnimationControls();
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      while (alive) {
-        lineCtrl.set({ pathLength: 0, opacity: 0 });
-        badgeCtrl.set({ opacity: 0, scale: 0.85 });
-        // pulse query dot
-        queryCtrl.start({ scale: [1, 1.3, 1], transition: { duration: 0.5 } });
-        await wait(200);
-        if (!alive) break;
-        // weak similarity line draws in
-        await lineCtrl.start({ pathLength: 1, opacity: 0.75, transition: { duration: 1.2, ease: "easeOut" } });
-        if (!alive) break;
-        // score badge pops in
-        await badgeCtrl.start({ opacity: 1, scale: 1, transition: { duration: 0.35, type: "spring", bounce: 0.4 } });
-        if (!alive) break;
-        await wait(1800);
-        if (!alive) break;
-        await Promise.all([
-          lineCtrl.start({ opacity: 0, transition: { duration: 0.45 } }),
-          badgeCtrl.start({ opacity: 0, scale: 0.85, transition: { duration: 0.35 } }),
-        ]);
-        await wait(500);
-      }
-    })();
-    return () => { alive = false; };
-  }, [lineCtrl, badgeCtrl, queryCtrl]);
-
-  const q = STANDARD_QUERY;
-  const nearest = DOC_POINTS[4];
-  return (
-    <svg viewBox="0 0 200 130" style={{ width: "100%", height: "100%", overflow: "visible" }}>
-      <ScatterGrid />
-      <DocCluster />
-      <ellipse cx={q.x} cy={q.y} rx="22" ry="18" fill="rgba(245,158,11,0.06)" stroke="rgba(245,158,11,0.2)" strokeWidth="1" strokeDasharray="3 2" />
-      <text x={q.x} y={q.y + 28} textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(245,158,11,0.7)">Query Space</text>
-      {/* Animated weak similarity line */}
-      <motion.path
-        d={`M${q.x + 10},${q.y - 4} L${nearest.x - 6},${nearest.y}`}
-        stroke="#EF4444" strokeWidth="1.5" strokeDasharray="4 2" fill="none"
-        animate={lineCtrl}
-        initial={{ pathLength: 0, opacity: 0 }}
-      />
-      {/* Animated score badge */}
-      <motion.g animate={badgeCtrl} initial={{ opacity: 0, scale: 0.85 }} style={{ transformOrigin: "89px 61px" }}>
-        <rect x="68" y="54" width="42" height="13" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.3)" strokeWidth="0.8" />
-        <text x="89" y="63.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#EF4444">sim ≈ 0.31</text>
-      </motion.g>
-      {/* Animated query dot */}
-      <motion.g animate={queryCtrl} style={{ transformOrigin: `${q.x}px ${q.y}px` }}>
-        <circle cx={q.x} cy={q.y} r="5.5" fill="#F59E0B" />
-        <circle cx={q.x} cy={q.y} r="5.5" fill="none" stroke="rgba(245,158,11,0.4)" strokeWidth="4" />
-      </motion.g>
-      <text x={q.x} y={q.y - 10} textAnchor="middle" fontSize="6.5" fontWeight="700" fill="#F59E0B">{q.label}</text>
-    </svg>
-  );
-}
-
-function HydeDiagram() {
-  const arcCtrl   = useAnimationControls();
-  const dotCtrl   = useAnimationControls();
-  const lineCtrl  = useAnimationControls();
-  const badgeCtrl = useAnimationControls();
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      while (alive) {
-        arcCtrl.set({ pathLength: 0, opacity: 0 });
-        dotCtrl.set({ scale: 0, opacity: 0 });
-        lineCtrl.set({ pathLength: 0, opacity: 0 });
-        badgeCtrl.set({ opacity: 0 });
-        await wait(300);
-        if (!alive) break;
-        // 1. LLM arc draws (query → hypothetical)
-        await arcCtrl.start({ pathLength: 1, opacity: 0.7, transition: { duration: 0.9, ease: "easeInOut" } });
-        if (!alive) break;
-        // 2. Hypothetical dot springs in
-        await dotCtrl.start({ scale: 1, opacity: 1, transition: { duration: 0.4, type: "spring", bounce: 0.55 } });
-        if (!alive) break;
-        // 3. Strong similarity line draws
-        await lineCtrl.start({ pathLength: 1, opacity: 0.85, transition: { duration: 0.65, ease: "easeOut" } });
-        if (!alive) break;
-        // 4. Score badge fades in
-        await badgeCtrl.start({ opacity: 1, transition: { duration: 0.3 } });
-        if (!alive) break;
-        await wait(2200);
-        if (!alive) break;
-        await Promise.all([
-          arcCtrl.start({ opacity: 0, transition: { duration: 0.4 } }),
-          dotCtrl.start({ scale: 0, opacity: 0, transition: { duration: 0.35 } }),
-          lineCtrl.start({ opacity: 0, transition: { duration: 0.4 } }),
-          badgeCtrl.start({ opacity: 0, transition: { duration: 0.3 } }),
-        ]);
-        await wait(400);
-      }
-    })();
-    return () => { alive = false; };
-  }, [arcCtrl, dotCtrl, lineCtrl, badgeCtrl]);
-
-  const q = STANDARD_QUERY;
-  const h = HYPOTHETICAL;
-  const nearest = DOC_POINTS[0];
-  return (
-    <svg viewBox="0 0 200 130" style={{ width: "100%", height: "100%", overflow: "visible" }}>
-      <ScatterGrid />
-      <DocCluster />
-      {/* Faded original query (always visible) */}
-      <circle cx={q.x} cy={q.y} r="4" fill="rgba(107,114,128,0.4)" />
-      <text x={q.x} y={q.y - 8} textAnchor="middle" fontSize="6" fill="rgba(107,114,128,0.5)">Original Query</text>
-      <text x={q.x} y={q.y + 14} textAnchor="middle" fontSize="6" fill="rgba(107,114,128,0.4)">{q.label}</text>
-      {/* LLM arc label */}
-      <text x="80" y="10" textAnchor="middle" fontSize="6.5" fill="rgba(124,58,237,0.6)">LLM generates</text>
-      {/* Animated LLM arc */}
-      <motion.path
-        d={`M${q.x + 10},${q.y - 6} C70,10 110,10 ${h.x - 12},${h.y - 8}`}
-        fill="none" stroke="#7C3AED" strokeWidth="1.5" strokeDasharray="3 2"
-        animate={arcCtrl}
-        initial={{ pathLength: 0, opacity: 0 }}
-      />
-      {/* Animated strong similarity line */}
-      <motion.path
-        d={`M${h.x},${h.y} L${nearest.x},${nearest.y}`}
-        stroke="#10B981" strokeWidth="1.5" fill="none"
-        animate={lineCtrl}
-        initial={{ pathLength: 0, opacity: 0 }}
-      />
-      {/* Animated score badge */}
-      <motion.g animate={badgeCtrl} initial={{ opacity: 0 }}>
-        <rect x="131" y="17" width="42" height="13" rx="4" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.35)" strokeWidth="0.8" />
-        <text x="152" y="26.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#10B981">sim ≈ 0.89</text>
-      </motion.g>
-      {/* Animated hypothetical dot */}
-      <motion.g animate={dotCtrl} initial={{ scale: 0, opacity: 0 }} style={{ transformOrigin: `${h.x}px ${h.y}px` }}>
-        <circle cx={h.x} cy={h.y} r="6" fill="#7C3AED" />
-        <circle cx={h.x} cy={h.y} r="6" fill="none" stroke="rgba(124,58,237,0.45)" strokeWidth="5" />
-        <text x={h.x + 14} y={h.y + 3} textAnchor="start" fontSize="6.5" fontWeight="700" fill="#7C3AED">{h.label}</text>
-      </motion.g>
-    </svg>
-  );
-}
-
-// ── Data ──────────────────────────────────────────────────────────────────────
-
-const CONCEPTS = [
+const FLOW_STEPS = [
   {
-    pill: "Standard RAG",
-    pillColor: "#F59E0B",
-    pillRgb: "245,158,11",
-    heading: "The Problem",
-    headingColor: "#F59E0B",
-    body: "คำถามของผู้ใช้มักจะสั้นและขาดบริบท (Low-density) ต่างจากเอกสารองค์กรที่มีข้อมูลหนาแน่น ความแตกต่างนี้ทำให้การสืบค้นแบบเดิมมีค่าความคล้ายคลึงต่ำ ระบบจึงดึงข้อมูลที่ไม่ตรงกับความต้องการออกมา",
-    grad: ["#F59E0B", "#EF4444"] as [string, string],
-    rgb: "245,158,11",
-    Diagram: StandardRagDiagram,
+    step: 1,
+    label: "Parse",
+    color: "#EC4899",
+    rgb: "236,72,153",
+    left: "56%",
+    top: "18%",
+    delay: 0.76,
   },
   {
-    pill: "AiQ HyDE",
-    pillColor: "#7C3AED",
-    pillRgb: "124,58,237",
-    heading: "The Solution",
-    headingColor: "#7C3AED",
-    body: "แทนที่จะใช้คำถามสั้น ๆ ไปค้นหาตรง ๆ ระบบจะให้ AI สร้าง 'คำตอบสมมติที่สมบูรณ์แบบ' ขึ้นมาก่อน แล้วจึงนำคำตอบนั้นไปสืบค้นข้อมูล ซึ่งจะตรงกับกลุ่มเอกสารที่เกี่ยวข้องมากกว่า ทำให้ดึงข้อมูลได้แม่นยำขึ้น",
-    grad: ["#7C3AED", "#10B981"] as [string, string],
+    step: 2,
+    label: "Rewrite",
+    color: "#7C3AED",
     rgb: "124,58,237",
-    Diagram: HydeDiagram,
+    left: "56%",
+    top: "40%",
+    delay: 0.84,
   },
-];
-
-const STATS = [
   {
-    big: "+20.6%",
-    label: "Performance vs baseline",
-    sub: "เทียบกับการสืบค้นด้วยเวกเตอร์แบบปกติ",
+    step: 3,
+    label: "Tool Call",
+    color: "#F59E0B",
+    rgb: "245,158,11",
+    left: "56%",
+    top: "60%",
+    delay: 0.92,
+  },
+  {
+    step: 4,
+    label: "Retrieve",
+    color: "#3B82F6",
+    rgb: "59,130,246",
+    left: "56%",
+    top: "80%",
+    delay: 1.0,
+  },
+  {
+    step: 5,
+    label: "Context",
+    color: "#EC4899",
+    rgb: "236,72,153",
+    left: "22%",
+    top: "50%",
+    delay: 1.08,
+  },
+  {
+    step: 6,
+    label: "Generate",
     color: "#10B981",
     rgb: "16,185,129",
-    grad: ["#10B981", "#059669"] as [string, string],
-    ghost: "+",
+    left: "80%",
+    top: "25%",
+    delay: 1.16,
   },
-  {
-    big: "0.77",
-    label: "Faithfulness score",
-    sub: "เทียบกับระดับ 0.55–0.65 ของ RAG ทั่วไป",
+] as const;
+
+function BeamStepTag({
+  step,
+  label,
+  color,
+  rgb,
+  left,
+  top,
+  delay,
+}: {
+  step: number;
+  label: string;
+  color: string;
+  rgb: string;
+  left: string;
+  top: string;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      {...fadeIn(delay, { duration: DURATION.base })}
+      style={{
+        position: "absolute",
+        left,
+        top,
+        transform: "translate(-50%, -50%)",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "4px 8px 4px 4px",
+        borderRadius: 999,
+        border: `1px solid rgba(${rgb},0.16)`,
+        background: "rgba(255,255,255,0.9)",
+        boxShadow: `0 8px 18px rgba(${rgb},0.08)`,
+        backdropFilter: "blur(4px)",
+        pointerEvents: "none",
+        whiteSpace: "nowrap",
+        zIndex: 2,
+      }}
+    >
+      <div
+        style={{
+          minWidth: 18,
+          height: 18,
+          borderRadius: 999,
+          background: color,
+          color: "#FFFFFF",
+          fontSize: 8,
+          fontWeight: 900,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          paddingLeft: 5,
+          paddingRight: 5,
+          boxShadow: `0 4px 10px rgba(${rgb},0.22)`,
+        }}
+      >
+        {step}
+      </div>
+      <span
+        style={{
+          fontSize: 8.5,
+          fontWeight: 800,
+          color: "#374151",
+          letterSpacing: "0.02em",
+        }}
+      >
+        {label}
+      </span>
+    </motion.div>
+  );
+}
+
+// ── Node data ─────────────────────────────────────────────────────────────────
+const NS = {
+  query: {
+    color: "#06B6D4",
+    rgb: "6,182,212",
+    grad: ["#06B6D4", "#3B82F6"] as [string, string],
+    label: "User Query",
+    sub: "NestJS → SSE",
+  },
+  hyde: {
     color: "#7C3AED",
     rgb: "124,58,237",
     grad: ["#7C3AED", "#A855F7"] as [string, string],
-    ghost: "F",
+    label: "HyDE Expansion",
+    sub: "LLM rewrite",
   },
-  {
-    big: "GraphRAG",
-    label: "Rejected",
-    sub: "ความล่าช้าในการซิงก์ 142 วินาที · HyDE ให้ความแม่นยำสูงกว่าและต้นทุนต่ำกว่า",
+  retrieval: {
+    color: "#3B82F6",
+    rgb: "59,130,246",
+    grad: ["#3B82F6", "#06B6D4"] as [string, string],
+    label: "Qdrant Retrieval",
+    sub: "k=8 · HNSW",
+  },
+  react: {
+    color: "#EC4899",
+    rgb: "236,72,153",
+    grad: ["#EC4899", "#7C3AED"] as [string, string],
+    label: "ReAct Agent",
+    sub: "CrewAI · Reason→Act",
+  },
+  tools: {
     color: "#F59E0B",
     rgb: "245,158,11",
     grad: ["#F59E0B", "#F97316"] as [string, string],
-    ghost: "×",
+    label: "MCP Tools",
+    sub: "web · doc search",
   },
-];
+  answer: {
+    color: "#10B981",
+    rgb: "16,185,129",
+    grad: ["#10B981", "#059669"] as [string, string],
+    label: "Answer + Cites",
+    sub: "streamed via SSE",
+  },
+};
 
-// ── Components ────────────────────────────────────────────────────────────────
+type NodeId = keyof typeof NS;
+const ICONS: Record<NodeId, () => ReactElement> = {
+  query: QueryIcon,
+  hyde: HydeIcon,
+  retrieval: RetIcon,
+  react: ReactAgentIcon,
+  tools: ToolIcon,
+  answer: AnswerIcon,
+};
 
-function ConceptCard({
-  concept,
+// ── Node component — NO scale animation so getBoundingClientRect stays accurate ──
+function FlowNode({
+  id,
+  anchorRef,
+  isCenter = false,
+  delay = 0,
+}: {
+  id: NodeId;
+  anchorRef: React.RefObject<HTMLDivElement | null>;
+  isCenter?: boolean;
+  delay?: number;
+}) {
+  const s = NS[id];
+  const Icon = ICONS[id];
+  return (
+    <motion.div
+      {...fadeIn(delay, { duration: DURATION.med })}
+      style={{
+        width: isCenter ? 108 : 82,
+        height: isCenter ? 108 : 82,
+        borderRadius: isCenter ? 26 : 20,
+        border: `1.5px solid rgba(${s.rgb},${isCenter ? 0.4 : 0.28})`,
+        background: isCenter
+          ? `linear-gradient(135deg, rgba(${s.rgb},0.18), rgba(${s.rgb},0.06))`
+          : `rgba(${s.rgb},0.06)`,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: isCenter ? 7 : 5,
+        boxShadow: isCenter
+          ? `0 0 0 4px rgba(${s.rgb},0.12), 0 8px 32px rgba(${s.rgb},0.2)`
+          : `0 4px 16px rgba(${s.rgb},0.1)`,
+        flexShrink: 0,
+        position: "relative",
+        zIndex: 1,
+      }}
+    >
+      <div ref={anchorRef}>
+        <IconBadge
+          gradient={s.grad}
+          shadow={`rgba(${s.rgb},0.4)`}
+          size={isCenter ? 46 : 32}
+          radius={isCenter ? 13 : 9}
+        >
+          <Icon />
+        </IconBadge>
+      </div>
+      <div style={{ textAlign: "center", paddingLeft: 4, paddingRight: 4 }}>
+        <div
+          style={{
+            fontSize: isCenter ? 9.5 : 8,
+            fontWeight: 800,
+            color: "#111827",
+            lineHeight: 1.2,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {s.label}
+        </div>
+        {isCenter && (
+          <div
+            style={{
+              fontSize: 7.5,
+              color: "#9CA3AF",
+              marginTop: 2,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {s.sub}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Annotation card ────────────────────────────────────────────────────────────
+function AnnotationCard({
+  title,
+  color,
+  rgb,
+  grad,
+  points,
   delay,
 }: {
-  concept: (typeof CONCEPTS)[number];
+  title: string;
+  color: string;
+  rgb: string;
+  grad: [string, string];
+  points: string[];
   delay: number;
 }) {
   return (
@@ -281,19 +325,17 @@ function ConceptCard({
       {...fadeInUp(delay, { distance: DISTANCE.sm, duration: DURATION.med })}
       style={{
         flex: 1,
-        minHeight: 0,
         borderRadius: 16,
-        border: `1px solid rgba(${concept.rgb},0.2)`,
-        background: `rgba(${concept.rgb},0.03)`,
+        border: `1px solid rgba(${rgb},0.2)`,
+        background: `rgba(${rgb},0.03)`,
         padding: "14px 16px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
         position: "relative",
         overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
       }}
     >
-      {/* Top accent bar */}
       <div
         style={{
           position: "absolute",
@@ -301,124 +343,384 @@ function ConceptCard({
           left: 0,
           right: 0,
           height: 3,
-          background: `linear-gradient(90deg, ${concept.grad[0]}, ${concept.grad[1]})`,
+          background: `linear-gradient(90deg,${grad[0]},${grad[1]})`,
           borderRadius: "16px 16px 0 0",
         }}
       />
-
-      {/* Text */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Pill color={concept.pillColor} rgb={concept.pillRgb} fontSize={9} padding="2px 8px">
-            {concept.pill}
-          </Pill>
-          <div style={{ fontSize: "var(--slide-card-heading)", fontWeight: 800, color: concept.headingColor }}>
-            {concept.heading}
-          </div>
-        </div>
-        <p style={{ fontSize: "var(--slide-body)", color: "#6B7280", margin: 0, lineHeight: 1.6 }}>
-          <ThaiText>{concept.body}</ThaiText>
-        </p>
-      </div>
-
-      {/* Below: SVG scatter visualization */}
       <div
         style={{
-          flex: 1,
-          minHeight: 0,
-          borderRadius: 10,
-          background: "rgba(0,0,0,0.025)",
-          border: "1px solid rgba(0,0,0,0.07)",
-          padding: "6px 8px",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 3,
+          background: `linear-gradient(180deg,${grad[0]},${grad[1]})`,
+          borderRadius: "16px 0 0 16px",
+        }}
+      />
+      <div style={{ paddingLeft: 4, paddingTop: 4 }}>
+        <Pill color={color} rgb={rgb} fontSize={9} padding="2px 8px">
+          {title}
+        </Pill>
+      </div>
+      <div
+        style={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
+          flexDirection: "column",
+          gap: 6,
+          paddingLeft: 4,
         }}
       >
-        <concept.Diagram />
+        {points.map((pt) => (
+          <div
+            key={pt}
+            style={{ display: "flex", gap: 8, alignItems: "flex-start" }}
+          >
+            <div
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: `linear-gradient(135deg,${grad[0]},${grad[1]})`,
+                flexShrink: 0,
+                marginTop: 5,
+              }}
+            />
+            <p
+              style={{
+                fontSize: "var(--slide-body)",
+                color: "#6B7280",
+                margin: 0,
+                lineHeight: 1.6,
+              }}
+            >
+              {pt}
+            </p>
+          </div>
+        ))}
       </div>
     </motion.div>
   );
 }
 
 // ── Slide ─────────────────────────────────────────────────────────────────────
-
 export function Slide16() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const queryRef = useRef<HTMLDivElement>(null);
+  const hydeRef = useRef<HTMLDivElement>(null);
+  const retRef = useRef<HTMLDivElement>(null);
+  const reactRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
+
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader
         label="Aingo"
-        title="HyDE &"
-        highlight="Density Gap."
-        tagline="Bridging the semantic mismatch between queries and enterprise documents"
-        marginBottom={20}
+        title="AI Engine"
+        highlight="ReAct Flow."
+        tagline="Linear Grid Pipeline · Reason→Act loop · HyDE query expansion · MCP tool calling"
+        marginBottom={18}
       />
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minHeight: 0 }}>
+      <div style={{ flex: 1, display: "flex", gap: 28, minHeight: 0 }}>
+        {/* ── Left: beam diagram using grid layout ── */}
+        <div
+          ref={containerRef}
+          style={{
+            flex: "0 0 54%",
+            position: "relative",
+            isolation: "isolate",
+            borderRadius: 20,
+            border: "1px solid rgba(0,0,0,0.07)",
+            background: "rgba(250,250,252,0.7)",
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            gridTemplateRows: "repeat(5, 1fr)",
+            alignItems: "center",
+            justifyItems: "center",
+            padding: "20px 0",
+            gap: 0,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ gridColumn: 2, gridRow: 1 }}>
+            <FlowNode id="query" anchorRef={queryRef} delay={0.2} />
+          </div>
+          <div style={{ gridColumn: 2, gridRow: 2, zIndex: 10 }}>
+            <FlowNode id="react" anchorRef={reactRef} isCenter delay={0.28} />
+          </div>
+          <div style={{ gridColumn: 3, gridRow: 2 }}>
+            <FlowNode id="answer" anchorRef={answerRef} delay={0.34} />
+          </div>
+          <div style={{ gridColumn: 2, gridRow: 3 }}>
+            <FlowNode id="hyde" anchorRef={hydeRef} delay={0.4} />
+          </div>
+          <div style={{ gridColumn: 2, gridRow: 4 }}>
+            <FlowNode id="tools" anchorRef={toolsRef} delay={0.46} />
+          </div>
+          <div style={{ gridColumn: 2, gridRow: 5 }}>
+            <FlowNode id="retrieval" anchorRef={retRef} delay={0.52} />
+          </div>
 
-        {/* ── Top row: two concept cards ── */}
-        <div style={{ display: "flex", gap: 20, flex: 1, minHeight: 0 }}>
-          {CONCEPTS.map((c, i) => (
-            <ConceptCard key={c.pill} concept={c} delay={stagger(0.28, 0.14, i)} />
+          {/* ── Beams (overlay) ── */}
+          <AnimatedBeam
+            containerRef={containerRef}
+            fromRef={queryRef}
+            toRef={reactRef}
+            curvature={0}
+            gradientStartColor="#06B6D4"
+            gradientStopColor="#EC4899"
+            pathColor="#EC4899"
+            pathOpacity={BEAM_STYLE.opacity}
+            gradientOpacity={BEAM_STYLE.highlightOpacity}
+            pathWidth={BEAM_STYLE.width}
+            duration={BEAM_TIMING.duration}
+            delay={0}
+            repeatDelay={BEAM_TIMING.repeatDelay}
+            showArrow
+          />
+
+          <AnimatedBeam
+            containerRef={containerRef}
+            fromRef={reactRef}
+            toRef={hydeRef}
+            curvature={0}
+            gradientStartColor="#EC4899"
+            gradientStopColor="#7C3AED"
+            pathColor="#7C3AED"
+            pathOpacity={BEAM_STYLE.opacity}
+            gradientOpacity={BEAM_STYLE.highlightOpacity}
+            pathWidth={BEAM_STYLE.width}
+            duration={BEAM_TIMING.duration}
+            delay={0.5}
+            repeatDelay={BEAM_TIMING.repeatDelay}
+            showArrow
+          />
+
+          <AnimatedBeam
+            containerRef={containerRef}
+            fromRef={hydeRef}
+            toRef={toolsRef}
+            curvature={0}
+            gradientStartColor="#7C3AED"
+            gradientStopColor="#F59E0B"
+            pathColor="#F59E0B"
+            pathOpacity={BEAM_STYLE.opacity}
+            gradientOpacity={BEAM_STYLE.highlightOpacity}
+            pathWidth={BEAM_STYLE.width}
+            duration={BEAM_TIMING.duration}
+            delay={1.0}
+            repeatDelay={BEAM_TIMING.repeatDelay}
+            showArrow
+          />
+
+          <AnimatedBeam
+            containerRef={containerRef}
+            fromRef={toolsRef}
+            toRef={retRef}
+            curvature={0}
+            gradientStartColor="#F59E0B"
+            gradientStopColor="#3B82F6"
+            pathColor="#3B82F6"
+            pathOpacity={BEAM_STYLE.opacity}
+            gradientOpacity={BEAM_STYLE.highlightOpacity}
+            pathWidth={BEAM_STYLE.width}
+            duration={BEAM_TIMING.duration}
+            delay={1.5}
+            repeatDelay={BEAM_TIMING.repeatDelay}
+            showArrow
+          />
+
+          <AnimatedBeam
+            containerRef={containerRef}
+            fromRef={retRef}
+            toRef={reactRef}
+            curvatureX={-160}
+            gradientStartColor="#3B82F6"
+            gradientStopColor="#EC4899"
+            pathColor="#DB2777"
+            pathOpacity={BEAM_STYLE.opacity}
+            gradientOpacity={BEAM_STYLE.highlightOpacity}
+            pathWidth={BEAM_STYLE.width}
+            duration={BEAM_TIMING.duration}
+            delay={2.0}
+            repeatDelay={BEAM_TIMING.repeatDelay}
+            showArrow
+          />
+
+          <AnimatedBeam
+            containerRef={containerRef}
+            fromRef={reactRef}
+            toRef={answerRef}
+            curvature={0}
+            gradientStartColor="#EC4899"
+            gradientStopColor="#10B981"
+            pathColor="#10B981"
+            pathOpacity={BEAM_STYLE.opacity}
+            gradientOpacity={BEAM_STYLE.highlightOpacity}
+            pathWidth={BEAM_STYLE.width}
+            duration={BEAM_TIMING.duration}
+            delay={2.5}
+            repeatDelay={BEAM_TIMING.repeatDelay}
+            showArrow
+          />
+
+          {FLOW_STEPS.map((step) => (
+            <BeamStepTag key={step.step} {...step} />
           ))}
+
+          {/* Loop label */}
+          <motion.div
+            {...fadeIn(0.7, { duration: 0.6 })}
+            style={{
+              position: "absolute",
+              left: "18%",
+              top: "55%",
+              fontSize: 8,
+              color: "#9CA3AF",
+              letterSpacing: "0.09em",
+              textTransform: "uppercase",
+              background: "rgba(255,255,255,0.9)",
+              padding: "3px 8px",
+              borderRadius: 20,
+              border: "1px solid rgba(236,72,153,0.18)",
+              pointerEvents: "none",
+              backdropFilter: "blur(4px)",
+              zIndex: 2,
+            }}
+          >
+            iterates until confident
+          </motion.div>
         </div>
 
-        {/* ── Bottom row: 3 stat callout boxes ── */}
-        <div style={{ display: "flex", gap: 16, flex: "0 0 auto" }}>
-          {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              {...scaleIn(stagger(0.55, 0.12, i), { duration: DURATION.med })}
-              style={{
-                flex: 1,
-                borderRadius: 16,
-                border: `1px solid rgba(${stat.rgb},0.2)`,
-                background: `rgba(${stat.rgb},0.04)`,
-                padding: "16px 20px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <BigGhostNumber
-                rgb={stat.rgb}
-                size={80}
-                opacity={0.06}
-                style={{ position: "absolute", right: 8, bottom: -10, letterSpacing: "-4px" }}
-              >
-                {stat.ghost}
-              </BigGhostNumber>
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 3,
-                  borderRadius: "16px 0 0 16px",
-                  background: `linear-gradient(180deg, ${stat.grad[0]}, ${stat.grad[1]})`,
-                }}
-              />
-              <div style={{ position: "relative" }}>
-                <GradientText
-                  from={stat.grad[0]}
-                  to={stat.grad[1]}
-                  style={{ fontSize: 28, fontWeight: 900, lineHeight: 1, display: "block", marginBottom: 4 }}
-                >
-                  {stat.big}
-                </GradientText>
-                <div style={{ fontSize: "var(--slide-card-heading)", fontWeight: 700, color: "#0A0A0A", marginBottom: 4 }}>
-                  {stat.label}
-                </div>
-                <div style={{ fontSize: "var(--slide-body)", color: "#9CA3AF", lineHeight: 1.5 }}>
-                  <ThaiText>{stat.sub}</ThaiText>
-                </div>
+        {/* ── Right: redesigned panel ── */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            minHeight: 0,
+          }}
+        >
+          {/* ── Card 1: ReAct Pattern ── */}
+          <motion.div
+            {...fadeInUp(0.36, { distance: 16, duration: DURATION.med })}
+            style={{
+              flex: 1,
+              borderRadius: 18,
+              border: "1px solid rgba(236,72,153,0.18)",
+              background: "linear-gradient(135deg, rgba(236,72,153,0.06) 0%, rgba(124,58,237,0.04) 100%)",
+              padding: "14px 16px",
+              position: "relative",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            {/* top gradient bar */}
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#EC4899,#7C3AED)", borderRadius: "18px 18px 0 0" }} />
+            {/* header row */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 2 }}>
+              <IconBadge gradient={["#EC4899", "#7C3AED"]} shadow="rgba(236,72,153,0.35)" size={32} radius={9}>
+                <ReactAgentIcon />
+              </IconBadge>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>ReAct Pattern</div>
+                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>Reason → Act → Observe</div>
               </div>
-            </motion.div>
-          ))}
+              <Pill color="#EC4899" rgb="236,72,153" fontSize={8} padding="2px 8px" style={{ marginLeft: "auto" }}>CrewAI</Pill>
+            </div>
+            {/* bullets */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {[
+                "สลับกระบวนการระหว่าง ความคิด → การกระทำ → การสังเกต",
+                "จัดลำดับข้อมูลที่สืบค้นมาใหม่ (Re-rank) ในทุกรอบการให้เหตุผล",
+                "สิ้นสุดกระบวนการเมื่อได้ผลลัพธ์ถึงเกณฑ์ความมั่นใจที่ตั้งไว้",
+              ].map((pt) => (
+                <DotPoint key={pt} gradient={["#EC4899", "#7C3AED"]}>
+                  <ThaiText>{pt}</ThaiText>
+                </DotPoint>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* ── Card 2: MCP Tools ── */}
+          <motion.div
+            {...fadeInUp(0.46, { distance: 16, duration: DURATION.med })}
+            style={{
+              flex: 1,
+              borderRadius: 18,
+              border: "1px solid rgba(245,158,11,0.18)",
+              background: "linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(249,115,22,0.04) 100%)",
+              padding: "14px 16px",
+              position: "relative",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#F59E0B,#F97316)", borderRadius: "18px 18px 0 0" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 2 }}>
+              <IconBadge gradient={["#F59E0B", "#F97316"]} shadow="rgba(245,158,11,0.35)" size={32} radius={9}>
+                <ToolIcon />
+              </IconBadge>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>MCP Tools</div>
+                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>Model Context Protocol</div>
+              </div>
+              <Pill color="#F59E0B" rgb="245,158,11" fontSize={8} padding="2px 8px" style={{ marginLeft: "auto" }}>Custom Tools</Pill>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {[
+                "สร้างมาตรฐานการเชื่อมต่อกับเครื่องมือภายนอกผ่านโปรโตคอล",
+                "ช่วยให้ระบบสามารถเลือกอ่านข้อมูลเชิงโครงสร้างเชิงลึกได้",
+                "เสริมความสามารถให้ AI Agent ด้วยเครื่องมือค้นหาเอกสารเฉพาะทาง",
+              ].map((pt) => (
+                <DotPoint key={pt} gradient={["#F59E0B", "#F97316"]}>
+                  <ThaiText>{pt}</ThaiText>
+                </DotPoint>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* ── Stats row ── */}
+          <div style={{ display: "flex", gap: 8, flex: "0 0 auto" }}>
+            {(
+              [
+                { val: "0.97", label: "Answer Relevancy", sub: "RAGAS", grad: ["#10B981", "#059669"] as [string, string], rgb: "16,185,129" },
+                { val: "0.99", label: "Context Precision", sub: "RAGAS", grad: ["#3B82F6", "#7C3AED"] as [string, string], rgb: "59,130,246" },
+                { val: "+20.6%", label: "vs Baseline", sub: "ดีขึ้นจากพื้นฐาน", grad: ["#F59E0B", "#F97316"] as [string, string], rgb: "245,158,11" },
+              ] as const
+            ).map((s, i) => (
+              <motion.div
+                key={s.label}
+                {...scaleIn(stagger(0.58, 0.1, i), { duration: DURATION.med })}
+                style={{
+                  flex: 1,
+                  borderRadius: 14,
+                  border: `1px solid rgba(${s.rgb},0.2)`,
+                  background: `rgba(${s.rgb},0.05)`,
+                  padding: "10px 12px",
+                  position: "relative",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2.5, background: `linear-gradient(90deg,${s.grad[0]},${s.grad[1]})`, borderRadius: "14px 14px 0 0" }} />
+                <GradientText from={s.grad[0]} to={s.grad[1]} style={{ fontSize: 22, fontWeight: 900, lineHeight: 1, display: "block" }}>
+                  {s.val}
+                </GradientText>
+                <div style={{ fontSize: 9.5, fontWeight: 700, color: "#374151", lineHeight: 1.2 }}>{s.label}</div>
+                <div style={{ fontSize: 8, color: "#9CA3AF" }}><ThaiText>{s.sub}</ThaiText></div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </SlideShell>

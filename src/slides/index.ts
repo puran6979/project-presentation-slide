@@ -21,7 +21,6 @@ import { Slide19 } from './Slide19.tsx';
 import { Slide20 } from './Slide20.tsx';
 import { Slide21 } from './Slide21.tsx';
 import { Slide22 } from './Slide22.tsx';
-import { Slide23 } from './Slide23.tsx';
 
 export type SlideComponent = ComponentType;
 
@@ -48,5 +47,4 @@ export const slides: SlideComponent[] = [
   Slide20,
   Slide21,
   Slide22,
-  Slide23,
 ];
