@@ -25,6 +25,8 @@ export { VerticalDivider, HorizontalDivider } from "./primitives/Divider.tsx";
 export { GradientText } from "./primitives/GradientText.tsx";
 export { ThaiText } from "./primitives/ThaiText.tsx";
 export { AccentLine } from "./primitives/AccentLine.tsx";
+export { AnimatedBeam } from "./primitives/AnimatedBeam.tsx";
+export type { AnimatedBeamProps } from "./primitives/AnimatedBeam.tsx";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 export { ZapIcon, ParadoxIcon } from "./icons/BackgroundIcons.tsx";
