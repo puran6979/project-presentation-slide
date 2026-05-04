@@ -16,14 +16,7 @@ import {
   AnswerIcon,
   ThaiText,
 } from "../components/index.ts";
-import {
-  DISTANCE,
-  DURATION,
-  fadeIn,
-  fadeInUp,
-  scaleIn,
-  stagger,
-} from "../lib/motion.ts";
+import { DURATION, fadeIn, fadeInUp, scaleIn, stagger } from "../lib/motion.ts";
 
 const GLOWS = [
   { top: -180, right: -100, size: 700, color: "236,72,153", opacity: 0.1 },
@@ -220,7 +213,7 @@ const NS = {
 type NodeId = keyof typeof NS;
 const ICONS: Record<NodeId, () => ReactElement> = {
   query: QueryIcon,
-  hyde: HydeIcon,
+  hyde: () => <HydeIcon />,
   retrieval: RetIcon,
   react: ReactAgentIcon,
   tools: ToolIcon,
@@ -299,105 +292,6 @@ function FlowNode({
             {s.sub}
           </div>
         )}
-      </div>
-    </motion.div>
-  );
-}
-
-// ── Annotation card ────────────────────────────────────────────────────────────
-function AnnotationCard({
-  title,
-  color,
-  rgb,
-  grad,
-  points,
-  delay,
-}: {
-  title: string;
-  color: string;
-  rgb: string;
-  grad: [string, string];
-  points: string[];
-  delay: number;
-}) {
-  return (
-    <motion.div
-      {...fadeInUp(delay, { distance: DISTANCE.sm, duration: DURATION.med })}
-      style={{
-        flex: 1,
-        borderRadius: 16,
-        border: `1px solid rgba(${rgb},0.2)`,
-        background: `rgba(${rgb},0.03)`,
-        padding: "14px 16px",
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 3,
-          background: `linear-gradient(90deg,${grad[0]},${grad[1]})`,
-          borderRadius: "16px 16px 0 0",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: 3,
-          background: `linear-gradient(180deg,${grad[0]},${grad[1]})`,
-          borderRadius: "16px 0 0 16px",
-        }}
-      />
-      <div style={{ paddingLeft: 4, paddingTop: 4 }}>
-        <Pill color={color} rgb={rgb} fontSize={9} padding="2px 8px">
-          {title}
-        </Pill>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          paddingLeft: 4,
-        }}
-      >
-        {points.map((pt) => (
-          <div
-            key={pt}
-            style={{ display: "flex", gap: 8, alignItems: "flex-start" }}
-          >
-            <div
-              style={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: `linear-gradient(135deg,${grad[0]},${grad[1]})`,
-                flexShrink: 0,
-                marginTop: 5,
-              }}
-            />
-            <p
-              style={{
-                fontSize: "var(--slide-body)",
-                color: "#6B7280",
-                margin: 0,
-                lineHeight: 1.6,
-              }}
-            >
-              {pt}
-            </p>
-          </div>
-        ))}
       </div>
     </motion.div>
   );
@@ -611,7 +505,8 @@ export function System06() {
               flex: 1,
               borderRadius: 18,
               border: "1px solid rgba(236,72,153,0.18)",
-              background: "linear-gradient(135deg, rgba(236,72,153,0.06) 0%, rgba(124,58,237,0.04) 100%)",
+              background:
+                "linear-gradient(135deg, rgba(236,72,153,0.06) 0%, rgba(124,58,237,0.04) 100%)",
               padding: "14px 16px",
               position: "relative",
               overflow: "hidden",
@@ -621,17 +516,58 @@ export function System06() {
             }}
           >
             {/* top gradient bar */}
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#EC4899,#7C3AED)", borderRadius: "18px 18px 0 0" }} />
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 3,
+                background: "linear-gradient(90deg,#EC4899,#7C3AED)",
+                borderRadius: "18px 18px 0 0",
+              }}
+            />
             {/* header row */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 2 }}>
-              <IconBadge gradient={["#EC4899", "#7C3AED"]} shadow="rgba(236,72,153,0.35)" size={32} radius={9}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                paddingTop: 2,
+              }}
+            >
+              <IconBadge
+                gradient={["#EC4899", "#7C3AED"]}
+                shadow="rgba(236,72,153,0.35)"
+                size={32}
+                radius={9}
+              >
                 <ReactAgentIcon />
               </IconBadge>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>ReAct Pattern</div>
-                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>Reason → Act → Observe</div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 800,
+                    color: "#111827",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  ReAct Pattern
+                </div>
+                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>
+                  Reason → Act → Observe
+                </div>
               </div>
-              <Pill color="#EC4899" rgb="236,72,153" fontSize={8} padding="2px 8px" style={{ marginLeft: "auto" }}>CrewAI</Pill>
+              <Pill
+                color="#EC4899"
+                rgb="236,72,153"
+                fontSize={8}
+                padding="2px 8px"
+                style={{ marginLeft: "auto" }}
+              >
+                CrewAI
+              </Pill>
             </div>
             {/* bullets */}
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
@@ -654,7 +590,8 @@ export function System06() {
               flex: 1,
               borderRadius: 18,
               border: "1px solid rgba(245,158,11,0.18)",
-              background: "linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(249,115,22,0.04) 100%)",
+              background:
+                "linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(249,115,22,0.04) 100%)",
               padding: "14px 16px",
               position: "relative",
               overflow: "hidden",
@@ -663,16 +600,57 @@ export function System06() {
               gap: 10,
             }}
           >
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#F59E0B,#F97316)", borderRadius: "18px 18px 0 0" }} />
-            <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 2 }}>
-              <IconBadge gradient={["#F59E0B", "#F97316"]} shadow="rgba(245,158,11,0.35)" size={32} radius={9}>
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 3,
+                background: "linear-gradient(90deg,#F59E0B,#F97316)",
+                borderRadius: "18px 18px 0 0",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                paddingTop: 2,
+              }}
+            >
+              <IconBadge
+                gradient={["#F59E0B", "#F97316"]}
+                shadow="rgba(245,158,11,0.35)"
+                size={32}
+                radius={9}
+              >
                 <ToolIcon />
               </IconBadge>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>MCP Tools</div>
-                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>Model Context Protocol</div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 800,
+                    color: "#111827",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  MCP Tools
+                </div>
+                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 1 }}>
+                  Model Context Protocol
+                </div>
               </div>
-              <Pill color="#F59E0B" rgb="245,158,11" fontSize={8} padding="2px 8px" style={{ marginLeft: "auto" }}>Custom Tools</Pill>
+              <Pill
+                color="#F59E0B"
+                rgb="245,158,11"
+                fontSize={8}
+                padding="2px 8px"
+                style={{ marginLeft: "auto" }}
+              >
+                Custom Tools
+              </Pill>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {[
@@ -691,9 +669,27 @@ export function System06() {
           <div style={{ display: "flex", gap: 8, flex: "0 0 auto" }}>
             {(
               [
-                { val: "0.97", label: "Answer Relevancy", sub: "RAGAS", grad: ["#10B981", "#059669"] as [string, string], rgb: "16,185,129" },
-                { val: "0.99", label: "Context Precision", sub: "RAGAS", grad: ["#3B82F6", "#7C3AED"] as [string, string], rgb: "59,130,246" },
-                { val: "+20.6%", label: "vs Baseline", sub: "ดีขึ้นจากพื้นฐาน", grad: ["#F59E0B", "#F97316"] as [string, string], rgb: "245,158,11" },
+                {
+                  val: "0.97",
+                  label: "Task Completion",
+                  sub: "LLM-as-Judge",
+                  grad: ["#10B981", "#059669"] as [string, string],
+                  rgb: "16,185,129",
+                },
+                {
+                  val: "0.99",
+                  label: "Tool Correctness",
+                  sub: "Deterministic",
+                  grad: ["#3B82F6", "#7C3AED"] as [string, string],
+                  rgb: "59,130,246",
+                },
+                {
+                  val: "+20.6%",
+                  label: "vs Baseline",
+                  sub: "ดีขึ้นจากพื้นฐาน",
+                  grad: ["#F59E0B", "#F97316"] as [string, string],
+                  rgb: "245,158,11",
+                },
               ] as const
             ).map((s, i) => (
               <motion.div
@@ -712,12 +708,42 @@ export function System06() {
                   gap: 2,
                 }}
               >
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2.5, background: `linear-gradient(90deg,${s.grad[0]},${s.grad[1]})`, borderRadius: "14px 14px 0 0" }} />
-                <GradientText from={s.grad[0]} to={s.grad[1]} style={{ fontSize: 22, fontWeight: 900, lineHeight: 1, display: "block" }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 2.5,
+                    background: `linear-gradient(90deg,${s.grad[0]},${s.grad[1]})`,
+                    borderRadius: "14px 14px 0 0",
+                  }}
+                />
+                <GradientText
+                  from={s.grad[0]}
+                  to={s.grad[1]}
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 900,
+                    lineHeight: 1,
+                    display: "block",
+                  }}
+                >
                   {s.val}
                 </GradientText>
-                <div style={{ fontSize: 9.5, fontWeight: 700, color: "#374151", lineHeight: 1.2 }}>{s.label}</div>
-                <div style={{ fontSize: 8, color: "#9CA3AF" }}><ThaiText>{s.sub}</ThaiText></div>
+                <div
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: 700,
+                    color: "#374151",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {s.label}
+                </div>
+                <div style={{ fontSize: 8, color: "#9CA3AF" }}>
+                  <ThaiText>{s.sub}</ThaiText>
+                </div>
               </motion.div>
             ))}
           </div>

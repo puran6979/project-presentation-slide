@@ -49,7 +49,7 @@ const OBJECTIVES = [
 const SCOPES = [
   {
     title: "Data Ingestion",
-    th: "โฟกัสแหล่งข้อมูล SharePoint (Xhive)",
+    th: "โฟกัสแหล่งข้อมูล SharePoint (Xhive) และรองรับเอกสารเทคนิคภาษาไทยและภาษาอังกฤษเป็นหลัก",
     tag: "SharePoint · Xhive",
     tagRgb: "245,158,11",
     pillColor: "#F59E0B",
