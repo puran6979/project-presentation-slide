@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export function QueryIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -12,17 +14,35 @@ export function QueryIcon() {
   );
 }
 
-export function HydeIcon() {
+export function HydeIcon({ delay = 0 }: { delay?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path
+    <motion.svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      {/* star outline draws in */}
+      <motion.path
         d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.87L12 17.77l-6.18 3.24 1.18-6.87-5-4.87 6.91-1.01L12 2z"
         stroke="white"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+        fill="none"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{
+          pathLength: { duration: 0.85, delay, ease: "easeInOut" },
+          opacity: { duration: 0.01, delay },
+        }}
       />
-    </svg>
+      {/* centre dot pops in after the outline completes */}
+      <motion.circle
+        cx="12"
+        cy="12"
+        r="1.6"
+        fill="white"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 0.9 }}
+        transition={{ duration: 0.28, delay: delay + 0.82, ease: "backOut" }}
+      />
+    </motion.svg>
   );
 }
 

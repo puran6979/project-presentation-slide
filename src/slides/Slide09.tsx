@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import type { ReactElement } from "react";
 import {
-  GraphIcon,
+  HydeIcon,
   LayersIcon,
   Pill,
   PulseRings,
@@ -27,6 +27,7 @@ const CARDS: {
   ringColor: string;
   hoverShadow: string;
   cardDelay: number;
+  iconScale?: number;
   Icon: (props: { delay: number }) => ReactElement;
 }[] = [
   {
@@ -34,24 +35,26 @@ const CARDS: {
     gapColor: "#EF4444",
     gapRgb: "239,68,68",
     title: "Ingestion Quality",
-    th: "Pipeline ที่เน้นการสกัดเนื้อหาอย่างละเอียด ใช้เทคนิค Graph-based Chunking เพื่อรักษาโครงสร้างของเอกสาร",
+    th: "Pipeline ที่เน้นการสกัดเนื้อหาอย่างละเอียดด้วย Docling และ HybridChunker เพื่อรักษา hierarchy ของเอกสาร",
     grad: ["#7C3AED", "#A855F7"],
     ringColor: "rgba(196,181,253,0.5)",
     hoverShadow: "0 16px 48px rgba(124,58,237,0.28)",
     cardDelay: 0.28,
+    iconScale: 1.08,
     Icon: LayersIcon,
   },
   {
-    gap: "The Contextual Gap",
+    gap: "The Retrieval Gap",
     gapColor: "#F59E0B",
     gapRgb: "245,158,11",
-    title: "Hybrid Knowledge",
-    th: "ไม่เพียงแค่ Vector Embeddings แต่ยังใช้ Graph-relation เพื่อทำ GraphRAG",
+    title: "HyDE Retrieval",
+    th: "ใช้ Hypothetical Document Embeddings (HyDE) เพื่อขยายคำค้นให้ใกล้กับภาษาของเอกสารเทคนิคและเพิ่มความแม่นยำในการค้นคืน",
     grad: ["#06B6D4", "#3B82F6"],
     ringColor: "rgba(147,210,249,0.5)",
     hoverShadow: "0 16px 48px rgba(6,182,212,0.28)",
     cardDelay: 0.42,
-    Icon: GraphIcon,
+    iconScale: 3.35,
+    Icon: HydeIcon,
   },
   {
     gap: "The Synchronization Gap",
@@ -63,6 +66,7 @@ const CARDS: {
     ringColor: "rgba(110,231,183,0.5)",
     hoverShadow: "0 16px 48px rgba(16,185,129,0.28)",
     cardDelay: 0.56,
+    iconScale: 1.08,
     Icon: SyncIcon,
   },
 ];
@@ -100,7 +104,11 @@ export function Slide09() {
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.7, delay: card.cardDelay, ease: EASE },
+                transition: {
+                  duration: 0.7,
+                  delay: card.cardDelay,
+                  ease: EASE,
+                },
               },
               hover: { y: -6, transition: { duration: 0.2, ease: "easeOut" } },
             }}
@@ -110,7 +118,7 @@ export function Slide09() {
               flexDirection: "column",
               alignItems: "center",
               gap: 22,
-              padding: "24px 16px 12px",
+              padding: "24px 12px 12px",
               cursor: "default",
             }}
           >
@@ -121,12 +129,13 @@ export function Slide09() {
                   boxShadow: `0 4px 24px rgba(${card.gapRgb},0.18), 0 0 0 3px rgba(${card.gapRgb},0.12)`,
                 },
                 hover: {
-                  boxShadow: card.hoverShadow + `, 0 0 0 4px rgba(${card.gapRgb},0.22)`,
+                  boxShadow:
+                    card.hoverShadow + `, 0 0 0 4px rgba(${card.gapRgb},0.22)`,
                 },
               }}
               style={{
-                width: 170,
-                height: 170,
+                width: 178,
+                height: 178,
                 borderRadius: "50%",
                 background: `linear-gradient(145deg, ${card.grad[0]}, ${card.grad[1]})`,
                 position: "relative",
@@ -141,22 +150,36 @@ export function Slide09() {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
+                  backgroundImage:
+                    "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
                   backgroundSize: "18px 18px",
                 }}
               />
               <div
                 style={{
                   position: "relative",
-                  width: 88,
-                  height: 88,
+                  width: 96,
+                  height: 96,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <PulseRings color={card.ringColor} delay={card.cardDelay + 1.5} />
-                <card.Icon delay={card.cardDelay + 0.2} />
+                <PulseRings
+                  color={card.ringColor}
+                  delay={card.cardDelay + 1.5}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transform: `scale(${card.iconScale ?? 1})`,
+                    transformOrigin: "center",
+                  }}
+                >
+                  <card.Icon delay={card.cardDelay + 0.2} />
+                </div>
               </div>
             </motion.div>
 
@@ -168,6 +191,8 @@ export function Slide09() {
                 alignItems: "center",
                 gap: 8,
                 textAlign: "center",
+                width: "100%",
+                maxWidth: 316,
               }}
             >
               <Pill
@@ -206,7 +231,7 @@ export function Slide09() {
                   color: "#6B7280",
                   margin: 0,
                   lineHeight: 1.65,
-                  maxWidth: 260,
+                  maxWidth: "100%",
                 }}
               >
                 <ThaiText>{card.th}</ThaiText>
