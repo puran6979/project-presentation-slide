@@ -156,7 +156,8 @@ export function WebCapabilities() {
               borderRadius: 16,
               overflow: "hidden",
               border: "1px solid rgba(139,92,246,0.18)",
-              boxShadow: "0 8px 24px rgba(139,92,246,0.12)",
+              boxShadow:
+                "0 8px 24px rgba(139,92,246,0.12), 0 24px 64px rgba(0,0,0,0.18)",
               position: "relative",
               zIndex: 1,
             }}
@@ -296,7 +297,8 @@ export function WebCapabilities() {
               borderRadius: 16,
               overflow: "hidden",
               border: "1px solid rgba(16,185,129,0.18)",
-              boxShadow: "0 8px 24px rgba(16,185,129,0.12)",
+              boxShadow:
+                "0 8px 24px rgba(16,185,129,0.12), 0 24px 64px rgba(0,0,0,0.18)",
               position: "relative",
               zIndex: 1,
             }}

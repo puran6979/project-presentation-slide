@@ -157,7 +157,8 @@ export function WebCapabilities2() {
               borderRadius: 16,
               overflow: "hidden",
               border: "1px solid rgba(59,130,246,0.18)",
-              boxShadow: "0 8px 24px rgba(59,130,246,0.12)",
+              boxShadow:
+                "0 8px 24px rgba(59,130,246,0.12), 0 24px 64px rgba(0,0,0,0.18)",
               position: "relative",
               zIndex: 1,
             }}
@@ -297,7 +298,8 @@ export function WebCapabilities2() {
               borderRadius: 16,
               overflow: "hidden",
               border: "1px solid rgba(245,158,11,0.18)",
-              boxShadow: "0 8px 24px rgba(245,158,11,0.1)",
+              boxShadow:
+                "0 8px 24px rgba(245,158,11,0.1), 0 24px 64px rgba(0,0,0,0.18)",
               position: "relative",
               zIndex: 1,
             }}
