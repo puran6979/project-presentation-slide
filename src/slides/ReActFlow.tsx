@@ -642,6 +642,7 @@ export function ReActFlow() {
 
           {/* ── Step nav bar ── */}
           <StepNavBar
+            compact
             activeStep={activeStep}
             steps={[...STEP_CONFIG]}
             onAdvance={advance}
