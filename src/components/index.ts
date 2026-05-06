@@ -10,6 +10,7 @@ export { Navigation } from "./layout/Navigation.tsx";
 // ─── Composite ─────────────────────────────────────────────────────────────
 export { SectionTitle } from "./composite/SectionTitle.tsx";
 export { Callout } from "./composite/Callout.tsx";
+export { useStepNav, StepNavBar, NodeRing } from "./composite/StepNav.tsx";
 export { IconCard } from "./composite/IconCard.tsx";
 export { BeforeAfterRow } from "./composite/BeforeAfterRow.tsx";
 export { BenefitItem } from "./composite/BenefitItem.tsx";

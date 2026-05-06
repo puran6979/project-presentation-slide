@@ -1,11 +1,14 @@
 import { motion, useMotionValue, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import {
   SlideHeader,
   SlideShell,
   AnimatedBeam,
   IconBadge,
   ThaiText,
+  useStepNav,
+  StepNavBar,
+  NodeRing,
 } from "../components/index.ts";
 import {
   BackendIcon,
@@ -255,40 +258,6 @@ function FloatingLabel({
   );
 }
 
-// ── NodeWrapper — adds glow ring when highlighted ──────────────────────────
-function NodeRing({
-  active,
-  color,
-  rgb,
-}: {
-  active: boolean;
-  color: string;
-  rgb: string;
-}) {
-  return (
-    <AnimatePresence>
-      {active && (
-        <motion.div
-          key="ring"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.25 }}
-          style={{
-            position: "absolute",
-            inset: -10,
-            borderRadius: 38,
-            border: `2.5px solid ${color}`,
-            boxShadow: `0 0 0 4px ${color}22, 0 0 24px rgba(${rgb},0.5)`,
-            pointerEvents: "none",
-            zIndex: 5,
-          }}
-        />
-      )}
-    </AnimatePresence>
-  );
-}
-
 export function AttachmentFlow() {
   const containerRef = useRef<HTMLDivElement>(null);
   const backendRef = useRef<HTMLDivElement>(null);
@@ -297,17 +266,9 @@ export function AttachmentFlow() {
 
   const editMode = new URLSearchParams(window.location.search).has("edit");
 
-  // 0 = overview (no step highlighted), 1-6 = active step
-  const [activeStep, setActiveStep] = useState(0);
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === ",") setActiveStep((s) => (s <= 0 ? 6 : s - 1));
-      if (e.key === ".") setActiveStep((s) => (s >= 6 ? 0 : s + 1));
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  const { activeStep, setActiveStep, advance, retreat } = useStepNav(
+    STEP_CONFIG.length,
+  );
 
   const nodeRefs: Record<NodeKey, React.RefObject<HTMLDivElement | null>> = {
     backend: backendRef,
@@ -335,14 +296,6 @@ export function AttachmentFlow() {
   function isLabelInactive(labelKey: string): boolean {
     if (activeStep === 0) return false;
     return STEP_CONFIG[activeStep - 1].labelKey !== labelKey;
-  }
-
-  function advance() {
-    setActiveStep((s) => (s >= 6 ? 0 : s + 1));
-  }
-
-  function retreat() {
-    setActiveStep((s) => (s <= 0 ? 6 : s - 1));
   }
 
   const currentStep = activeStep > 0 ? STEP_CONFIG[activeStep - 1] : null;
@@ -802,108 +755,15 @@ export function AttachmentFlow() {
           />
 
           {/* ================================================================ */}
-          {/* STEP NAVIGATION — bottom center inside diagram */}
+          {/* STEP NAVIGATION */}
           {/* ================================================================ */}
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              position: "absolute",
-              bottom: 24,
-              left: "50%",
-              transform: "translateX(-50%)",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              zIndex: 50,
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(0,0,0,0.08)",
-              borderRadius: 40,
-              padding: "8px 20px",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-            }}
-          >
-            {/* Prev button */}
-            <button
-              onClick={retreat}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                border: "1.5px solid rgba(0,0,0,0.12)",
-                background: "white",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 16,
-                color: "#374151",
-                flexShrink: 0,
-              }}
-            >
-              ‹
-            </button>
-
-            {/* Step dots */}
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              {STEP_CONFIG.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setActiveStep(s.id)}
-                  style={{
-                    width: activeStep === s.id ? 28 : 10,
-                    height: 10,
-                    borderRadius: 5,
-                    border: "none",
-                    background:
-                      activeStep === s.id ? s.color : "rgba(0,0,0,0.15)",
-                    cursor: "pointer",
-                    transition: "all 0.25s ease",
-                    padding: 0,
-                    boxShadow:
-                      activeStep === s.id
-                        ? `0 0 8px rgba(${s.rgb},0.6)`
-                        : "none",
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Step counter label */}
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: currentStep ? currentStep.color : "#9CA3AF",
-                minWidth: 52,
-                textAlign: "center",
-                transition: "color 0.2s",
-              }}
-            >
-              {activeStep === 0 ? "Overview" : `Step ${activeStep} / 6`}
-            </div>
-
-            {/* Next button */}
-            <button
-              onClick={advance}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                border: "1.5px solid rgba(0,0,0,0.12)",
-                background: "white",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 16,
-                color: "#374151",
-                flexShrink: 0,
-              }}
-            >
-              ›
-            </button>
-          </div>
+          <StepNavBar
+            activeStep={activeStep}
+            steps={[...STEP_CONFIG]}
+            onAdvance={advance}
+            onRetreat={retreat}
+            onJump={setActiveStep}
+          />
         </motion.div>
       </div>
 
