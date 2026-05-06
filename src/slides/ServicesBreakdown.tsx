@@ -201,7 +201,7 @@ function ServiceRow({
   );
 }
 
-export function System03() {
+export function ServicesBreakdown() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

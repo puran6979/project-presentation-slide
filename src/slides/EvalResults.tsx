@@ -158,7 +158,7 @@ const METRICS = [
   },
 ] as const;
 
-export function Eval02() {
+export function EvalResults() {
   return (
     <SlideShell glows={[{ top: -200, right: -100, size: 800, color: "124,58,237", opacity: 0.05 }, { bottom: -150, left: -80, size: 600, color: "59,130,246", opacity: 0.05 }]}>
       <SlideHeader

@@ -289,7 +289,7 @@ function GridBeam({
   );
 }
 
-export function System02() {
+export function SolutionOverview() {
   const containerRef = useRef<HTMLDivElement>(null);
   const frontendRef = useRef<HTMLDivElement>(null);
   const webhookRef = useRef<HTMLDivElement>(null);

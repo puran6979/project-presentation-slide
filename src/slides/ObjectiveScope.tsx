@@ -74,7 +74,7 @@ const SCOPES = [
   },
 ];
 
-export function Approach02() {
+export function ObjectiveScope() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

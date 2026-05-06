@@ -1,5 +1,5 @@
 import { SectionDivider } from "../components/index.ts";
 
-export function Eval01() {
+export function EvalDivider() {
   return <SectionDivider prefix="Testing &" highlight="Evaluation." />;
 }

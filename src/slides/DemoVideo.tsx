@@ -1,6 +1,6 @@
 import videoSrc from "../assets/vid/AINGO-DEMO.mp4";
 
-export function SystemVideo() {
+export function DemoVideo() {
   return (
     <video
       src={videoSrc}

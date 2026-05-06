@@ -64,7 +64,7 @@ const LEVELS: LevelData[] = [
   },
 ];
 
-export function Problem05() {
+export function SystemEvolution() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

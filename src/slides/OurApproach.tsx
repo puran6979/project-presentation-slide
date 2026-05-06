@@ -71,7 +71,7 @@ const CARDS: {
   },
 ];
 
-export function Approach03() {
+export function OurApproach() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

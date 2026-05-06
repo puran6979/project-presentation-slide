@@ -297,7 +297,7 @@ function FlowNode({
 }
 
 // ── Slide ─────────────────────────────────────────────────────────────────────
-export function System05() {
+export function ReActFlow() {
   const containerRef = useRef<HTMLDivElement>(null);
   const queryRef = useRef<HTMLDivElement>(null);
   const hydeRef = useRef<HTMLDivElement>(null);

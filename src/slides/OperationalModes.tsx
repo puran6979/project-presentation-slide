@@ -80,7 +80,7 @@ const MODES = [
   },
 ];
 
-export function System08() {
+export function OperationalModes() {
   const containerRef = useRef<HTMLDivElement>(null);
   const agentRef = useRef<HTMLDivElement>(null);
   const searchToolRef = useRef<HTMLDivElement>(null);

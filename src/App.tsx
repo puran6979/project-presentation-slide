@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { slides, sections, trackerSlideCount } from "./slides/index.ts";
-import { SystemVideo } from "./slides/SystemVideo.tsx";
+import { DemoVideo } from "./slides/DemoVideo.tsx";
 import { usePresentation } from "./hooks/usePresentation.ts";
 import { PresentationFrame, ProgressTracker } from "./components/index.ts";
 import { SlideContext } from "./context/SlideContext.tsx";
@@ -13,7 +13,7 @@ export default function App() {
 
   const currentSlideNum = currentIndex + 1;
   const isCoverSlide = currentSlideNum === 1;
-  const isVideoSlide = CurrentSlide === SystemVideo;
+  const isVideoSlide = CurrentSlide === DemoVideo;
 
   if (isVideoSlide) {
     return (

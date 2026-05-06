@@ -24,7 +24,7 @@ const GLOWS = [
   { top: -180, right: -100, size: 560, color: "124,58,237", opacity: 0.1 },
 ];
 
-export function Problem03() {
+export function TheProblem() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader label="Problems" title="The" highlight="Problem." />

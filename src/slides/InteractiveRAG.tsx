@@ -86,7 +86,7 @@ function TimelineNode({
   );
 }
 
-export function System07() {
+export function InteractiveRAG() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

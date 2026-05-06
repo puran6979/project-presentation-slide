@@ -40,7 +40,7 @@ const CHECK = (
   </svg>
 );
 
-export function Approach04() {
+export function ExpectedResults() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

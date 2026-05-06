@@ -19,7 +19,7 @@ const GLOWS = [
   { bottom: -150, left: -80, size: 600, color: "16,185,129", opacity: 0.05 }, // Green
 ];
 
-export function System10() {
+export function WebCapabilities() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

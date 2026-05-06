@@ -531,7 +531,7 @@ function FlowArrow({
 }
 
 // ── Slide ─────────────────────────────────────────────────────────────────
-export function System04() {
+export function IngestionPipeline() {
   const [tick, setTick] = useState(0);
 
   useEffect(() => {

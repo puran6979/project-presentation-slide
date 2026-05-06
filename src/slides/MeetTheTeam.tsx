@@ -102,7 +102,7 @@ function MemberCard({ member, delay, size = 150 }: { member: typeof MEMBERS[numb
   );
 }
 
-export function Team02() {
+export function MeetTheTeam() {
   const top = MEMBERS.slice(0, 3);
   const bottom = MEMBERS.slice(3);
 

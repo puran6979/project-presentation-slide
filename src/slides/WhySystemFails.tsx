@@ -49,7 +49,7 @@ const GAPS = [
   },
 ];
 
-export function Problem04() {
+export function WhySystemFails() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader

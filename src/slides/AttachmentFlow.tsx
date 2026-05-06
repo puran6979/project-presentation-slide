@@ -160,7 +160,7 @@ function FloatingLabel({
   );
 }
 
-export function System09() {
+export function AttachmentFlow() {
   const containerRef = useRef<HTMLDivElement>(null);
   const backendRef = useRef<HTMLDivElement>(null);
   const aiRef = useRef<HTMLDivElement>(null);

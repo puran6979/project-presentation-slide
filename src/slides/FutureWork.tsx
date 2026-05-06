@@ -70,7 +70,7 @@ const LIMITATIONS = [
   "การวางแผนแบบ Multi-agent เพิ่มต้นทุนการใช้โทเคนต่อหนึ่งคำถาม",
 ];
 
-export function Team04() {
+export function FutureWork() {
   return (
     <SlideShell glows={[{ top: -200, right: -100, size: 800, color: "124,58,237", opacity: 0.05 }, { bottom: -150, left: -80, size: 600, color: "16,185,129", opacity: 0.05 }]}>
       <SlideHeader

@@ -312,7 +312,7 @@ function ConceptCard({
 
 // ── Slide ─────────────────────────────────────────────────────────────────────
 
-export function System06() {
+export function HydeDensityGap() {
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader
