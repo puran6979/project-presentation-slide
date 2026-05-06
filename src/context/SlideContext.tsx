@@ -5,7 +5,10 @@ interface SlideContextValue {
   goTo: (index: number) => void;
 }
 
-export const SlideContext = createContext<SlideContextValue>({ slideNum: 0, goTo: () => {} });
+export const SlideContext = createContext<SlideContextValue>({
+  slideNum: 0,
+  goTo: () => {},
+});
 
 export function useSlideNum(): number {
   return useContext(SlideContext).slideNum;

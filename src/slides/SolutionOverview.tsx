@@ -5,6 +5,7 @@ import {
   SlideShell,
   AnimatedBeam,
   IconBadge,
+  ThaiText,
 } from "../components/index.ts";
 import { DISTANCE, DURATION, fadeInUp, EASE } from "../lib/motion.ts";
 
@@ -175,94 +176,94 @@ const SERVICE_DETAILS: Record<
   frontend: {
     subtitle: "Next.js 15 / React 19  ·  NestJS API Gateway",
     bullets: [
-      "Frontend (apps/web): Next.js 15 / React 19 web app providing the user-facing chat interface.",
-      "Handles authentication states and communicates exclusively with the Backend Gateway.",
-      "Backend (apps/backend): NestJS API Gateway — central orchestrator for all frontend requests.",
-      "Manages session states and conversation histories in SQLite.",
-      "Forwards chat queries to the Search Flow Service and routes document uploads to the ingestion pipeline.",
+      "Frontend (apps/web): แอปพลิเคชันเว็บที่พัฒนาด้วย Next.js 15 / React 19 สำหรับเป็นส่วนติดต่อผู้ใช้งาน (Chat Interface)",
+      "จัดการสถานะการยืนยันตัวตน (Authentication) และสื่อสารกับ Backend Gateway โดยตรง",
+      "Backend (apps/backend): NestJS API Gateway ทำหน้าที่เป็นตัวกลางหลัก (Orchestrator) ในการจัดการคำขอทั้งหมดจาก Frontend",
+      "จัดการสถานะของ Session และประวัติการสนทนาโดยใช้ SQLite",
+      "ส่งต่อคำถามไปยัง Search Flow Service และจัดการเส้นทางการอัปโหลดเอกสารไปยัง Ingestion Pipeline",
     ],
   },
   webhook: {
     subtitle: "Microsoft SharePoint Integration",
     bullets: [
-      "Listens to Microsoft SharePoint webhook events.",
-      "Monitors designated folders for file additions, modifications, or deletions.",
-      "Automatically fetches changed files from SharePoint and pushes them into the ingestion pipeline.",
-      "Enables continuous, hands-free document synchronisation from the enterprise content source.",
+      "คอยรับเหตุการณ์ Webhook จาก Microsoft SharePoint",
+      "ตรวจจับการเปลี่ยนแปลงในโฟลเดอร์ที่กำหนด ทั้งการเพิ่ม, แก้ไข หรือลบไฟล์",
+      "ดึงไฟล์ที่มีการเปลี่ยนแปลงจาก SharePoint และส่งเข้าสู่ Ingestion Pipeline โดยอัตโนมัติ",
+      "ช่วยให้การซิงค์ข้อมูล (Synchronisation) จากแหล่งข้อมูลองค์กรเป็นไปอย่างต่อเนื่อง",
     ],
   },
   storage: {
     subtitle: "MinIO (S3-compatible)",
     bullets: [
-      "Acts as the content management and workflow state-tracking layer.",
-      "Receives raw file upload streams and persists them to MinIO.",
-      "Advances each file through a lifecycle: PENDING → PROCESSING → COMPLETED → INDEXING.",
-      "Publishes an async event to RabbitMQ once a file is successfully stored.",
-      "Fires status webhooks back to the Backend to keep the UI current.",
+      "ทำหน้าที่จัดการเนื้อหาและติดตามสถานะของ Workflow",
+      "รับข้อมูลไฟล์อัปโหลดและเก็บไว้ใน MinIO",
+      "จัดการสถานะของไฟล์ตามลำดับ: PENDING → PROCESSING → COMPLETED → INDEXING",
+      "ส่งเหตุการณ์ (Async Event) ไปยัง RabbitMQ เมื่อจัดเก็บไฟล์สำเร็จ",
+      "ส่งสถานะผ่าน Webhook กลับไปยัง Backend เพื่ออัปเดตสถานะบนหน้าจอผู้ใช้งาน",
     ],
   },
   mq: {
     subtitle: "RabbitMQ",
     bullets: [
-      "Serves as the asynchronous communication backbone of the platform.",
-      "File Storage Service publishes file_ready events here.",
-      "Data Ingestion Service consumes those events to trigger the processing pipeline.",
-      "Decouples file storage from document processing — prevents bottlenecks and improves fault tolerance.",
+      "เป็นแกนหลักของการสื่อสารแบบ Asynchronous ภายในแพลตฟอร์ม",
+      "File Storage Service จะส่งเหตุการณ์ file_ready มาที่นี่",
+      "Data Ingestion Service จะดึงเหตุการณ์ไปประมวลผลต่อ",
+      "ช่วยแยกส่วนการเก็บไฟล์ออกจากการประมวลผลเอกสาร เพื่อลดคอขวดและเพิ่มความทนทานของระบบ",
     ],
   },
   ingestion: {
     subtitle: "ETL · OCR · Vision API · Text / Table Extractor",
     bullets: [
-      "Transforms raw, unstructured files into searchable vector embeddings.",
-      "Reads each file and performs page-level modality detection (text, image, table, scanned PDF).",
-      "Dispatches extraction jobs to the appropriate processor (OCR, Vision API, text/table extractor).",
-      "Hierarchically chunks and summarises extracted content.",
-      "Forwards the resulting chunks to the Embedding Service for vectorisation.",
+      "แปลงไฟล์จาก Unstructured Data ให้กลายเป็น Vector Embeddings ที่ค้นหาได้",
+      "อ่านไฟล์และตรวจจับรูปแบบข้อมูลในแต่ละหน้า (ข้อความ, รูปภาพ, ตาราง, scanned PDF)",
+      "ส่งงานประมวลผลไปยังโมดูลที่เหมาะสม (OCR, Vision API, text/table extractor)",
+      "ทำการแบ่งส่วนข้อมูล (Chunking) และสรุปเนื้อหา (Summarising) ตามลำดับชั้น",
+      "ส่งต่อข้อมูลที่แบ่งแล้วไปยัง Embedding Service เพื่อแปลงให้เป็นเวกเตอร์",
     ],
   },
   embedding: {
     subtitle: "Qdrant · Cosine Similarity · Reranking",
     bullets: [
-      "Single point of contact for the vector space.",
-      "Accepts text chunks and computes dense vector embeddings.",
-      "Persists vectors and metadata in Qdrant.",
-      "Exposes semantic search APIs (cosine similarity) consumed by the Search Flow Service.",
-      "Performs integrated reranking to improve the precision of retrieved results.",
+      "จุดเชื่อมต่อหลักสำหรับการจัดการข้อมูลในรูปแบบ Vector Space",
+      "รับข้อมูลข้อความและคำนวณให้เป็น Dense Vector Embeddings",
+      "จัดเก็บเวกเตอร์และ Metadata ไว้ใน Qdrant",
+      "ให้บริการ Semantic Search API (Cosine Similarity) สำหรับ Search Flow Service",
+      "มีระบบ Reranking ในตัวเพื่อเพิ่มความแม่นยำในการดึงข้อมูล",
     ],
   },
   ai: {
     subtitle: "FastAPI · CrewAI · LangFuse · OpenTelemetry",
     bullets: [
-      "Core multi-agent reasoning engine built on FastAPI and CrewAI.",
-      "Receives user queries and conversation history, orchestrates an agentic workflow.",
-      "Supports four query modes: auto, search, lookup, and chat.",
-      "Uses Hypothetical Document Embeddings (HyDE) to generate synthetic answers and improve retrieval.",
-      "Streams real-time responses back to the client via Server-Sent Events (SSE).",
-      "LLM calls and agent traces are monitored through Langfuse and OpenTelemetry.",
+      "ระบบประมวลผลตรรกะแบบ Multi-agent พัฒนาด้วย FastAPI และ CrewAI",
+      "รับคำถามจากผู้ใช้และประวัติการสนทนา เพื่อวางแผนขั้นตอนการทำงานของ Agent",
+      "รองรับการค้นหา 4 โหมด: auto, search, lookup และ chat",
+      "ใช้ Hypothetical Document Embeddings (HyDE) เพื่อสร้างคำตอบจำลองและเพิ่มประสิทธิภาพการค้นหา",
+      "ส่งคำตอบแบบ Real-time กลับไปยังผู้ใช้ผ่าน Server-Sent Events (SSE)",
+      "ติดตามการทำงานของ LLM และ Agent ผ่าน Langfuse และ OpenTelemetry",
     ],
   },
   sharepoint: {
-    subtitle: "Microsoft SharePoint — external enterprise repository",
+    subtitle: "Microsoft SharePoint — แหล่งเก็บข้อมูลหลักขององค์กร",
     bullets: [
-      "The upstream source of organisational documents.",
-      "Monitored continuously by the SharePoint Webhook Service.",
-      "Triggers the ingestion pipeline whenever files are added, modified, or deleted.",
+      "แหล่งต้นทางของเอกสารภายในองค์กร",
+      "ถูกตรวจสอบการเปลี่ยนแปลงอย่างต่อเนื่องโดย SharePoint Webhook Service",
+      "กระตุ้นให้ Ingestion Pipeline เริ่มทำงานเมื่อมีการเพิ่ม, แก้ไข หรือลบไฟล์",
     ],
   },
   s3: {
     subtitle: "MinIO — S3-compatible object storage",
     bullets: [
-      "Persists all raw uploaded files and intermediate ingestion artefacts.",
-      "Accessed by both the File Storage Service and the Data Ingestion Service.",
-      "Provides durable, scalable storage decoupled from application logic.",
+      "จัดเก็บไฟล์ต้นฉบับและข้อมูลระหว่างการประมวลผล (Artefacts)",
+      "ถูกเข้าถึงโดย File Storage Service และ Data Ingestion Service",
+      "ให้บริการจัดเก็บข้อมูลที่ขยายขนาดได้และแยกส่วนออกจากตรรกะของแอปพลิเคชัน",
     ],
   },
   qdrant: {
-    subtitle: "High-performance vector database",
+    subtitle: "ฐานข้อมูลเวกเตอร์ประสิทธิภาพสูง",
     bullets: [
-      "Stores dense embeddings generated by the Embedding Service.",
-      "Powers semantic similarity search via cosine distance.",
-      "Enables the Search Flow Service to retrieve the most contextually relevant chunks for any query.",
+      "จัดเก็บ Dense Embeddings ที่สร้างโดย Embedding Service",
+      "รองรับการค้นหาความเหมือนเชิงความหมาย (Semantic Similarity) ผ่าน Cosine Distance",
+      "ช่วยให้ Search Flow Service สามารถดึงข้อมูลส่วนที่เกี่ยวข้องที่สุดสำหรับคำถามของผู้ใช้",
     ],
   },
 };
@@ -499,7 +500,7 @@ function ServicePopover({
                   marginTop: 3,
                 }}
               >
-                {d.subtitle}
+                <ThaiText>{d.subtitle}</ThaiText>
               </div>
             )}
           </div>
@@ -557,7 +558,7 @@ function ServicePopover({
               <span
                 style={{ fontSize: 17, color: "#334155", lineHeight: 1.65 }}
               >
-                {renderBullet(b, id, onNavigate)}
+                <ThaiText>{renderBullet(b, id, onNavigate)}</ThaiText>
               </span>
             </li>
           ))}
@@ -868,7 +869,7 @@ export function SolutionOverview() {
               color: "#D97706",
             }}
           >
-            Service Layer
+            Service Layer (ชั้นบริการ)
           </div>
         </motion.div>
 
@@ -901,7 +902,7 @@ export function SolutionOverview() {
               color: "#059669",
             }}
           >
-            Storage Layer
+            Storage Layer (ชั้นจัดเก็บข้อมูล)
           </div>
         </motion.div>
 
