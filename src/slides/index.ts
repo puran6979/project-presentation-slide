@@ -18,6 +18,7 @@ import { SystemDivider     } from './SystemDivider.tsx';
 import { DemoVideo         } from './DemoVideo.tsx';
 import { SolutionOverview  } from './SolutionOverview.tsx';
 import { ServicesBreakdown } from './ServicesBreakdown.tsx';
+import { SharePointSync    } from './SharePointSync.tsx';
 import { IngestionPipeline } from './IngestionPipeline.tsx';
 import { ReActFlow         } from './ReActFlow.tsx';
 import { HydeDensityGap    } from './HydeDensityGap.tsx';
@@ -61,6 +62,7 @@ const deck = [
       DemoVideo,
       SolutionOverview,
       ServicesBreakdown,
+      SharePointSync,
       IngestionPipeline,
       ReActFlow,
       HydeDensityGap,
