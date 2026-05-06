@@ -26,7 +26,7 @@ const STEPS = [
   {
     num: "01",
     title: "Structural Intersection",
-    body: "ตรวจจับขอบเขตของความหมายและโครงสร้าง เช่น หัวข้อหลักและหัวข้อย่อย เพื่อแบ่งข้อมูล (Chunks) ตามจุดแบ่งที่เหมาะสมโดยไม่ตัดกลางย่อหน้า",
+    body: "ใช้ Docling เพื่อแกะคำและตรวจจับโครงสร้าง เพื่อสกัดเนื้อหาออกมาจากไฟล์ Input",
     color: "#F59E0B",
     rgb: "245,158,11",
     grad: ["#F59E0B", "#F97316"] as [string, string],
@@ -34,7 +34,7 @@ const STEPS = [
   {
     num: "02",
     title: "Structural Serialization",
-    body: "สกัดหัวข้อเอกสารและเรียงร้อยเป็นเส้นทางบริบท (Breadcrumbs) (เช่น นโยบาย › ไอที › ความปลอดภัย) นำไปปะหน้าในทุกชุดข้อมูลย่อย",
+    body: "ใช้ HybridChunker ตรวจจับขอบเขตของความหมาย เพื่อแบ่งข้อมูล (Chunks) ตามจุดแบ่งที่เหมาะสม (เช่น หัวข้อหลักและหัวข้อย่อย)",
     color: "#7C3AED",
     rgb: "124,58,237",
     grad: ["#7C3AED", "#A855F7"] as [string, string],
@@ -42,7 +42,7 @@ const STEPS = [
   {
     num: "03",
     title: "Token-Aware Merging",
-    body: "จำกัดขนาดข้อมูลที่ 512 โทเคน ข้อมูลย่อยที่เกี่ยวข้องกันจะถูกรวมเข้าด้วยกัน โดยมีเส้นทางบริบทปะหน้าก่อนแปลงเป็นเวกเตอร์",
+    body: "โดยจะจำกัดขนาดของ Chunk ที่ 512 Token หลังจากนั้น Chunk ต่างๆจะถูก embedded และเก็บไว้ใน Vector Database",
     color: "#10B981",
     rgb: "16,185,129",
     grad: ["#10B981", "#059669"] as [string, string],
@@ -177,6 +177,110 @@ function CutContent() {
       </div>
       <SkeletonLines widths={[1, 0.82, 0.55]} />
     </motion.div>
+  );
+}
+
+function DoclingPreview() {
+  return (
+    <div
+      style={{
+        marginTop: 14,
+        display: "grid",
+        gap: 12,
+        gridTemplateColumns: "1.1fr 0.9fr",
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 16,
+          border: "1px solid rgba(226,232,240,1)",
+          background: "rgba(255,255,255,0.95)",
+          padding: 14,
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: "#111827",
+          }}
+        >
+          Docling — Document Understanding Library
+        </div>
+        <p
+          style={{
+            margin: 0,
+            fontSize: 10,
+            color: "#4B5563",
+            lineHeight: 1.6,
+          }}
+        >
+          Docling ถอดความหมายจากเอกสาร DOCX, PDF, PPTX และภาพ เพื่อแปลงข้อมูลออกเป็น Text, HTML, Markdown
+          และเสริมบริบทก่อนส่งเข้า Vector Store.
+        </p>
+        <div
+          style={{
+            borderRadius: 14,
+            background: "#F8FAFC",
+            padding: 10,
+            fontFamily: "monospace",
+            fontSize: 9,
+            color: "#334155",
+            lineHeight: 1.5,
+          }}
+        >
+          <div style={{ marginBottom: 6, fontWeight: 700, color: "#0F172A" }}>
+            ตัวอย่าง text output
+          </div>
+          <div>'page_no': 1</div>
+          <div>'self_ref': '#/texts/0'</div>
+          <div>'text': 'You can think of these as categories:'</div>
+          <div>{"{'children': []}"}</div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          borderRadius: 16,
+          border: "1px solid rgba(229,231,235,1)",
+          background: "rgba(255,255,255,0.95)",
+          padding: 14,
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          justifyContent: "space-between",
+        }}
+      >
+        <div
+          style={{
+            borderRadius: 16,
+            background: "rgba(15,23,42,0.95)",
+            minHeight: 110,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#E2E8F0",
+            fontSize: 10,
+            textAlign: "center",
+            padding: 12,
+          }}
+        >
+          ภาพถูกวิเคราะห์เพื่อจับข้อความและเชื่อมต่อกับโครงสร้างเอกสาร
+        </div>
+        <div
+          style={{
+            fontSize: 9,
+            color: "#6B7280",
+            lineHeight: 1.5,
+          }}
+        >
+          ข้อมูลภาพถูกแปลงเป็นข้อความและผสานกับ metadata จาก Docling ก่อนส่งเข้า pipeline.
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -674,6 +778,7 @@ export function System04() {
             <AnimatePresence mode="wait">
               {tick === 1 ? <CutContent /> : <RawContent />}
             </AnimatePresence>
+            <DoclingPreview />
           </motion.div>
 
           <FlowArrow

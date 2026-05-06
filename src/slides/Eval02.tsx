@@ -124,10 +124,19 @@ const METRICS = [
     label: "Faithfulness",
     score: "0.77",
     evals: "231",
-    desc: "คำตอบมาจากเนื้อหาที่สืบค้นได้ทั้งหมดโดยไม่อ้างอิงข้อมูลภายนอก",
+    desc: "วัดความสอดคล้องเชิงข้อเท็จจริงของคำตอบกับบริบทที่ดึงมาได้ โดยมีค่า 0–1 ยิ่งสูงยิ่งสอดคล้องมาก",
     color: "#7C3AED",
     rgb: "124,58,237",
     grad: ["#7C3AED", "#A855F7"] as [string, string],
+  },
+  {
+    label: "Factual Correctness",
+    score: "0.78",
+    evals: "231",
+    desc: "วัดความถูกต้องเชิงข้อเท็จจริงของคำตอบเทียบกับข้อมูลอ้างอิง โดยใช้ LLM แยกข้อเท็จจริงและ NLI เพื่อประเมินความสอดคล้อง",
+    color: "#EC4899",
+    rgb: "236,72,153",
+    grad: ["#EC4899", "#F43F5E"] as [string, string],
   },
   {
     label: "Task Completion",
@@ -146,15 +155,6 @@ const METRICS = [
     color: "#3B82F6",
     rgb: "59,130,246",
     grad: ["#3B82F6", "#06B6D4"] as [string, string],
-  },
-  {
-    label: "Factual Correctness",
-    score: "0.78",
-    evals: "231",
-    desc: "วัดความถูกต้องของข้อเท็จจริงเทียบกับข้อมูลอ้างอิงด้วยค่า F1",
-    color: "#EC4899",
-    rgb: "236,72,153",
-    grad: ["#EC4899", "#F43F5E"] as [string, string],
   },
 ] as const;
 
@@ -311,7 +311,7 @@ export function Eval02() {
             >
               <p style={{ margin: 0, fontSize: "var(--slide-body)", color: "#374151", lineHeight: 1.6 }}>
                 <ThaiText>
-                  ระบบ RAG ทั่วไปมักได้คะแนน <strong style={{ color: "#7C3AED" }}>Faithfulness ที่ 0.55–0.65</strong> เนื่องจากการแบ่งข้อมูลแบบคงที่ (Fixed-window) แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>0.77</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
+                  ระบบ RAG ทั่วไปมักได้คะแนนเฉลี่ยที่ <strong style={{ color: "#7C3AED" }}>0.55–0.65</strong> แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>0.77</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
                 </ThaiText>
               </p>
             </Callout>
