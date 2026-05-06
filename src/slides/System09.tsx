@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useRef } from "react";
+import { motion, useMotionValue } from "framer-motion";
+import { useRef, useState } from "react";
 import {
   SlideHeader,
   SlideShell,
@@ -16,38 +16,144 @@ import { fadeInUp } from "../lib/motion.ts";
 
 const GLOWS = [
   { top: "10%", right: "10%", size: 600, color: "249,115,22", opacity: 0.08 }, // Orange (Embedding)
-  { bottom: "10%", right: "10%", size: 600, color: "16,185,129", opacity: 0.08 }, // Green (AI)
+  {
+    bottom: "10%",
+    right: "10%",
+    size: 600,
+    color: "16,185,129",
+    opacity: 0.08,
+  }, // Green (AI)
   { top: "50%", left: "5%", size: 600, color: "239,68,68", opacity: 0.05 }, // Red (Web)
 ];
 
-function FloatingLabel({ 
-  top, left, right, bottom, transform, title, desc, color 
-}: { 
-  top?: number | string, left?: number | string, right?: number | string, bottom?: number | string, 
-  transform?: string, title: string, desc: React.ReactNode, color: string 
+const STORAGE_KEY = (key: string) => `system09-label-${key}`;
+
+// Absolute pixel positions relative to the inner diagram container
+const DEFAULT_POSITIONS: Record<string, { top: number; left: number }> = {
+  step1: { top: 446.328125, left: 322.76171875 },
+  step2: { top: 297.8515625, left: 1419.82421875 },
+  step3: { top: 298.80078125, left: 1062.609375 },
+  step4: { top: 298.109375, left: 705.46484375 },
+  step5: { top: 54.109375, left: 1006.90625 },
+  step6: { top: 548.921875, left: 960.81640625 },
+};
+
+function getSavedPos(key: string): { top: number; left: number } {
+  try {
+    return (
+      JSON.parse(localStorage.getItem(STORAGE_KEY(key)) ?? "null") ??
+      DEFAULT_POSITIONS[key]
+    );
+  } catch {
+    return DEFAULT_POSITIONS[key];
+  }
+}
+
+function FloatingLabel({
+  labelKey,
+  editMode,
+  title,
+  desc,
+  color,
+}: {
+  labelKey: string;
+  editMode: boolean;
+  title: string;
+  desc: React.ReactNode;
+  color: string;
 }) {
+  const [pos, setPos] = useState(() => getSavedPos(labelKey));
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
   return (
-    <motion.div 
-      {...fadeInUp(0.6)}
+    <motion.div
+      {...(editMode ? {} : fadeInUp(0.6))}
+      drag={editMode}
+      dragMomentum={false}
+      onDragEnd={() => {
+        const newPos = { top: pos.top + y.get(), left: pos.left + x.get() };
+        localStorage.setItem(STORAGE_KEY(labelKey), JSON.stringify(newPos));
+        setPos(newPos);
+        x.set(0);
+        y.set(0);
+      }}
       style={{
         position: "absolute",
-        top, left, right, bottom, transform,
+        top: pos.top,
+        left: pos.left,
+        x,
+        y,
         background: "rgba(255,255,255,0.95)",
         backdropFilter: "blur(12px)",
         border: `1px solid ${color}40`,
         borderRadius: 16,
         padding: "12px 20px",
-        boxShadow: `0 12px 32px ${color}20`,
+        boxShadow: editMode
+          ? `0 0 0 2px ${color}, 0 12px 32px ${color}40`
+          : `0 12px 32px ${color}20`,
         zIndex: 30,
         width: 260,
-        pointerEvents: "none"
+        pointerEvents: editMode ? "all" : "none",
+        cursor: editMode ? "grab" : "default",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-        <div style={{ width: 10, height: 10, borderRadius: "50%", background: color, boxShadow: `0 0 8px ${color}` }} />
-        <div style={{ fontSize: 13, fontWeight: 800, color: color, textTransform: "uppercase", letterSpacing: 0.5 }}>{title}</div>
+      {editMode && (
+        <div
+          style={{
+            position: "absolute",
+            top: -10,
+            right: -10,
+            background: color,
+            color: "#fff",
+            fontSize: 10,
+            fontWeight: 800,
+            borderRadius: 6,
+            padding: "2px 7px",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        >
+          DRAG
+        </div>
+      )}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 6,
+        }}
+      >
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            background: color,
+            boxShadow: `0 0 8px ${color}`,
+          }}
+        />
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 800,
+            color: color,
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+          }}
+        >
+          {title}
+        </div>
       </div>
-      <div style={{ fontSize: 14, color: "#374151", lineHeight: 1.5, fontWeight: 500 }}>
+      <div
+        style={{
+          fontSize: 14,
+          color: "#374151",
+          lineHeight: 1.5,
+          fontWeight: 500,
+        }}
+      >
         {desc}
       </div>
     </motion.div>
@@ -59,6 +165,8 @@ export function System09() {
   const backendRef = useRef<HTMLDivElement>(null);
   const aiRef = useRef<HTMLDivElement>(null);
   const embedRef = useRef<HTMLDivElement>(null);
+
+  const editMode = new URLSearchParams(window.location.search).has("edit");
 
   // Total animation cycle = 14 seconds
   const TOTAL_CYCLE = 14;
@@ -73,7 +181,15 @@ export function System09() {
         marginBottom={20}
       />
 
-      <div style={{ flex: 1, position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div
+        style={{
+          flex: 1,
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <motion.div
           {...fadeInUp(0.3)}
           style={{
@@ -85,21 +201,28 @@ export function System09() {
             border: "1px solid rgba(255,255,255,0.6)",
             position: "relative",
             isolation: "isolate",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.02), inset 0 0 0 1px rgba(255,255,255,0.8)",
+            boxShadow:
+              "0 20px 60px rgba(0,0,0,0.02), inset 0 0 0 1px rgba(255,255,255,0.8)",
           }}
           ref={containerRef}
         >
           {/* Subtle grid background */}
-          <div style={{ 
-            position: "absolute", inset: 0, 
-            backgroundImage: `radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px)`, 
-            backgroundSize: "24px 24px", opacity: 0.5, borderRadius: 40, zIndex: -1 
-          }} />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px)`,
+              backgroundSize: "24px 24px",
+              opacity: 0.5,
+              borderRadius: 40,
+              zIndex: -1,
+            }}
+          />
 
           {/* ========================================================================= */}
           {/* BEAMS RENDERED FIRST TO STAY BEHIND NODES */}
           {/* ========================================================================= */}
-          
+
           {/* Web -> AI (Offset Y: 15) */}
           <AnimatedBeam
             containerRef={containerRef}
@@ -274,86 +397,316 @@ export function System09() {
           {/* ========================================================================= */}
 
           {/* Web / Backend (Left Center) */}
-          <div style={{ position: "absolute", top: "calc(50% - 90px)", left: "10%", zIndex: 10 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div ref={backendRef} style={{ position: "relative", zIndex: 10, background: "rgba(255,255,255,1)", borderRadius: 28, padding: 4 }}>
-                <IconBadge size={100} radius={28} gradient={["#EF4444", "#FCA5A5"]} shadow={"rgba(239,68,68,0.4)"}>
-                  <div style={{ color: "white" }}><BackendIcon /></div>
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(50% - 90px)",
+              left: "10%",
+              zIndex: 10,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div
+                ref={backendRef}
+                style={{
+                  position: "relative",
+                  zIndex: 10,
+                  background: "rgba(255,255,255,1)",
+                  borderRadius: 28,
+                  padding: 4,
+                }}
+              >
+                <IconBadge
+                  size={100}
+                  radius={28}
+                  gradient={["#EF4444", "#FCA5A5"]}
+                  shadow={"rgba(239,68,68,0.4)"}
+                >
+                  <div style={{ color: "white" }}>
+                    <BackendIcon />
+                  </div>
                 </IconBadge>
               </div>
-              <div style={{ textAlign: "center", marginTop: 20, fontWeight: 800, fontSize: 20, color: "#B91C1C", textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Web / Backend</div>
-              <div style={{ fontSize: 12, color: "#EF4444", fontWeight: 600, textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Client Interface</div>
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: 20,
+                  fontWeight: 800,
+                  fontSize: 20,
+                  color: "#B91C1C",
+                  textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                }}
+              >
+                Web / Backend
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#EF4444",
+                  fontWeight: 600,
+                  textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                }}
+              >
+                Client Interface
+              </div>
             </div>
           </div>
 
           {/* Embedding Service (Top Right) */}
-          <div style={{ position: "absolute", top: "15%", right: "15%", zIndex: 10 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div ref={embedRef} style={{ position: "relative", zIndex: 10, background: "rgba(255,255,255,1)", borderRadius: 28, padding: 4 }}>
-                <IconBadge size={100} radius={28} gradient={["#F97316", "#FDBA74"]} shadow={"rgba(249,115,22,0.4)"}>
-                  <div style={{ color: "white" }}><EmbeddingIcon /></div>
+          <div
+            style={{
+              position: "absolute",
+              top: "15%",
+              right: "15%",
+              zIndex: 10,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div
+                ref={embedRef}
+                style={{
+                  position: "relative",
+                  zIndex: 10,
+                  background: "rgba(255,255,255,1)",
+                  borderRadius: 28,
+                  padding: 4,
+                }}
+              >
+                <IconBadge
+                  size={100}
+                  radius={28}
+                  gradient={["#F97316", "#FDBA74"]}
+                  shadow={"rgba(249,115,22,0.4)"}
+                >
+                  <div style={{ color: "white" }}>
+                    <EmbeddingIcon />
+                  </div>
                 </IconBadge>
               </div>
-              <div style={{ textAlign: "center", marginTop: 20, fontWeight: 800, fontSize: 20, color: "#C2410C", textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Embedding Service</div>
-              <div style={{ fontSize: 12, color: "#F97316", fontWeight: 600, textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Vector DB & Docs</div>
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: 20,
+                  fontWeight: 800,
+                  fontSize: 20,
+                  color: "#C2410C",
+                  textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                }}
+              >
+                Embedding Service
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#F97316",
+                  fontWeight: 600,
+                  textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                }}
+              >
+                Vector DB & Docs
+              </div>
             </div>
           </div>
 
           {/* AI / Search Flow (Bottom Right) */}
-          <div style={{ position: "absolute", bottom: "15%", right: "15%", zIndex: 10 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div ref={aiRef} style={{ position: "relative", zIndex: 10, background: "rgba(255,255,255,1)", borderRadius: 28, padding: 4 }}>
-                <IconBadge size={100} radius={28} gradient={["#10B981", "#6EE7B7"]} shadow={"rgba(16,185,129,0.4)"}>
-                  <div style={{ color: "white" }}><SearchFlowServiceIcon /></div>
+          <div
+            style={{
+              position: "absolute",
+              bottom: "15%",
+              right: "15%",
+              zIndex: 10,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div
+                ref={aiRef}
+                style={{
+                  position: "relative",
+                  zIndex: 10,
+                  background: "rgba(255,255,255,1)",
+                  borderRadius: 28,
+                  padding: 4,
+                }}
+              >
+                <IconBadge
+                  size={100}
+                  radius={28}
+                  gradient={["#10B981", "#6EE7B7"]}
+                  shadow={"rgba(16,185,129,0.4)"}
+                >
+                  <div style={{ color: "white" }}>
+                    <SearchFlowServiceIcon />
+                  </div>
                 </IconBadge>
               </div>
-              <div style={{ textAlign: "center", marginTop: 20, fontWeight: 800, fontSize: 20, color: "#047857", textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Search Flow</div>
-              <div style={{ fontSize: 12, color: "#10B981", fontWeight: 600, textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>AI Agents</div>
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: 20,
+                  fontWeight: 800,
+                  fontSize: 20,
+                  color: "#047857",
+                  textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                }}
+              >
+                Search Flow
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#10B981",
+                  fontWeight: 600,
+                  textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                }}
+              >
+                AI Agents
+              </div>
             </div>
           </div>
 
           {/* ========================================================================= */}
           {/* STATIC FLOATING LABELS */}
           {/* ========================================================================= */}
-          
-          <FloatingLabel 
-            bottom="18%" left="12%"
-            title="STEP 1" color="#10B981"
-            desc={<ThaiText><span style={{fontWeight:800}}>1.</span> Web ส่ง Request แจ้งให้ AI ทำการค้นหาข้อมูล</ThaiText>}
-          />
 
-          <FloatingLabel 
-            bottom="2%" left="12%"
-            title="STEP 6" color="#10B981"
-            desc={<ThaiText><span style={{fontWeight:800}}>6.</span> Web ส่ง Request กลับไปหา AI พร้อมแนบเอกสารยืนยัน</ThaiText>}
+          <FloatingLabel
+            labelKey="step1"
+            editMode={editMode}
+            title="STEP 1"
+            color="#10B981"
+            desc={
+              <ThaiText>
+                <span style={{ fontWeight: 800 }}>1.</span> Web ส่ง Request
+                แจ้งให้ AI ทำการค้นหาข้อมูล
+              </ThaiText>
+            }
           />
-
-          <FloatingLabel 
-            bottom="30%" right="22%"
-            title="STEP 2" color="#8B5CF6"
-            desc={<ThaiText><span style={{fontWeight:800}}>2.</span> AI Agent สั่งค้นหาข้อมูลไปยัง Embedding Service</ThaiText>}
+          <FloatingLabel
+            labelKey="step2"
+            editMode={editMode}
+            title="STEP 2"
+            color="#8B5CF6"
+            desc={
+              <ThaiText>
+                <span style={{ fontWeight: 800 }}>2.</span> AI Agent
+                สั่งค้นหาข้อมูลไปยัง Embedding Service
+              </ThaiText>
+            }
           />
- 
-          <FloatingLabel 
-            top="38%" left="50%"
-            title="STEP 3" color="#3B82F6"
-            desc={<ThaiText><span style={{fontWeight:800}}>3.</span> Embedding Service ส่งผลลัพธ์กลับมาให้ AI</ThaiText>}
+          <FloatingLabel
+            labelKey="step3"
+            editMode={editMode}
+            title="STEP 3"
+            color="#3B82F6"
+            desc={
+              <ThaiText>
+                <span style={{ fontWeight: 800 }}>3.</span> Embedding Service
+                ส่งผลลัพธ์กลับมาให้ AI
+              </ThaiText>
+            }
           />
- 
-          <FloatingLabel 
-            bottom="12%" left="50%" transform="translateX(-50%)"
-            title="STEP 4" color="#EF4444"
-            desc={<ThaiText><span style={{fontWeight:800}}>4.</span> AI ส่งกลับเฉพาะ IDs ของเอกสารให้ฝั่ง Web</ThaiText>}
+          <FloatingLabel
+            labelKey="step4"
+            editMode={editMode}
+            title="STEP 4"
+            color="#EF4444"
+            desc={
+              <ThaiText>
+                <span style={{ fontWeight: 800 }}>4.</span> AI ส่งกลับเฉพาะ IDs
+                ของเอกสารให้ฝั่ง Web
+              </ThaiText>
+            }
           />
- 
-          <FloatingLabel 
-            top="12%" left="32%" transform="translateX(-50%)"
-            title="STEP 5" color="#F97316"
-            desc={<ThaiText><span style={{fontWeight:800}}>5.</span> Web ดึงเนื้อหาเต็มจาก Embedding Service</ThaiText>}
+          <FloatingLabel
+            labelKey="step5"
+            editMode={editMode}
+            title="STEP 5"
+            color="#F97316"
+            desc={
+              <ThaiText>
+                <span style={{ fontWeight: 800 }}>5.</span> Web
+                ดึงเนื้อหาเต็มจาก Embedding Service
+              </ThaiText>
+            }
           />
-
+          <FloatingLabel
+            labelKey="step6"
+            editMode={editMode}
+            title="STEP 6"
+            color="#10B981"
+            desc={
+              <ThaiText>
+                <span style={{ fontWeight: 800 }}>6.</span> Web ส่ง Request
+                กลับไปหา AI พร้อมแนบเอกสารยืนยัน
+              </ThaiText>
+            }
+          />
         </motion.div>
       </div>
+
+      {/* Edit-mode HUD */}
+      {editMode && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 24,
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+            background: "rgba(0,0,0,0.75)",
+            backdropFilter: "blur(8px)",
+            borderRadius: 12,
+            padding: "10px 20px",
+            zIndex: 200,
+            color: "#fff",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          <span style={{ opacity: 0.7 }}>
+            ✦ LAYOUT EDIT MODE — drag labels to reposition
+          </span>
+          <button
+            onClick={() => {
+              ["step1", "step2", "step3", "step4", "step5", "step6"].forEach(
+                (k) => localStorage.removeItem(`system09-label-${k}`),
+              );
+              window.location.reload();
+            }}
+            style={{
+              background: "#EF4444",
+              border: "none",
+              borderRadius: 8,
+              color: "#fff",
+              fontSize: 12,
+              fontWeight: 800,
+              padding: "4px 12px",
+              cursor: "pointer",
+            }}
+          >
+            Reset positions
+          </button>
+        </div>
+      )}
     </SlideShell>
   );
 }
