@@ -26,6 +26,7 @@ import { InteractiveRAG    } from './InteractiveRAG.tsx';
 import { OperationalModes  } from './OperationalModes.tsx';
 import { AttachmentFlow    } from './AttachmentFlow.tsx';
 import { WebCapabilities   } from './WebCapabilities.tsx';
+import { WebCapabilities2  } from './WebCapabilities2.tsx';
 
 import { EvalDivider  } from './EvalDivider.tsx';
 import { EvalResults  } from './EvalResults.tsx';
@@ -70,6 +71,7 @@ const deck = [
       OperationalModes,
       AttachmentFlow,
       WebCapabilities,
+      WebCapabilities2,
     ],
   },
   {
