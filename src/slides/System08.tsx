@@ -31,8 +31,10 @@ const MODES = [
     color: "#7C3AED",
     icon: <BackendIcon />,
     promptType: "Decision Prompt",
-    promptRules: "Action Selection Logic (STRICT): You must select and execute the appropriate action based on exactly what the user provides (SEARCH, LOOKUP, or CHAT).",
-    rejectRule: "Reject if lack of specific intent or asking factual question out of domain."
+    promptRules:
+      "Action Selection Logic (STRICT): You must select and execute the appropriate action based on exactly what the user provides (SEARCH, LOOKUP, or CHAT).",
+    rejectRule:
+      "Reject if lack of specific intent or asking factual question out of domain.",
   },
   {
     id: "search",
@@ -43,8 +45,10 @@ const MODES = [
     color: "#3B82F6",
     icon: <SearchFlowServiceIcon />,
     promptType: "Direct Command",
-    promptRules: "STRICT MODE ENFORCED: You ONLY have search tools. You MUST perform a search. CRITICAL: Do NOT rely on 'Attachments' to skip searching.",
-    rejectRule: "Reject if Insufficient Information or Conflicting/Out-of-Domain Request."
+    promptRules:
+      "STRICT MODE ENFORCED: You ONLY have search tools. You MUST perform a search. CRITICAL: Do NOT rely on 'Attachments' to skip searching.",
+    rejectRule:
+      "Reject if Insufficient Information or Conflicting/Out-of-Domain Request.",
   },
   {
     id: "lookup",
@@ -55,8 +59,10 @@ const MODES = [
     color: "#10B981",
     icon: <LookupIcon />,
     promptType: "Direct Command",
-    promptRules: "STRICT MODE ENFORCED: You ONLY have tools to get pages or get chunks. You MUST use these tools to read specific files or chunks.",
-    rejectRule: "Reject if lacking specific file path OR page/chunk number, or asking for general search."
+    promptRules:
+      "STRICT MODE ENFORCED: You ONLY have tools to get pages or get chunks. You MUST use these tools to read specific files or chunks.",
+    rejectRule:
+      "Reject if lacking specific file path OR page/chunk number, or asking for general search.",
   },
   {
     id: "chat",
@@ -67,8 +73,10 @@ const MODES = [
     color: "#F59E0B",
     icon: <ChatIcon />,
     promptType: "Direct Command",
-    promptRules: "STRICT MODE ENFORCED: You have NO retrieval tools. Your main duty is to engage in general conversation related to the SCB TechX domain.",
-    rejectRule: "Reject if Tool Required (factual question not in Attachments) or Out-of-Domain."
+    promptRules:
+      "STRICT MODE ENFORCED: You have NO retrieval tools. Your main duty is to engage in general conversation related to the SCB TechX domain.",
+    rejectRule:
+      "Reject if Tool Required (factual question not in Attachments) or Out-of-Domain.",
   },
 ];
 
@@ -85,7 +93,8 @@ export function System08() {
     if (isHovered) return;
     const interval = setInterval(() => {
       setActiveMode((prev) => {
-        const nextIndex = (MODES.findIndex((m) => m.id === prev.id) + 1) % MODES.length;
+        const nextIndex =
+          (MODES.findIndex((m) => m.id === prev.id) + 1) % MODES.length;
         return MODES[nextIndex];
       });
     }, 4500);
@@ -102,7 +111,11 @@ export function System08() {
         marginBottom={16}
       />
 
-      <div style={{ flex: 1, display: "flex", gap: 32, alignItems: "center" }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <div
+        style={{ flex: 1, display: "flex", gap: 32, alignItems: "center" }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         {/* Left: Architecture Diagram */}
         <motion.div
           {...fadeInUp(0.3)}
@@ -121,7 +134,14 @@ export function System08() {
           }}
           ref={containerRef}
         >
-          <div style={{ marginBottom: 32, textAlign: "center", position: "relative", zIndex: 20 }}>
+          <div
+            style={{
+              marginBottom: 32,
+              textAlign: "center",
+              position: "relative",
+              zIndex: 20,
+            }}
+          >
             <Pill color={activeMode.color}>
               Mode: {activeMode.title} Connectivity
             </Pill>
@@ -153,99 +173,253 @@ export function System08() {
             />
           )}
 
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", paddingTop: 60, paddingBottom: 0, position: "relative", zIndex: 10 }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              paddingTop: 60,
+              paddingBottom: 0,
+              position: "relative",
+              zIndex: 10,
+            }}
+          >
             {/* Agent */}
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 80 }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-                 <div ref={agentRef} style={{ position: "relative", zIndex: 10, background: "rgba(255,255,255,1)", borderRadius: 28, padding: 4 }}>
-                   <IconBadge size={100} radius={28} gradient={["#7C3AED", "#D946EF"]} shadow="rgba(124,58,237,0.3)">
-                      <div style={{ color: "white" }}><RobotIcon /></div>
-                   </IconBadge>
-                 </div>
-                 <div style={{ textAlign: "center", fontWeight: 800, fontSize: 20, position: "relative", zIndex: 10, textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>AINGO Agent</div>
-                 <div style={{ position: "relative", zIndex: 10 }}>
-                   <Pill color={activeMode.color}>{activeMode.promptType}</Pill>
-                 </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 80,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 12,
+                }}
+              >
+                <div
+                  ref={agentRef}
+                  style={{
+                    position: "relative",
+                    zIndex: 10,
+                    background: "rgba(255,255,255,1)",
+                    borderRadius: 28,
+                    padding: 4,
+                  }}
+                >
+                  <IconBadge
+                    size={100}
+                    radius={28}
+                    gradient={["#7C3AED", "#D946EF"]}
+                    shadow="rgba(124,58,237,0.3)"
+                  >
+                    <div style={{ color: "white" }}>
+                      <RobotIcon />
+                    </div>
+                  </IconBadge>
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    fontWeight: 800,
+                    fontSize: 20,
+                    position: "relative",
+                    zIndex: 10,
+                    textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  AINGO Agent
+                </div>
+                <div style={{ position: "relative", zIndex: 10 }}>
+                  <Pill color={activeMode.color}>{activeMode.promptType}</Pill>
+                </div>
               </div>
             </div>
 
             {/* Tools */}
             <div style={{ display: "flex", justifyContent: "space-around" }}>
-               <div style={{ opacity: activeMode.tools.includes("search") ? 1 : 0.15, transition: "opacity 0.5s", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <div ref={searchToolRef} style={{ position: "relative", zIndex: 10, background: "rgba(255,255,255,1)", borderRadius: 18, padding: 4 }}>
-                    <IconBadge size={72} radius={18} gradient={["#3B82F6", "#60A5FA"]} shadow="rgba(59,130,246,0.2)">
-                      <SearchFlowServiceIcon />
-                    </IconBadge>
-                  </div>
-                  <div style={{ textAlign: "center", marginTop: 12, fontWeight: 600, fontSize: 14, position: "relative", zIndex: 10, textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Search Tool</div>
-               </div>
+              <div
+                style={{
+                  opacity: activeMode.tools.includes("search") ? 1 : 0.15,
+                  transition: "opacity 0.5s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  ref={searchToolRef}
+                  style={{
+                    position: "relative",
+                    zIndex: 10,
+                    background: "rgba(255,255,255,1)",
+                    borderRadius: 18,
+                    padding: 4,
+                  }}
+                >
+                  <IconBadge
+                    size={72}
+                    radius={18}
+                    gradient={["#3B82F6", "#60A5FA"]}
+                    shadow="rgba(59,130,246,0.2)"
+                  >
+                    <SearchFlowServiceIcon />
+                  </IconBadge>
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: 12,
+                    fontWeight: 600,
+                    fontSize: 14,
+                    position: "relative",
+                    zIndex: 10,
+                    textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  Search Tool
+                </div>
+              </div>
 
-                <div ref={lookupToolRef} style={{ opacity: activeMode.tools.includes("lookup") ? 1 : 0.15, transition: "opacity 0.5s", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <div ref={lookupToolRef} style={{ position: "relative", zIndex: 10, background: "rgba(255,255,255,1)", borderRadius: 18, padding: 4 }}>
-                    <IconBadge size={72} radius={18} gradient={["#10B981", "#34D399"]} shadow="rgba(16,185,129,0.2)">
-                      <LookupIcon />
-                    </IconBadge>
-                  </div>
-                  <div style={{ textAlign: "center", marginTop: 12, fontWeight: 600, fontSize: 14, position: "relative", zIndex: 10, textShadow: "0 2px 4px rgba(255,255,255,0.8)" }}>Lookup Tool</div>
-               </div>
+              <div
+                ref={lookupToolRef}
+                style={{
+                  opacity: activeMode.tools.includes("lookup") ? 1 : 0.15,
+                  transition: "opacity 0.5s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  ref={lookupToolRef}
+                  style={{
+                    position: "relative",
+                    zIndex: 10,
+                    background: "rgba(255,255,255,1)",
+                    borderRadius: 18,
+                    padding: 4,
+                  }}
+                >
+                  <IconBadge
+                    size={72}
+                    radius={18}
+                    gradient={["#10B981", "#34D399"]}
+                    shadow="rgba(16,185,129,0.2)"
+                  >
+                    <LookupIcon />
+                  </IconBadge>
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: 12,
+                    fontWeight: 600,
+                    fontSize: 14,
+                    position: "relative",
+                    zIndex: 10,
+                    textShadow: "0 2px 4px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  Lookup Tool
+                </div>
+              </div>
             </div>
           </div>
 
-
-
-          <div style={{ marginTop: 20, fontSize: 13, color: "rgba(0,0,0,0.5)", fontStyle: "italic", textAlign: "center" }}>
+          <div
+            style={{
+              marginTop: 20,
+              fontSize: 13,
+              color: "rgba(0,0,0,0.5)",
+              fontStyle: "italic",
+              textAlign: "center",
+            }}
+          >
             *Architecture dynamically adapts based on selected mode.
           </div>
         </motion.div>
 
         {/* Right: Mode Cards & Prompts */}
-        <div style={{ flex: 0.55, display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div
+          style={{
+            flex: 0.55,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}
+          >
             {MODES.map((mode, idx) => (
               <motion.div
                 key={mode.id}
                 {...fadeInUp(0.4 + idx * 0.1)}
                 onClick={() => setActiveMode(mode)}
                 style={{
-                  background: activeMode.id === mode.id ? "white" : "rgba(255,255,255,0.4)",
+                  background:
+                    activeMode.id === mode.id
+                      ? "white"
+                      : "rgba(255,255,255,0.4)",
                   padding: 20,
                   borderRadius: 24,
                   border: `2px solid ${activeMode.id === mode.id ? mode.color : "transparent"}`,
-                  boxShadow: activeMode.id === mode.id ? `0 12px 32px rgba(0,0,0,0.08)` : "none",
+                  boxShadow:
+                    activeMode.id === mode.id
+                      ? `0 12px 32px rgba(0,0,0,0.08)`
+                      : "none",
                   cursor: "pointer",
                   position: "relative",
                   transition: "all 0.3s ease",
-                  isolation: "isolate"
+                  isolation: "isolate",
                 }}
               >
-                <BigGhostNumber opacity={0.05} size={64} style={{ position: "absolute", top: 8, right: 12 }}>
+                <BigGhostNumber
+                  opacity={0.05}
+                  size={64}
+                  style={{ position: "absolute", top: 8, right: 12 }}
+                >
                   {String(idx + 1)}
                 </BigGhostNumber>
-                
+
                 <div style={{ marginBottom: 8 }}>
                   <Pill color={mode.color}>{mode.title}</Pill>
                 </div>
-                
-                <div style={{ fontWeight: 800, fontSize: 16, color: "#1F2937", marginBottom: 6 }}>
+
+                <div
+                  style={{
+                    fontWeight: 800,
+                    fontSize: 16,
+                    color: "#1F2937",
+                    marginBottom: 6,
+                  }}
+                >
                   {mode.subtitle}
                 </div>
-                
-                <div style={{ fontSize: 13, color: "#4B5563", lineHeight: 1.5 }}>
+
+                <div
+                  style={{ fontSize: 16, color: "#4B5563", lineHeight: 1.5 }}
+                >
                   <ThaiText>{mode.desc}</ThaiText>
                 </div>
 
                 {activeMode.id === mode.id && (
-                  <motion.div 
+                  <motion.div
                     layoutId="active-indicator"
-                    style={{ 
-                      position: "absolute", 
-                      bottom: 12, 
-                      right: 12, 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: "50%", 
-                      backgroundColor: mode.color 
-                    }} 
+                    style={{
+                      position: "absolute",
+                      bottom: 12,
+                      right: 12,
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      backgroundColor: mode.color,
+                    }}
                   />
                 )}
               </motion.div>
@@ -264,18 +438,30 @@ export function System08() {
               flexDirection: "column",
               gap: 16,
               borderLeft: `4px solid ${activeMode.color}`,
-              transition: "border-color 0.3s ease"
+              transition: "border-color 0.3s ease",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                }}
+              >
                 System Prompt Strategy
               </div>
-              <Pill color={activeMode.color}>
-                Mode: {activeMode.title}
-              </Pill>
+              <Pill color={activeMode.color}>Mode: {activeMode.title}</Pill>
             </div>
-            
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeMode.id}
@@ -286,14 +472,36 @@ export function System08() {
                 style={{ display: "flex", flexDirection: "column", gap: 12 }}
               >
                 <div>
-                  <div style={{ fontSize: 11, color: activeMode.color, fontWeight: 700, marginBottom: 4 }}>OPERATIONAL RULES</div>
-                  <div style={{ fontSize: 14, lineHeight: 1.5, color: "#E5E7EB" }}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: activeMode.color,
+                      fontWeight: 700,
+                      marginBottom: 4,
+                    }}
+                  >
+                    OPERATIONAL RULES
+                  </div>
+                  <div
+                    style={{ fontSize: 14, lineHeight: 1.5, color: "#E5E7EB" }}
+                  >
                     {activeMode.promptRules}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: "#EF4444", fontWeight: 700, marginBottom: 4 }}>REJECTION CRITERIA</div>
-                  <div style={{ fontSize: 14, lineHeight: 1.5, color: "#E5E7EB" }}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#EF4444",
+                      fontWeight: 700,
+                      marginBottom: 4,
+                    }}
+                  >
+                    REJECTION CRITERIA
+                  </div>
+                  <div
+                    style={{ fontSize: 14, lineHeight: 1.5, color: "#E5E7EB" }}
+                  >
                     {activeMode.rejectRule}
                   </div>
                 </div>
