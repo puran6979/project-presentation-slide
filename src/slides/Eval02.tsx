@@ -311,7 +311,7 @@ export function Eval02() {
             >
               <p style={{ margin: 0, fontSize: "var(--slide-body)", color: "#374151", lineHeight: 1.6 }}>
                 <ThaiText>
-                  ระบบ RAG ทั่วไปมักได้คะแนนเฉลี่ยที่ <strong style={{ color: "#7C3AED" }}>0.55–0.65</strong> เนื่องจากการแบ่งข้อมูลแบบคงที่ (Fixed-window) แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>0.77</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
+                  ระบบ RAG ทั่วไปมักได้คะแนนเฉลี่ยที่ <strong style={{ color: "#7C3AED" }}>0.55–0.65</strong> แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>0.77</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
                 </ThaiText>
               </p>
             </Callout>
