@@ -122,16 +122,16 @@ function LoopedAsset({ type, color, rgb }: { type: string; color: string; rgb: s
 const METRICS = [
   {
     label: "Faithfulness",
-    score: "0.77",
+    score: "77%",
     evals: "231",
-    desc: "วัดความสอดคล้องเชิงข้อเท็จจริงของคำตอบกับบริบทที่ดึงมาได้ โดยมีค่า 0–1 ยิ่งสูงยิ่งสอดคล้องมาก",
+    desc: "วัดความสอดคล้องเชิงข้อเท็จจริงของคำตอบกับบริบทที่ดึงมาได้ โดยมีค่า 0%–100% ยิ่งสูงยิ่งสอดคล้องมาก",
     color: "#7C3AED",
     rgb: "124,58,237",
     grad: ["#7C3AED", "#A855F7"] as [string, string],
   },
   {
     label: "Factual Correctness",
-    score: "0.78",
+    score: "78%",
     evals: "231",
     desc: "วัดความถูกต้องเชิงข้อเท็จจริงของคำตอบเทียบกับข้อมูลอ้างอิง โดยใช้ LLM แยกข้อเท็จจริงและ NLI เพื่อประเมินความสอดคล้อง",
     color: "#EC4899",
@@ -140,7 +140,7 @@ const METRICS = [
   },
   {
     label: "Task Completion",
-    score: "0.97",
+    score: "97%",
     evals: "231",
     desc: "Agent ทำงานสำเร็จตามความตั้งใจที่ผู้ใช้ระบุ",
     color: "#10B981",
@@ -149,7 +149,7 @@ const METRICS = [
   },
   {
     label: "Tool Correctness",
-    score: "0.99",
+    score: "99%",
     evals: "231",
     desc: "Agent อิสระเรียกใช้เครื่องมือ MCP ได้อย่างถูกต้องแม่นยำ",
     color: "#3B82F6",
@@ -311,7 +311,7 @@ export function Eval02() {
             >
               <p style={{ margin: 0, fontSize: "var(--slide-body)", color: "#374151", lineHeight: 1.6 }}>
                 <ThaiText>
-                  ระบบ RAG ทั่วไปมักได้คะแนนเฉลี่ยที่ <strong style={{ color: "#7C3AED" }}>0.55–0.65</strong> แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>0.77</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
+                  ระบบ RAG ทั่วไปมักได้คะแนนเฉลี่ยที่ <strong style={{ color: "#7C3AED" }}>55%–65%</strong> แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>77%</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
                 </ThaiText>
               </p>
             </Callout>
@@ -331,7 +331,7 @@ export function Eval02() {
             >
               <p style={{ margin: 0, fontSize: "var(--slide-body)", color: "#374151", lineHeight: 1.6 }}>
                 <ThaiText>
-                  คะแนน Tool Correctness <strong style={{ color: "#10B981" }}>(0.99)</strong> และ Task Completion <strong style={{ color: "#10B981" }}>(0.97)</strong> ที่โดดเด่น ช่วยยืนยันความน่าเชื่อถือระดับสูงของกระบวนการให้เหตุผลแบบ CrewAI และการเชื่อมต่อผ่าน MCP ส่วนคะแนน Faithfulness ที่ 0.77 นั้นยังมีพื้นที่ให้พัฒนาต่อยอดได้ด้วยการปรับปรุง Prompt Engineering
+                  คะแนน Tool Correctness <strong style={{ color: "#10B981" }}>(99%)</strong> และ Task Completion <strong style={{ color: "#10B981" }}>(97%)</strong> ที่โดดเด่น ช่วยยืนยันความน่าเชื่อถือระดับสูงของกระบวนการให้เหตุผลแบบ CrewAI และการเชื่อมต่อผ่าน MCP ส่วนคะแนน Faithfulness ที่ 77% นั้นยังมีพื้นที่ให้พัฒนาต่อยอดได้ด้วยการปรับปรุง Prompt Engineering
                 </ThaiText>
               </p>
             </Callout>
