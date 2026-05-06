@@ -15,6 +15,7 @@ import { Approach03 } from './Approach03.tsx';
 import { Approach04 } from './Approach04.tsx';
 // ── System Design & Implementation ─────────────────────────────────────────
 import { System01 } from './System01.tsx';
+import { SystemVideo } from './SystemVideo.tsx';
 import { System02 } from './System02.tsx';
 import { System03 } from './System03.tsx';
 import { System04 } from './System04.tsx';
@@ -53,6 +54,7 @@ export const slides: SlideComponent[] = [
   Approach04,
   // System Design & Implementation
   System01,
+  SystemVideo,
   System02,
   System03,
   System04,

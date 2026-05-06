@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { slides } from "./slides/index.ts";
+import { SystemVideo } from "./slides/SystemVideo.tsx";
 import { usePresentation } from "./hooks/usePresentation.ts";
 import { PresentationFrame, ProgressTracker } from "./components/index.ts";
 import { SlideContext } from "./context/SlideContext.tsx";
@@ -15,11 +16,32 @@ const SECTIONS = [
 ];
 
 export default function App() {
-  const { currentIndex, direction, goTo } = usePresentation(slides.length);
+  const state = usePresentation(slides.length);
+  const { currentIndex, direction, goTo } = state;
   const CurrentSlide = slides[currentIndex];
-  
+
   const currentSlideNum = currentIndex + 1;
   const isCoverSlide = currentSlideNum === 1;
+  const isVideoSlide = CurrentSlide === SystemVideo;
+
+  if (isVideoSlide) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "#000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <SlideContext.Provider value={{ slideNum: currentSlideNum, goTo }}>
+          <CurrentSlide />
+        </SlideContext.Provider>
+      </div>
+    );
+  }
 
   return (
     <PresentationFrame>
@@ -35,13 +57,13 @@ export default function App() {
             zIndex: 100,
           }}
         >
-          <ProgressTracker 
-            sections={SECTIONS} 
-            current={currentSlideNum} 
-            variant="dots" 
+          <ProgressTracker
+            sections={SECTIONS}
+            current={currentSlideNum}
+            variant="dots"
             activeColor="#D946EF"
             baseColor="rgba(0,0,0,0.1)"
-            thickness={6} 
+            thickness={6}
             gap={6}
             onDotClick={(slideNum) => goTo(slideNum - 1)}
           />
