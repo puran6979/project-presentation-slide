@@ -644,6 +644,49 @@ function FlowNode({
   );
 }
 
+function PulseRing({
+  show,
+  color,
+  rgb,
+  version,
+}: {
+  show: boolean;
+  color: string;
+  rgb: string;
+  version: number;
+}) {
+  if (!show) return null;
+  return (
+    <AnimatePresence>
+      <motion.div
+        key={version}
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 53,
+        }}
+      >
+        {[0, 0.3].map((delay, i) => (
+          <motion.div
+            key={i}
+            initial={{ scale: 1, opacity: 0.6 }}
+            animate={{ scale: 1.35, opacity: 0 }}
+            transition={{ duration: 1.0, ease: "easeOut", delay }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 34,
+              border: `2px solid ${color}`,
+              boxShadow: `0 0 14px 2px rgba(${rgb},0.3)`,
+            }}
+          />
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function GridBeam({
   fromRef,
   toRef,
@@ -694,6 +737,8 @@ function GridBeam({
 
 export function SolutionOverview() {
   const [active, setActive] = useState<ActiveCard | null>(null);
+  const [pulsingId, setPulsingId] = useState<keyof typeof NS | null>(null);
+  const [pulseVersion, setPulseVersion] = useState(0);
   const measureRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   // Single map of all card anchor refs — keyed by NS id.
@@ -749,7 +794,11 @@ export function SolutionOverview() {
   // Called from service chips inside the popover — looks up the real card DOM node.
   function navigateTo(id: keyof typeof NS) {
     const el = cardRefs.current[id];
-    if (el) setActive({ id, ...getCardRect(el) });
+    if (el) {
+      setActive({ id, ...getCardRect(el) });
+      setPulsingId(id);
+      setPulseVersion((v) => v + 1);
+    }
   }
 
   return (
@@ -865,8 +914,15 @@ export function SolutionOverview() {
             gridColumn: 6,
             gridRow: 1,
             zIndex: active?.id === "frontend" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "frontend"}
+            color={NS.frontend.color}
+            rgb={NS.frontend.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="frontend"
             anchorRef={frontendRef}
@@ -884,8 +940,15 @@ export function SolutionOverview() {
             gridColumn: 1,
             gridRow: 2,
             zIndex: active?.id === "webhook" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "webhook"}
+            color={NS.webhook.color}
+            rgb={NS.webhook.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="webhook"
             anchorRef={webhookRef}
@@ -901,8 +964,15 @@ export function SolutionOverview() {
             gridColumn: 2,
             gridRow: 2,
             zIndex: active?.id === "storage" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "storage"}
+            color={NS.storage.color}
+            rgb={NS.storage.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="storage"
             anchorRef={storageRef}
@@ -918,8 +988,15 @@ export function SolutionOverview() {
             gridColumn: 3,
             gridRow: 2,
             zIndex: active?.id === "mq" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "mq"}
+            color={NS.mq.color}
+            rgb={NS.mq.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="mq"
             anchorRef={mqRef}
@@ -935,8 +1012,15 @@ export function SolutionOverview() {
             gridColumn: 4,
             gridRow: 2,
             zIndex: active?.id === "ingestion" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "ingestion"}
+            color={NS.ingestion.color}
+            rgb={NS.ingestion.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="ingestion"
             anchorRef={ingestRef}
@@ -952,8 +1036,15 @@ export function SolutionOverview() {
             gridColumn: 5,
             gridRow: 2,
             zIndex: active?.id === "embedding" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "embedding"}
+            color={NS.embedding.color}
+            rgb={NS.embedding.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="embedding"
             anchorRef={embedRef}
@@ -969,8 +1060,15 @@ export function SolutionOverview() {
             gridColumn: 6,
             gridRow: 2,
             zIndex: active?.id === "ai" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "ai"}
+            color={NS.ai.color}
+            rgb={NS.ai.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="ai"
             anchorRef={aiRef}
@@ -988,8 +1086,15 @@ export function SolutionOverview() {
             gridColumn: 1,
             gridRow: 3,
             zIndex: active?.id === "sharepoint" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "sharepoint"}
+            color={NS.sharepoint.color}
+            rgb={NS.sharepoint.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="sharepoint"
             anchorRef={sharepointRef}
@@ -1005,8 +1110,15 @@ export function SolutionOverview() {
             gridColumn: 3,
             gridRow: 3,
             zIndex: active?.id === "s3" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "s3"}
+            color={NS.s3.color}
+            rgb={NS.s3.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="s3"
             anchorRef={s3Ref}
@@ -1022,8 +1134,15 @@ export function SolutionOverview() {
             gridColumn: 5,
             gridRow: 3,
             zIndex: active?.id === "qdrant" ? 52 : 10,
+            position: "relative",
           }}
         >
+          <PulseRing
+            show={pulsingId === "qdrant"}
+            color={NS.qdrant.color}
+            rgb={NS.qdrant.rgb}
+            version={pulseVersion}
+          />
           <FlowNode
             id="qdrant"
             anchorRef={qdrantRef}
