@@ -311,7 +311,7 @@ function ServiceChip({
         background: `rgba(${s.rgb}, 0.12)`,
         border: `1px solid rgba(${s.rgb}, 0.3)`,
         color: s.color,
-        fontSize: 12,
+        fontSize: 15,
         fontWeight: 700,
         cursor: "pointer",
         verticalAlign: "middle",
@@ -482,7 +482,7 @@ function ServicePopover({
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 18,
+                fontSize: 24,
                 fontWeight: 800,
                 color: s.color,
                 lineHeight: 1.2,
@@ -493,7 +493,7 @@ function ServicePopover({
             {d.subtitle && (
               <div
                 style={{
-                  fontSize: 11,
+                  fontSize: 15,
                   fontWeight: 500,
                   color: "#64748b",
                   marginTop: 3,
@@ -515,7 +515,7 @@ function ServicePopover({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 14,
+              fontSize: 18,
               color: "#64748b",
               flexShrink: 0,
             }}
@@ -546,16 +546,16 @@ function ServicePopover({
             >
               <span
                 style={{
-                  width: 5,
-                  height: 5,
+                  width: 7,
+                  height: 7,
                   borderRadius: "50%",
                   background: s.color,
                   flexShrink: 0,
-                  marginTop: 8,
+                  marginTop: 10,
                 }}
               />
               <span
-                style={{ fontSize: 13, color: "#334155", lineHeight: 1.65 }}
+                style={{ fontSize: 17, color: "#334155", lineHeight: 1.65 }}
               >
                 {renderBullet(b, id, onNavigate)}
               </span>
