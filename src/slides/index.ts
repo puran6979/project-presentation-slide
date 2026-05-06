@@ -33,44 +33,83 @@ import { Team01 } from './Team01.tsx';
 import { Team02 } from './Team02.tsx';
 import { Team03 } from './Team03.tsx';
 import { Team04 } from './Team04.tsx';
-// import { TempSlide } from './TempSlide.tsx';
 
 export type SlideComponent = ComponentType;
 
-export const slides: SlideComponent[] = [
-  // Intro
-  Intro01,
-  Intro02,
-  // Problem Definition
-  Problem01,
-  Problem02,
-  Problem03,
-  Problem04,
-  Problem05,
-  // Approach
-  Approach01,
-  Approach02,
-  Approach03,
-  Approach04,
-  // System Design & Implementation
-  System01,
-  SystemVideo,
-  System02,
-  System03,
-  System04,
-  System05,
-  System06,
-  System07,
-  System08,
-  System09,
-  System10,
-  // Testing & Evaluation
-  Eval01,
-  Eval02,
-  // Team & Timeline
-  Team01,
-  Team02,
-  Team03,
-  Team04,
-  // TempSlide,
-];
+// ─────────────────────────────────────────────────────────────────────────────
+// SLIDE DECK — edit here to reorder, add, or remove slides.
+// Sections and their counts are derived automatically; no need to touch App.tsx.
+// ─────────────────────────────────────────────────────────────────────────────
+const deck = [
+  {
+    label: 'Intro',
+    slides: [
+      Intro01,
+      Intro02,
+    ],
+  },
+  {
+    label: 'Problem',
+    slides: [
+      Problem01,
+      Problem02,
+      Problem03,
+      Problem04,
+      Problem05,
+    ],
+  },
+  {
+    label: 'Approach',
+    slides: [
+      Approach01,
+      Approach02,
+      Approach03,
+      Approach04,
+    ],
+  },
+  {
+    label: 'System',
+    slides: [
+      System01,
+      SystemVideo,
+      System02,
+      System03,
+      System04,
+      System05,
+      System06,
+      System07,
+      System08,
+      System09,
+      System10,
+    ],
+  },
+  {
+    label: 'Testing',
+    slides: [
+      Eval01,
+      Eval02,
+    ],
+  },
+  {
+    label: 'Team',
+    slides: [
+      Team01,
+      Team02,
+      Team03,
+      Team04,
+    ],
+  },
+] as const satisfies { label: string; slides: SlideComponent[] }[];
+
+/** Flat ordered slide array used by the presentation engine. */
+export const slides: SlideComponent[] = deck.flatMap((s) => s.slides);
+
+/** Section metadata with auto-derived counts — consumed by ProgressTracker. */
+export const sections: { label: string; count: number }[] = deck.map((s) => ({
+  label: s.label,
+  count: s.slides.length,
+}));
+
+/** Total number of slides shown in the progress tracker (excludes hidden/video slides). */
+export const trackerSlideCount: number = slides.length;
+

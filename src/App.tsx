@@ -1,19 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { slides } from "./slides/index.ts";
+import { slides, sections, trackerSlideCount } from "./slides/index.ts";
 import { SystemVideo } from "./slides/SystemVideo.tsx";
 import { usePresentation } from "./hooks/usePresentation.ts";
 import { PresentationFrame, ProgressTracker } from "./components/index.ts";
 import { SlideContext } from "./context/SlideContext.tsx";
 import { slideSwipeTransition, slideSwipeVariants } from "./lib/motion.ts";
-
-const SECTIONS = [
-  { label: "Intro", count: 2 }, // Cover + TOC
-  { label: "Problem", count: 5 },
-  { label: "Approach", count: 4 },
-  { label: "System", count: 10 },
-  { label: "Testing", count: 2 },
-  { label: "Team", count: 4 },
-];
 
 export default function App() {
   const state = usePresentation(slides.length);
@@ -45,7 +36,7 @@ export default function App() {
 
   return (
     <PresentationFrame>
-      {!isCoverSlide && currentSlideNum <= 23 && (
+      {!isCoverSlide && currentSlideNum <= trackerSlideCount && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -58,7 +49,7 @@ export default function App() {
           }}
         >
           <ProgressTracker
-            sections={SECTIONS}
+            sections={sections}
             current={currentSlideNum}
             variant="dots"
             activeColor="#D946EF"
