@@ -1,4 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
 import { slides, sections, trackerSlideCount } from "./slides/index.ts";
 import { DemoVideo } from "./slides/DemoVideo.tsx";
 import { usePresentation } from "./hooks/usePresentation.ts";
@@ -6,7 +8,32 @@ import { PresentationFrame, ProgressTracker } from "./components/index.ts";
 import { SlideContext } from "./context/SlideContext.tsx";
 import { slideSwipeTransition, slideSwipeVariants } from "./lib/motion.ts";
 
+function useConfettiKey() {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "c" || e.key === "C") {
+        confetti({
+          particleCount: 180,
+          spread: 100,
+          origin: { y: 0.55 },
+          colors: [
+            "#7C3AED",
+            "#A855F7",
+            "#EC4899",
+            "#3B82F6",
+            "#10B981",
+            "#F59E0B",
+          ],
+        });
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+}
+
 export default function App() {
+  useConfettiKey();
   const state = usePresentation(slides.length);
   const { currentIndex, direction, goTo } = state;
   const CurrentSlide = slides[currentIndex];
