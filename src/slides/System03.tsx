@@ -57,7 +57,7 @@ const SERVICES: {
     Icon: FrontendIcon,
   },
   {
-    name: "AI Engine",
+    name: "Search Flow Service",
     desc: "การให้เหตุผลแบบ Multi-agent ReAct ผสานการขยายคำค้นด้วย HyDE และชุดเครื่องมือ MCP",
     tech: ["Python", "CrewAI"],
     color: "#38BDF8",

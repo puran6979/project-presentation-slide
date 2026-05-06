@@ -27,6 +27,7 @@ export function TempSlide() {
   return (
     <SlideShell>
       <SlideHeader 
+        label="Aingo"
         title="Progress Tracker" 
         highlight="Component." 
         tagline="Flexible layout variants for tracking presentation state" 

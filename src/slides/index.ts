@@ -20,6 +20,10 @@ import { System03 } from './System03.tsx';
 import { System04 } from './System04.tsx';
 import { System05 } from './System05.tsx';
 import { System06 } from './System06.tsx';
+import { System07 } from './System07.tsx';
+import { System08 } from './System08.tsx';
+import { System09 } from './System09.tsx';
+import { System10 } from './System10.tsx';
 // ── Testing & Evaluation ───────────────────────────────────────────────────
 import { Eval01 } from './Eval01.tsx';
 import { Eval02 } from './Eval02.tsx';
@@ -28,7 +32,7 @@ import { Team01 } from './Team01.tsx';
 import { Team02 } from './Team02.tsx';
 import { Team03 } from './Team03.tsx';
 import { Team04 } from './Team04.tsx';
-import { TempSlide } from './TempSlide.tsx';
+// import { TempSlide } from './TempSlide.tsx';
 
 export type SlideComponent = ComponentType;
 
@@ -54,6 +58,10 @@ export const slides: SlideComponent[] = [
   System04,
   System05,
   System06,
+  System07,
+  System08,
+  System09,
+  System10,
   // Testing & Evaluation
   Eval01,
   Eval02,

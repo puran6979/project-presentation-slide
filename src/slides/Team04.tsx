@@ -72,11 +72,7 @@ const LIMITATIONS = [
 
 export function Team04() {
   return (
-    <SlideShell
-      glowColorTop="#7C3AED"
-      glowColorBottom="#10B981"
-      glowOpacity={0.1}
-    >
+    <SlideShell glows={[{ top: -200, right: -100, size: 800, color: "124,58,237", opacity: 0.05 }, { bottom: -150, left: -80, size: 600, color: "16,185,129", opacity: 0.05 }]}>
       <SlideHeader
         label="Aingo"
         title="Conclusion &"
@@ -200,7 +196,7 @@ export function Team04() {
             {FUTURE_WORK.map((fw, i) => (
               <motion.div
                 key={i}
-                {...fadeInUp(stagger(0.55, 0.1, i), { distance: 10, duration: DURATION.fast })}
+                {...fadeInUp(stagger(0.55, 0.1, i), { distance: 10, duration: DURATION.quick })}
                 style={{ display: "flex", gap: 14, alignItems: "flex-start" }}
               >
                 <div style={{

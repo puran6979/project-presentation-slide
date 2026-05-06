@@ -311,7 +311,7 @@ export function System06() {
     <SlideShell glows={GLOWS}>
       <SlideHeader
         label="Aingo"
-        title="AI Engine"
+        title="Search Flow Service"
         highlight="ReAct Flow."
         tagline="Linear Grid Pipeline · Reason→Act loop · HyDE query expansion · MCP tool calling"
         marginBottom={18}

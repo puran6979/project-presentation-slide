@@ -10,7 +10,7 @@ import {
 import { cardRise, fadeInUp, stagger, DURATION } from "../lib/motion.ts";
 
 function AnimatedIcon({ type, color }: { type: string; color: string }) {
-  const draw = {
+  const draw: any = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: {
       pathLength: 1,
@@ -160,11 +160,7 @@ const METRICS = [
 
 export function Eval02() {
   return (
-    <SlideShell
-      glowColorTop="#7C3AED"
-      glowColorBottom="#10B981"
-      glowOpacity={0.08}
-    >
+    <SlideShell glows={[{ top: -200, right: -100, size: 800, color: "124,58,237", opacity: 0.05 }, { bottom: -150, left: -80, size: 600, color: "59,130,246", opacity: 0.05 }]}>
       <SlideHeader
         label="Aingo"
         title="Evaluation"
@@ -186,8 +182,7 @@ export function Eval02() {
           {METRICS.map((m, i) => (
             <motion.div
               key={m.label}
-              {...cardRise(stagger(0.28, 0.1, i), { duration: DURATION.slow })}
-              style={{
+              {...cardRise(stagger(0.28, 0.1, i))}              style={{
                 flex: 1,
                 borderRadius: 20,
                 border: `1px solid rgba(${m.rgb}, 0.15)`,
@@ -214,7 +209,6 @@ export function Eval02() {
 
               {/* Watermark Number */}
               <BigGhostNumber
-                number={m.score}
                 style={{
                   top: -10,
                   right: -10,
@@ -222,7 +216,9 @@ export function Eval02() {
                   opacity: 0.05,
                   color: m.color,
                 }}
-              />
+              >
+                {m.score}
+              </BigGhostNumber>
 
               <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>

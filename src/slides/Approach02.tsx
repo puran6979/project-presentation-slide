@@ -13,6 +13,7 @@ import {
   SlideShell,
   ThaiText,
   VerticalDivider,
+  AISystemIcon,
 } from "../components/index.ts";
 import {
   DISTANCE,
@@ -54,6 +55,14 @@ const SCOPES = [
     tagRgb: "245,158,11",
     pillColor: "#F59E0B",
     icon: <DataIngestionIcon />,
+  },
+  {
+    title: "AI System",
+    th: "พัฒนาระบบ AI Agents และ Search Flow Service เพื่อการค้นหาและประมวลผลคำตอบ",
+    tag: "Agents · Search Flow",
+    tagRgb: "139,92,246",
+    pillColor: "#8B5CF6",
+    icon: <AISystemIcon />,
   },
   {
     title: "User Interface",

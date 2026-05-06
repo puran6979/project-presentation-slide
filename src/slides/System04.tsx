@@ -66,21 +66,21 @@ const FADE = {
   exit: { opacity: 0, transition: { duration: 0.15 } },
 } as const;
 
-function DocText({ children }: { children: string }) {
-  return (
-    <p
-      style={{
-        fontSize: 8.5,
-        color: "#6B7280",
-        lineHeight: 1.6,
-        margin: 0,
-        fontFamily: "monospace",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
+// function DocText({ children }: { children: string }) {
+//   return (
+//     <p
+//       style={{
+//         fontSize: 8.5,
+//         color: "#6B7280",
+//         lineHeight: 1.6,
+//         margin: 0,
+//         fontFamily: "monospace",
+//       }}
+//     >
+//       {children}
+//     </p>
+//   );
+// }
 
 /** Animated shimmer skeleton lines replacing mock paragraph text */
 function SkeletonLines({ widths = [1, 0.88, 0.72] }: { widths?: number[] }) {

@@ -9,7 +9,7 @@ const SECTIONS = [
   { label: "Intro", count: 2 }, // Cover + TOC
   { label: "Problem", count: 5 },
   { label: "Approach", count: 4 },
-  { label: "System", count: 6 },
+  { label: "System", count: 10 },
   { label: "Testing", count: 2 },
   { label: "Team", count: 4 },
 ];

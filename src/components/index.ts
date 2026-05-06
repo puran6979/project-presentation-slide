@@ -44,15 +44,19 @@ export {
   ImplementationIcon,
   DataIngestionIcon,
   ChatUIIcon,
+  AISystemIcon,
 } from "./icons/ObjectiveScopeIcons.tsx";
 export {
   FrontendIcon,
   BackendIcon,
-  AIEngineIcon,
+  SearchFlowServiceIcon,
   EmbeddingIcon,
   IngestionIcon,
   StorageIcon,
   WebhookIcon,
+  RobotIcon,
+  ChatIcon,
+  LookupIcon
 } from "./icons/ServiceIcons.tsx";
 export {
   QueryIcon,

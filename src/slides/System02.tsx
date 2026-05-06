@@ -6,7 +6,7 @@ import {
   AnimatedBeam,
   IconBadge,
 } from "../components/index.ts";
-import { DISTANCE, DURATION, fadeIn, fadeInUp, EASE } from "../lib/motion.ts";
+import { DISTANCE, DURATION, fadeInUp, EASE } from "../lib/motion.ts";
 
 const GLOWS = [
   { top: -200, right: -100, size: 640, color: "124,58,237", opacity: 0.08 },
@@ -141,7 +141,7 @@ const NS = {
     color: "#38BDF8",
     rgb: "56,189,248",
     grad: ["#38BDF8", "#F472B6"] as [string, string],
-    label: "AI Engine",
+    label: "Search Flow Service",
     icon: AiIcon,
   },
   sharepoint: {

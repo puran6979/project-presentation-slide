@@ -42,7 +42,7 @@ tagline  = "7 decoupled microservices — each with a single responsibility"
 |---|---------|------------------------|------|--------------|
 | 1 | Frontend Application | Real-time Chat, Citation display, Document Upload | Next.js · React · Tailwind | `#06B6D4` (cyan) |
 | 2 | Backend Orchestrator | Session management, request routing, SSE progress streaming | NestJS · TypeScript | `#7C3AED` (purple) |
-| 3 | AI Engine | Multi-agent ReAct reasoning with HyDE query expansion and MCP tools | Python · CrewAI | `#EC4899` (pink) |
+| 3 | Search Flow Service | Multi-agent ReAct reasoning with HyDE query expansion and MCP tools | Python · CrewAI | `#EC4899` (pink) |
 | 4 | Embedding Service | Text-to-vector (BGE-M3), cosine similarity search, sole Qdrant manager | Python · Qdrant | `#3B82F6` (blue) |
 | 5 | Data Ingestion Service | ETL pipeline — Docling structural extraction, HybridChunker, RabbitMQ worker | Python · RabbitMQ · Docling | `#F59E0B` (amber) |
 | 6 | File Storage Service | Object storage intermediary (MinIO/S3), presigned URLs, event notifications | Python · MinIO/S3 | `#10B981` (green) |
@@ -140,7 +140,7 @@ tagline  = "Bridging the semantic mismatch between queries and enterprise docume
 
 ---
 
-## Slide17 — AI Engine: CrewAI ReAct Flow
+## Slide17 — Search Flow Service: CrewAI ReAct Flow
 
 **Goal:** Show how the agentic reasoning loop works — the state-driven CrewAI Flow that builds context, injects MCP tools, runs ReAct, and streams results back via SSE. Explains why the system achieves 0.99 Tool Correctness.
 
@@ -149,7 +149,7 @@ tagline  = "Bridging the semantic mismatch between queries and enterprise docume
 **Header:**
 ```
 label    = "Aingo"
-title    = "AI Engine &"
+title    = "Search Flow Service &"
 highlight = "ReAct Loop."
 tagline  = "State-driven multi-agent reasoning with SSE progress streaming"
 ```

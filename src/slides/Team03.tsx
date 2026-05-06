@@ -141,11 +141,7 @@ function TimelineTrack({ title, subtitle, data, delayOffset }: { title: string, 
 
 export function Team03() {
   return (
-    <SlideShell
-      glowColorTop="#3B82F6"
-      glowColorBottom="#F59E0B"
-      glowOpacity={0.08}
-    >
+    <SlideShell glows={[{ top: -200, right: -100, size: 800, color: "59,130,246", opacity: 0.05 }, { bottom: -150, left: -80, size: 600, color: "245,158,11", opacity: 0.05 }]}>
       <SlideHeader
         label="Aingo"
         title="Project"

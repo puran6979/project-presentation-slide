@@ -298,7 +298,7 @@ To implement these solutions, the project takes a deep dive into the technical i
 \subsection{System Overview}
 The proposed system is an AI-powered Chatbot Application for searching and answering questions from a Document Database. Users can inquire with Natural Language through a Chat Interface. The system then processes the request in the background using Retrieval-Augmented Generation (RAG) technology combined with multi-agent reasoning to retrieve relevant content from documents, both in terms of semantic similarity and structural data relationships. This retrieved content is used as context to generate accurate and complete answers. As a result, users receive answers quickly, referenced from the actual data in the documents, without having to spend time searching themselves.
 
-In terms of architecture, the system consists of a Frontend and Backend responsible for supporting User Interaction in both the Chat Interface and Document Upload. It works in conjunction with seven core services: SharePoint Webhook and File Storage Service, which listen for triggers from SharePoint when a file is uploaded, then pull and temporarily store the document before passing it to the Data Ingestion process. Data Ingestion extracts the text, performs Chunking, attaches Metadata, and sends it to the Embedding Service to convert the data into vectors for storage in the Vector Database. Finally, the AI Engine runs the main workflow, delegating tasks by using an LLM to generate a Search Query and perform data Retrieval from the database to synthesize an answer to be returned to the user.
+In terms of architecture, the system consists of a Frontend and Backend responsible for supporting User Interaction in both the Chat Interface and Document Upload. It works in conjunction with seven core services: SharePoint Webhook and File Storage Service, which listen for triggers from SharePoint when a file is uploaded, then pull and temporarily store the document before passing it to the Data Ingestion process. Data Ingestion extracts the text, performs Chunking, attaches Metadata, and sends it to the Embedding Service to convert the data into vectors for storage in the Vector Database. Finally, the Search Flow Service runs the main workflow, delegating tasks by using an LLM to generate a Search Query and perform data Retrieval from the database to synthesize an answer to be returned to the user.
 
 \subsection{Architectural Pillars}
 AiQ utilizes a decoupled microservices architecture as illustrated in \textbf{Figure \ref{fig:arch}}. The system is composed of seven core services, each with a clearly defined responsibility.
@@ -316,7 +316,7 @@ AiQ utilizes a decoupled microservices architecture as illustrated in \textbf{Fi
 \endhead
 Frontend Application & Real-time Chat Interface, Citation display, Document Upload. & Next.js, React, Tailwind CSS \\ \hline
 Backend Orchestrator & Session Management, Conversation History, request routing, SSE progress streaming. & NestJS (TypeScript) \\ \hline
-AI Engine & Multi-agent ReAct reasoning (CrewAI) with HyDE query expansion and MCP tool integration. & Python FastAPI, CrewAI \\ \hline
+Search Flow Service & Multi-agent ReAct reasoning (CrewAI) with HyDE query expansion and MCP tool integration. & Python FastAPI, CrewAI \\ \hline
 Embedding Service & Text-to-vector conversion (BGE-M3), Cosine Similarity search. Sole Qdrant DB manager. & Python FastAPI, Qdrant \\ \hline
 Data Ingestion Service & ETL Pipeline: Modality Detection, Structural Extraction (Docling), HybridChunker. RabbitMQ worker. & Python FastAPI, RabbitMQ, Docling \\ \hline
 File Storage Service & Object Storage intermediary (MinIO/S3). Presigned URL generation, event notifications. & Python FastAPI, MinIO/S3 \\ \hline
@@ -364,7 +364,7 @@ Given the asynchronous and potentially long-running nature of multi-agent reason
 
 The Python FastAPI service yields these updates directly to the Next.js frontend in real-time via the NestJS gateway. This reduces perceived latency and maintains user engagement during complex queries.
 
-\subsection{AI Engine: CrewAI Flow Architecture}
+\subsection{Search Flow Service: CrewAI Flow Architecture}
 The Search Flow Service utilizes CrewAI to orchestrate autonomous agents. Instead of a simple sequential loop, the system implements a state-driven \textbf{Flow} architecture. This allows for dynamic context building, history injection, and conditional execution.
 
 \begin{lstlisting}[language=python, caption=CrewAI State-Driven Flow Implementation]

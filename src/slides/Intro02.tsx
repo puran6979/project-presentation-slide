@@ -16,10 +16,10 @@ export interface TOCSlideProps {
 
 const DEFAULT_ITEMS: TOCItem[] = [
   { id: "01", title: "Problem Definition", subtitle: "Identifying the limitations in our legacy systems.", page: "03" },
-  { id: "02", title: "Proposed Approach", subtitle: "A modern, agentic approach to knowledge retrieval.", page: "08" },
-  { id: "03", title: "System Design & Implementation", subtitle: "Architecture, microservices, and AI pipelines.", page: "12" },
-  { id: "04", title: "Testing & Evaluation", subtitle: "Validation metrics and performance results.", page: "18" },
-  { id: "05", title: "Team & Timeline", subtitle: "Project roadmap and execution plan.", page: "20" },
+  { id: "02", title: "Proposed Approach", subtitle: "A modern, agentic approach to knowledge retrieval.", page: "09" },
+  { id: "03", title: "System Design & Implementation", subtitle: "Architecture, microservices, and AI pipelines.", page: "13" },
+  { id: "04", title: "Testing & Evaluation", subtitle: "Validation metrics and performance results.", page: "23" },
+  { id: "05", title: "Team & Timeline", subtitle: "Project roadmap and execution plan.", page: "25" },
 ];
 
 export function Intro02({ items = DEFAULT_ITEMS }: TOCSlideProps) {
@@ -27,6 +27,7 @@ export function Intro02({ items = DEFAULT_ITEMS }: TOCSlideProps) {
   return (
     <SlideShell>
       <SlideHeader 
+        label="Aingo"
         title="Table of" 
         highlight="Contents." 
         tagline="Presentation Agenda" 

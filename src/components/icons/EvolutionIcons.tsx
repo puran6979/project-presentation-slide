@@ -40,7 +40,7 @@ export function NaiveRagIcon() {
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
       <path
         d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
-        stroke="#F59E0B"
+        stroke="white"
         strokeWidth="2"
         strokeLinejoin="round"
       />
@@ -49,7 +49,7 @@ export function NaiveRagIcon() {
         y1="10"
         x2="15"
         y2="10"
-        stroke="#F59E0B"
+        stroke="white"
         strokeWidth="1.8"
         strokeLinecap="round"
       />
@@ -58,7 +58,7 @@ export function NaiveRagIcon() {
         y1="14"
         x2="13"
         y2="14"
-        stroke="#F59E0B"
+        stroke="white"
         strokeWidth="1.8"
         strokeLinecap="round"
       />

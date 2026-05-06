@@ -107,7 +107,7 @@ export function Team02() {
   const bottom = MEMBERS.slice(3);
 
   return (
-    <SlideShell glowColorTop="#7C3AED" glowColorBottom="#3B82F6" glowOpacity={0.05}>
+    <SlideShell glows={[{ top: -200, right: -100, size: 800, color: "124,58,237", opacity: 0.05 }, { bottom: -150, left: -80, size: 600, color: "59,130,246", opacity: 0.05 }]}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingTop: 8 }}>
 
         <SlideHeader

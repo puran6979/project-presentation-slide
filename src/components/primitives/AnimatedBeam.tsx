@@ -33,6 +33,7 @@ export interface AnimatedBeamProps {
   curvature?: number;
   curvatureX?: number;
   reverse?: boolean;
+  reverseY?: boolean;
   pathColor?: string;
   pathWidth?: number;
   pathOpacity?: number;
@@ -59,6 +60,7 @@ export function AnimatedBeam({
   curvature = 0,
   curvatureX = 0,
   reverse = false,
+  reverseY = false,
   duration = 5,
   delay = 0,
   pathColor = "gray",
@@ -85,19 +87,12 @@ export function AnimatedBeam({
     angle: number;
   } | null>(null);
 
-  const gradientCoordinates = reverse
-    ? {
-        x1: ["90%", "-10%"],
-        x2: ["100%", "0%"],
-        y1: ["0%", "0%"],
-        y2: ["0%", "0%"],
-      }
-    : {
-        x1: ["10%", "110%"],
-        x2: ["0%", "100%"],
-        y1: ["0%", "0%"],
-        y2: ["0%", "0%"],
-      };
+  const gradientCoordinates = {
+    x1: reverse ? ["90%", "-10%"] : ["10%", "110%"],
+    x2: reverse ? ["100%", "0%"] : ["0%", "100%"],
+    y1: reverseY ? ["90%", "-10%"] : ["10%", "110%"],
+    y2: reverseY ? ["100%", "0%"] : ["0%", "100%"],
+  };
 
   useEffect(() => {
     const updatePath = () => {

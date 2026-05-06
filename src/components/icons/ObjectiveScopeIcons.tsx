@@ -198,3 +198,27 @@ export function ChatUIIcon() {
     </IconBadge>
   );
 }
+
+/** Card icon for "AI System" scope item. */
+export function AISystemIcon() {
+  return (
+    <IconBadge
+      gradient={["#8B5CF6", "#6366F1"]}
+      shadow="rgba(139,92,246,0.3)"
+      size={44}
+      radius={12}
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="8" width="16" height="12" rx="3" stroke="white" strokeWidth="1.8" />
+        <path d="M8 14H8.01" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M16 14H16.01" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M10 18H14" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M12 8V4" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="12" cy="4" r="1" stroke="white" strokeWidth="1.8" />
+        <path d="M4 12H2" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M22 12H20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    </IconBadge>
+  );
+}
+

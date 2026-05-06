@@ -70,7 +70,7 @@ export function BackendIcon() {
   );
 }
 
-export function AIEngineIcon() {
+export function SearchFlowServiceIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3" stroke="white" strokeWidth="1.8" />
@@ -164,6 +164,63 @@ export function WebhookIcon() {
         strokeWidth="1.8"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+export function RobotIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="8" width="16" height="12" rx="3" stroke="white" strokeWidth="1.8" />
+      <path d="M8 14H8.01" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M16 14H16.01" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M10 18H14" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M12 8V4" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="12" cy="4" r="1" stroke="white" strokeWidth="1.8" />
+      <path d="M4 12H2" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M22 12H20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function ChatIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <line
+        x1="9"
+        y1="10"
+        x2="15"
+        y2="10"
+        stroke="white"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <line
+        x1="9"
+        y1="14"
+        x2="13"
+        y2="14"
+        stroke="white"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+export function LookupIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M4 6H20" stroke="white" strokeWidth="2" strokeLinecap="round" />
+      <path d="M4 12H12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+      <path d="M4 18H12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="16" cy="15" r="4" stroke="white" strokeWidth="2" />
+      <path d="M19 18L22 21" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
