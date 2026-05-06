@@ -218,8 +218,9 @@ function DoclingPreview() {
             lineHeight: 1.6,
           }}
         >
-          Docling ถอดความหมายจากเอกสาร DOCX, PDF, PPTX และภาพ เพื่อแปลงข้อมูลออกเป็น Text, HTML, Markdown
-          และเสริมบริบทก่อนส่งเข้า Vector Store.
+          Docling ถอดความหมายจากเอกสาร DOCX, PDF, PPTX และภาพ
+          เพื่อแปลงข้อมูลออกเป็น Text, HTML, Markdown และเสริมบริบทก่อนส่งเข้า
+          Vector Store.
         </p>
         <div
           style={{
@@ -277,7 +278,8 @@ function DoclingPreview() {
             lineHeight: 1.5,
           }}
         >
-          ข้อมูลภาพถูกแปลงเป็นข้อความและผสานกับ metadata จาก Docling ก่อนส่งเข้า pipeline.
+          ข้อมูลภาพถูกแปลงเป็นข้อความและผสานกับ metadata จาก Docling ก่อนส่งเข้า
+          pipeline.
         </div>
       </div>
     </div>
@@ -333,7 +335,7 @@ function PrependContent() {
 // ── Chunks area variants ──────────────────────────────────────────────────
 function ChunksContent() {
   return (
-    <motion.div key="chunks" {...FADE} style={{ display: "flex", gap: 10 }}>
+    <motion.div key="chunks" {...FADE} style={{ display: "flex", gap: 7 }}>
       {[
         { bc: "Policy › IT Security › 2.1" },
         { bc: "Policy › IT Security › 2.2" },
@@ -345,10 +347,10 @@ function ChunksContent() {
             borderRadius: 10,
             border: "1px solid rgba(16,185,129,0.25)",
             background: "rgba(16,185,129,0.05)",
-            padding: "10px 12px",
+            padding: "6px 10px",
             display: "flex",
             flexDirection: "column",
-            gap: 6,
+            gap: 4,
           }}
         >
           <div
@@ -406,10 +408,10 @@ function MergeContent() {
     borderRadius: 10,
     border: "1px solid rgba(16,185,129,0.2)",
     background: "rgba(16,185,129,0.04)",
-    padding: "10px 12px",
+    padding: "6px 10px",
     display: "flex",
     flexDirection: "column",
-    gap: 5,
+    gap: 4,
   };
   const orphanBox: CSSProperties = {
     ...box,
@@ -418,7 +420,7 @@ function MergeContent() {
   };
 
   return (
-    <motion.div key="merge" {...FADE} style={{ display: "flex", gap: 10 }}>
+    <motion.div key="merge" {...FADE} style={{ display: "flex", gap: 7 }}>
       <motion.div animate={targetCtrl} style={box}>
         <div
           style={{
@@ -437,7 +439,7 @@ function MergeContent() {
         <SkeletonLines widths={[1, 0.8]} />
       </motion.div>
       <div
-        style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}
+        style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}
       >
         <motion.div animate={orphanCtrl} style={orphanBox}>
           <div style={{ fontSize: 8, fontFamily: "monospace" }}>
@@ -691,6 +693,7 @@ export function IngestionPipeline() {
             background: "rgba(250,250,252,0.8)",
             padding: "16px 20px",
             justifyContent: "space-between",
+            overflow: "hidden",
           }}
         >
           <div
