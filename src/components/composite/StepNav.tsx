@@ -34,40 +34,52 @@ export function StepNavBar({
   onAdvance,
   onRetreat,
   onJump,
+  compact = false,
 }: {
   activeStep: number;
   steps: { id: number; color: string; rgb: string }[];
   onAdvance: () => void;
   onRetreat: () => void;
   onJump: (step: number) => void;
+  /** compact=true → small pill anchored bottom-right; false (default) → large pill centered bottom */
+  compact?: boolean;
 }) {
   const current = activeStep > 0 ? steps[activeStep - 1] : null;
+
+  const btnSize = compact ? 24 : 34;
+  const btnFont = compact ? 13 : 16;
+  const dotH = compact ? 7 : 10;
+  const dotWActive = compact ? 20 : 28;
+  const dotWIdle = compact ? 7 : 10;
+  const dotGap = compact ? 4 : 6;
+  const labelSize = compact ? 9 : 13;
+  const labelMin = compact ? 42 : 52;
 
   return (
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
         position: "absolute",
-        bottom: 24,
-        left: "50%",
-        transform: "translateX(-50%)",
+        ...(compact
+          ? { bottom: 14, right: 14 }
+          : { bottom: 24, left: "50%", transform: "translateX(-50%)" }),
         display: "flex",
         alignItems: "center",
-        gap: 12,
+        gap: compact ? 8 : 12,
         zIndex: 50,
         background: "rgba(255,255,255,0.9)",
         backdropFilter: "blur(12px)",
         border: "1px solid rgba(0,0,0,0.08)",
         borderRadius: 40,
-        padding: "8px 20px",
+        padding: compact ? "5px 12px" : "8px 20px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
       }}
     >
       <button
         onClick={onRetreat}
         style={{
-          width: 34,
-          height: 34,
+          width: btnSize,
+          height: btnSize,
           borderRadius: "50%",
           border: "1.5px solid rgba(0,0,0,0.12)",
           background: "white",
@@ -75,7 +87,7 @@ export function StepNavBar({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 16,
+          fontSize: btnFont,
           color: "#374151",
           flexShrink: 0,
         }}
@@ -83,14 +95,14 @@ export function StepNavBar({
         ‹
       </button>
 
-      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: dotGap, alignItems: "center" }}>
         {steps.map((s) => (
           <button
             key={s.id}
             onClick={() => onJump(s.id)}
             style={{
-              width: activeStep === s.id ? 28 : 10,
-              height: 10,
+              width: activeStep === s.id ? dotWActive : dotWIdle,
+              height: dotH,
               borderRadius: 5,
               border: "none",
               background: activeStep === s.id ? s.color : "rgba(0,0,0,0.15)",
@@ -106,10 +118,10 @@ export function StepNavBar({
 
       <div
         style={{
-          fontSize: 13,
+          fontSize: labelSize,
           fontWeight: 700,
           color: current ? current.color : "#9CA3AF",
-          minWidth: 52,
+          minWidth: labelMin,
           textAlign: "center",
           transition: "color 0.2s",
         }}
@@ -120,8 +132,8 @@ export function StepNavBar({
       <button
         onClick={onAdvance}
         style={{
-          width: 34,
-          height: 34,
+          width: btnSize,
+          height: btnSize,
           borderRadius: "50%",
           border: "1.5px solid rgba(0,0,0,0.12)",
           background: "white",
@@ -129,7 +141,7 @@ export function StepNavBar({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 16,
+          fontSize: btnFont,
           color: "#374151",
           flexShrink: 0,
         }}

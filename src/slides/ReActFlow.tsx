@@ -31,11 +31,6 @@ const BEAM_STYLE = {
   width: 1.9,
 };
 
-const BEAM_TIMING = {
-  duration: 0.95,
-  repeatDelay: 4.55,
-};
-
 // ── Step config ────────────────────────────────────────────────────────────
 type NodeId = "query" | "hyde" | "retrieval" | "react" | "tools" | "answer";
 
@@ -53,6 +48,7 @@ const STEP_CONFIG = [
     delay: 0,
     curvature: 0,
     curvatureX: undefined as number | undefined,
+    reverseY: false,
   },
   {
     id: 2,
@@ -67,6 +63,7 @@ const STEP_CONFIG = [
     delay: 0.5,
     curvature: 0,
     curvatureX: undefined as number | undefined,
+    reverseY: false,
   },
   {
     id: 3,
@@ -81,6 +78,7 @@ const STEP_CONFIG = [
     delay: 1.0,
     curvature: 0,
     curvatureX: undefined as number | undefined,
+    reverseY: false,
   },
   {
     id: 4,
@@ -95,6 +93,7 @@ const STEP_CONFIG = [
     delay: 1.5,
     curvature: 0,
     curvatureX: undefined as number | undefined,
+    reverseY: false,
   },
   {
     id: 5,
@@ -109,6 +108,7 @@ const STEP_CONFIG = [
     delay: 2.0,
     curvature: 0,
     curvatureX: -160,
+    reverseY: true,
   },
   {
     id: 6,
@@ -123,16 +123,65 @@ const STEP_CONFIG = [
     delay: 2.5,
     curvature: 0,
     curvatureX: undefined as number | undefined,
+    reverseY: false,
   },
 ] as const;
 
 const FLOW_STEPS = [
-  { step: 1, label: "Parse",    color: "#EC4899", rgb: "236,72,153", left: "56%", top: "18%", delay: 0.76 },
-  { step: 2, label: "Rewrite",  color: "#7C3AED", rgb: "124,58,237", left: "56%", top: "40%", delay: 0.84 },
-  { step: 3, label: "Tool Call",color: "#F59E0B", rgb: "245,158,11", left: "56%", top: "60%", delay: 0.92 },
-  { step: 4, label: "Retrieve", color: "#3B82F6", rgb: "59,130,246", left: "56%", top: "80%", delay: 1.0 },
-  { step: 5, label: "Context",  color: "#EC4899", rgb: "236,72,153", left: "22%", top: "50%", delay: 1.08 },
-  { step: 6, label: "Generate", color: "#10B981", rgb: "16,185,129", left: "80%", top: "25%", delay: 1.16 },
+  {
+    step: 1,
+    label: "Parse",
+    color: "#EC4899",
+    rgb: "236,72,153",
+    left: "56%",
+    top: "18%",
+    delay: 0.76,
+  },
+  {
+    step: 2,
+    label: "Rewrite",
+    color: "#7C3AED",
+    rgb: "124,58,237",
+    left: "56%",
+    top: "40%",
+    delay: 0.84,
+  },
+  {
+    step: 3,
+    label: "Tool Call",
+    color: "#F59E0B",
+    rgb: "245,158,11",
+    left: "56%",
+    top: "60%",
+    delay: 0.92,
+  },
+  {
+    step: 4,
+    label: "Retrieve",
+    color: "#3B82F6",
+    rgb: "59,130,246",
+    left: "56%",
+    top: "80%",
+    delay: 1.0,
+  },
+  {
+    step: 5,
+    label: "Context",
+    color: "#EC4899",
+    rgb: "236,72,153",
+    left: "22%",
+    top: "50%",
+    delay: 1.08,
+  },
+  {
+    step: 6,
+    label: "Generate",
+    color: "#10B981",
+    rgb: "16,185,129",
+    left: "80%",
+    top: "25%",
+    delay: 1.16,
+  },
 ] as const;
 
 function BeamStepTag({
@@ -177,9 +226,7 @@ function BeamStepTag({
         border: isActive
           ? `1.5px solid ${color}`
           : `1px solid rgba(${rgb},0.16)`,
-        background: isActive
-          ? `rgba(${rgb},0.12)`
-          : "rgba(255,255,255,0.9)",
+        background: isActive ? `rgba(${rgb},0.12)` : "rgba(255,255,255,0.9)",
         boxShadow: isActive
           ? `0 0 0 3px rgba(${rgb},0.18), 0 8px 24px rgba(${rgb},0.25)`
           : `0 8px 18px rgba(${rgb},0.08)`,
@@ -226,21 +273,57 @@ function BeamStepTag({
 
 // ── Node data ─────────────────────────────────────────────────────────────────
 const NS = {
-  query:     { color: "#06B6D4", rgb: "6,182,212",   grad: ["#06B6D4","#3B82F6"]  as [string,string], label: "User Query",      sub: "NestJS → SSE"           },
-  hyde:      { color: "#7C3AED", rgb: "124,58,237",  grad: ["#7C3AED","#A855F7"]  as [string,string], label: "HyDE Expansion",  sub: "LLM rewrite"            },
-  retrieval: { color: "#3B82F6", rgb: "59,130,246",  grad: ["#3B82F6","#06B6D4"]  as [string,string], label: "Qdrant Retrieval",sub: "k=8 · HNSW"             },
-  react:     { color: "#EC4899", rgb: "236,72,153",  grad: ["#EC4899","#7C3AED"]  as [string,string], label: "ReAct Agent",     sub: "CrewAI · Reason→Act"    },
-  tools:     { color: "#F59E0B", rgb: "245,158,11",  grad: ["#F59E0B","#F97316"]  as [string,string], label: "MCP Tools",       sub: "web · doc search"       },
-  answer:    { color: "#10B981", rgb: "16,185,129",  grad: ["#10B981","#059669"]  as [string,string], label: "Answer + Cites",  sub: "streamed via SSE"       },
+  query: {
+    color: "#06B6D4",
+    rgb: "6,182,212",
+    grad: ["#06B6D4", "#3B82F6"] as [string, string],
+    label: "User Query",
+    sub: "NestJS → SSE",
+  },
+  hyde: {
+    color: "#7C3AED",
+    rgb: "124,58,237",
+    grad: ["#7C3AED", "#A855F7"] as [string, string],
+    label: "HyDE Expansion",
+    sub: "LLM rewrite",
+  },
+  retrieval: {
+    color: "#3B82F6",
+    rgb: "59,130,246",
+    grad: ["#3B82F6", "#06B6D4"] as [string, string],
+    label: "Qdrant Retrieval",
+    sub: "k=8 · HNSW",
+  },
+  react: {
+    color: "#EC4899",
+    rgb: "236,72,153",
+    grad: ["#EC4899", "#7C3AED"] as [string, string],
+    label: "ReAct Agent",
+    sub: "CrewAI · Reason→Act",
+  },
+  tools: {
+    color: "#F59E0B",
+    rgb: "245,158,11",
+    grad: ["#F59E0B", "#F97316"] as [string, string],
+    label: "MCP Tools",
+    sub: "web · doc search",
+  },
+  answer: {
+    color: "#10B981",
+    rgb: "16,185,129",
+    grad: ["#10B981", "#059669"] as [string, string],
+    label: "Answer + Cites",
+    sub: "streamed via SSE",
+  },
 };
 
 const ICONS: Record<NodeId, () => ReactElement> = {
-  query:     QueryIcon,
-  hyde:      () => <HydeIcon />,
+  query: QueryIcon,
+  hyde: () => <HydeIcon />,
   retrieval: RetIcon,
-  react:     ReactAgentIcon,
-  tools:     ToolIcon,
-  answer:    AnswerIcon,
+  react: ReactAgentIcon,
+  tools: ToolIcon,
+  answer: AnswerIcon,
 };
 
 function FlowNode({
@@ -286,8 +369,8 @@ function FlowNode({
         boxShadow: isActive
           ? `0 0 0 5px rgba(${s.rgb},0.18), 0 8px 32px rgba(${s.rgb},0.35)`
           : isCenter
-          ? `0 0 0 4px rgba(${s.rgb},0.12), 0 8px 32px rgba(${s.rgb},0.2)`
-          : `0 4px 16px rgba(${s.rgb},0.1)`,
+            ? `0 0 0 4px rgba(${s.rgb},0.12), 0 8px 32px rgba(${s.rgb},0.2)`
+            : `0 4px 16px rgba(${s.rgb},0.1)`,
         flexShrink: 0,
         position: "relative",
         zIndex: isActive ? 4 : 1,
@@ -335,22 +418,24 @@ function FlowNode({
 // ── Slide ─────────────────────────────────────────────────────────────────────
 export function ReActFlow() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const queryRef    = useRef<HTMLDivElement>(null);
-  const hydeRef     = useRef<HTMLDivElement>(null);
-  const retRef      = useRef<HTMLDivElement>(null);
-  const reactRef    = useRef<HTMLDivElement>(null);
-  const toolsRef    = useRef<HTMLDivElement>(null);
-  const answerRef   = useRef<HTMLDivElement>(null);
+  const queryRef = useRef<HTMLDivElement>(null);
+  const hydeRef = useRef<HTMLDivElement>(null);
+  const retRef = useRef<HTMLDivElement>(null);
+  const reactRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
 
-  const { activeStep, setActiveStep, advance, retreat } = useStepNav(STEP_CONFIG.length);
+  const { activeStep, setActiveStep, advance, retreat } = useStepNav(
+    STEP_CONFIG.length,
+  );
 
   const nodeRefMap: Record<NodeId, React.RefObject<HTMLDivElement | null>> = {
-    query:     queryRef,
-    hyde:      hydeRef,
+    query: queryRef,
+    hyde: hydeRef,
     retrieval: retRef,
-    react:     reactRef,
-    tools:     toolsRef,
-    answer:    answerRef,
+    react: reactRef,
+    tools: toolsRef,
+    answer: answerRef,
   };
 
   const currentStep = activeStep > 0 ? STEP_CONFIG[activeStep - 1] : null;
@@ -360,21 +445,6 @@ export function ReActFlow() {
   }
   function isNodeDimmed(id: NodeId) {
     return !!currentStep && !isNodeActive(id);
-  }
-
-  // Per-beam: path/gradient opacity based on step
-  function beamVisual(stepId: number) {
-    if (!currentStep) {
-      // overview — all beams animate normally
-      return {
-        pathOpacity: BEAM_STYLE.opacity,
-        gradientOpacity: BEAM_STYLE.highlightOpacity,
-      };
-    }
-    if (currentStep.id === stepId) {
-      return { pathOpacity: 0.06, gradientOpacity: 0.9 };
-    }
-    return { pathOpacity: 0.04, gradientOpacity: 0 };
   }
 
   return (
@@ -411,50 +481,127 @@ export function ReActFlow() {
           }}
         >
           <div style={{ gridColumn: 2, gridRow: 1 }}>
-            <FlowNode id="query" anchorRef={queryRef} delay={0.2}
-              isActive={isNodeActive("query")} isDimmed={isNodeDimmed("query")} />
+            <FlowNode
+              id="query"
+              anchorRef={queryRef}
+              delay={0.2}
+              isActive={isNodeActive("query")}
+              isDimmed={isNodeDimmed("query")}
+            />
           </div>
           <div style={{ gridColumn: 2, gridRow: 2, zIndex: 10 }}>
-            <FlowNode id="react" anchorRef={reactRef} isCenter delay={0.28}
-              isActive={isNodeActive("react")} isDimmed={isNodeDimmed("react")} />
+            <FlowNode
+              id="react"
+              anchorRef={reactRef}
+              isCenter
+              delay={0.28}
+              isActive={isNodeActive("react")}
+              isDimmed={isNodeDimmed("react")}
+            />
           </div>
           <div style={{ gridColumn: 3, gridRow: 2 }}>
-            <FlowNode id="answer" anchorRef={answerRef} delay={0.34}
-              isActive={isNodeActive("answer")} isDimmed={isNodeDimmed("answer")} />
+            <FlowNode
+              id="answer"
+              anchorRef={answerRef}
+              delay={0.34}
+              isActive={isNodeActive("answer")}
+              isDimmed={isNodeDimmed("answer")}
+            />
           </div>
           <div style={{ gridColumn: 2, gridRow: 3 }}>
-            <FlowNode id="hyde" anchorRef={hydeRef} delay={0.4}
-              isActive={isNodeActive("hyde")} isDimmed={isNodeDimmed("hyde")} />
+            <FlowNode
+              id="hyde"
+              anchorRef={hydeRef}
+              delay={0.4}
+              isActive={isNodeActive("hyde")}
+              isDimmed={isNodeDimmed("hyde")}
+            />
           </div>
           <div style={{ gridColumn: 2, gridRow: 4 }}>
-            <FlowNode id="tools" anchorRef={toolsRef} delay={0.46}
-              isActive={isNodeActive("tools")} isDimmed={isNodeDimmed("tools")} />
+            <FlowNode
+              id="tools"
+              anchorRef={toolsRef}
+              delay={0.46}
+              isActive={isNodeActive("tools")}
+              isDimmed={isNodeDimmed("tools")}
+            />
           </div>
           <div style={{ gridColumn: 2, gridRow: 5 }}>
-            <FlowNode id="retrieval" anchorRef={retRef} delay={0.52}
-              isActive={isNodeActive("retrieval")} isDimmed={isNodeDimmed("retrieval")} />
+            <FlowNode
+              id="retrieval"
+              anchorRef={retRef}
+              delay={0.52}
+              isActive={isNodeActive("retrieval")}
+              isDimmed={isNodeDimmed("retrieval")}
+            />
           </div>
 
-          {/* ── Beams ── */}
+          {/* ── Static track beams (always visible) ── */}
           {STEP_CONFIG.map((s) => (
             <AnimatedBeam
-              key={`beam-${s.id}`}
+              key={`track-${s.id}`}
               containerRef={containerRef}
               fromRef={nodeRefMap[s.from]}
               toRef={nodeRefMap[s.to]}
               curvature={s.curvature}
               curvatureX={s.curvatureX}
-              gradientStartColor={s.gradStart}
-              gradientStopColor={s.gradStop}
               pathColor={s.pathColor}
               pathWidth={BEAM_STYLE.width}
-              duration={BEAM_TIMING.duration}
-              delay={activeStep === 0 ? s.delay : 0}
-              repeatDelay={activeStep === 0 ? BEAM_TIMING.repeatDelay : 0.4}
-              showArrow
-              {...beamVisual(s.id)}
+              gradientOpacity={0}
+              pathOpacity={0.12}
+              showArrow={false}
+              duration={1}
+              delay={0}
+              repeatDelay={9999}
             />
           ))}
+
+          {/* ── Overview: all beams cycling with staggered delays ── */}
+          {activeStep === 0 &&
+            STEP_CONFIG.map((s, i) => (
+              <AnimatedBeam
+                key={`overview-beam-${s.id}`}
+                containerRef={containerRef}
+                fromRef={nodeRefMap[s.from]}
+                toRef={nodeRefMap[s.to]}
+                curvature={s.curvature}
+                curvatureX={s.curvatureX}
+                reverseY={s.reverseY}
+                gradientStartColor={s.gradStart}
+                gradientStopColor={s.gradStop}
+                pathColor={s.pathColor}
+                pathWidth={BEAM_STYLE.width}
+                pathOpacity={0}
+                delay={i * 2.2}
+                duration={1.6}
+                repeatDelay={STEP_CONFIG.length * 2.2 - 1.6}
+                showArrow
+              />
+            ))}
+
+          {/* ── Active step beam ── */}
+          <AnimatePresence>
+            {currentStep && (
+              <AnimatedBeam
+                key={`step-beam-${currentStep.id}`}
+                containerRef={containerRef}
+                fromRef={nodeRefMap[currentStep.from]}
+                toRef={nodeRefMap[currentStep.to]}
+                curvature={currentStep.curvature}
+                curvatureX={currentStep.curvatureX}
+                reverseY={currentStep.reverseY}
+                gradientStartColor={currentStep.gradStart}
+                gradientStopColor={currentStep.gradStop}
+                pathColor={currentStep.pathColor}
+                pathWidth={BEAM_STYLE.width}
+                pathOpacity={0}
+                delay={0}
+                duration={1.4}
+                repeatDelay={0.3}
+                showArrow
+              />
+            )}
+          </AnimatePresence>
 
           {/* ── BeamStepTags ── */}
           {FLOW_STEPS.map((fs) => (
@@ -469,7 +616,9 @@ export function ReActFlow() {
           {/* Loop label */}
           <motion.div
             {...fadeIn(0.7, { duration: 0.6 })}
-            animate={{ opacity: currentStep && currentStep.id !== 5 ? 0.15 : 1 }}
+            animate={{
+              opacity: currentStep && currentStep.id !== 5 ? 0.15 : 1,
+            }}
             transition={{ duration: 0.2 }}
             style={{
               position: "absolute",
