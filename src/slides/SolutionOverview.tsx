@@ -869,7 +869,7 @@ export function SolutionOverview() {
               color: "#D97706",
             }}
           >
-            Service Layer (ชั้นบริการ)
+            Service Layer
           </div>
         </motion.div>
 
@@ -902,7 +902,7 @@ export function SolutionOverview() {
               color: "#059669",
             }}
           >
-            Storage Layer (ชั้นจัดเก็บข้อมูล)
+            Storage Layer
           </div>
         </motion.div>
 
