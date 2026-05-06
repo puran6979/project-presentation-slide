@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
 import {
   SlideHeader,
   SlideShell,
   IconBadge,
   ThaiText,
   Pill,
+  useStepNav,
+  StepNavBar,
 } from "../components/index.ts";
 import { ChatIcon, StorageIcon } from "../components/index.ts";
 import { fadeInUp } from "../lib/motion.ts";
@@ -16,7 +19,36 @@ const GLOWS = [
   { bottom: -150, right: -80, size: 620, color: "245,158,11", opacity: 0.06 },
 ];
 
+const STEPS = [
+  { id: 1, color: "#3B82F6", rgb: "59,130,246" },
+  { id: 2, color: "#F59E0B", rgb: "245,158,11" },
+];
+
 export function WebCapabilities2() {
+  const { activeStep, setActiveStep, advance, retreat } = useStepNav(2);
+
+  const vid1Ref = useRef<HTMLVideoElement>(null);
+  const vid2Ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v1 = vid1Ref.current;
+    const v2 = vid2Ref.current;
+    if (!v1 || !v2) return;
+    if (activeStep === 0) {
+      v1.play().catch(() => {});
+      v2.play().catch(() => {});
+    } else if (activeStep === 1) {
+      v1.play().catch(() => {});
+      v2.pause();
+    } else {
+      v1.pause();
+      v2.play().catch(() => {});
+    }
+  }, [activeStep]);
+
+  const leftDimmed = activeStep === 2;
+  const rightDimmed = activeStep === 1;
+
   return (
     <SlideShell glows={GLOWS}>
       <SlideHeader
@@ -34,22 +66,34 @@ export function WebCapabilities2() {
           gap: 32,
           alignItems: "stretch",
           minHeight: 0,
+          position: "relative",
         }}
       >
         {/* Left: Conversation Branch */}
         <motion.div
           {...fadeInUp(0.1)}
+          animate={{
+            opacity: leftDimmed ? 0.3 : 1,
+            scale: leftDimmed ? 0.98 : 1,
+          }}
+          transition={{ duration: 0.3 }}
           style={{
             flex: 1,
             background: "rgba(255,255,255,0.7)",
             backdropFilter: "blur(20px)",
             borderRadius: 32,
-            border: "1px solid rgba(59,130,246,0.15)",
+            border:
+              activeStep === 1
+                ? "2px solid rgba(59,130,246,0.5)"
+                : "1px solid rgba(59,130,246,0.15)",
             padding: "28px 32px",
             display: "flex",
             flexDirection: "column",
             gap: 16,
-            boxShadow: "0 10px 30px rgba(0,0,0,0.02)",
+            boxShadow:
+              activeStep === 1
+                ? "0 10px 30px rgba(59,130,246,0.2), 0 0 0 4px rgba(59,130,246,0.08)"
+                : "0 10px 30px rgba(0,0,0,0.02)",
             position: "relative",
             overflow: "hidden",
             minHeight: 0,
@@ -164,6 +208,7 @@ export function WebCapabilities2() {
             }}
           >
             <video
+              ref={vid1Ref}
               src={branchVid}
               autoPlay
               loop
@@ -182,17 +227,28 @@ export function WebCapabilities2() {
         {/* Right: Source Manager */}
         <motion.div
           {...fadeInUp(0.15)}
+          animate={{
+            opacity: rightDimmed ? 0.3 : 1,
+            scale: rightDimmed ? 0.98 : 1,
+          }}
+          transition={{ duration: 0.3 }}
           style={{
             flex: 1,
             background: "rgba(255,255,255,0.7)",
             backdropFilter: "blur(20px)",
             borderRadius: 32,
-            border: "1px solid rgba(245,158,11,0.15)",
+            border:
+              activeStep === 2
+                ? "2px solid rgba(245,158,11,0.5)"
+                : "1px solid rgba(245,158,11,0.15)",
             padding: "28px 32px",
             display: "flex",
             flexDirection: "column",
             gap: 16,
-            boxShadow: "0 10px 30px rgba(0,0,0,0.02)",
+            boxShadow:
+              activeStep === 2
+                ? "0 10px 30px rgba(245,158,11,0.2), 0 0 0 4px rgba(245,158,11,0.08)"
+                : "0 10px 30px rgba(0,0,0,0.02)",
             position: "relative",
             overflow: "hidden",
             minHeight: 0,
@@ -305,6 +361,7 @@ export function WebCapabilities2() {
             }}
           >
             <video
+              ref={vid2Ref}
               src={sourceManageVid}
               autoPlay
               loop
@@ -320,6 +377,15 @@ export function WebCapabilities2() {
           </motion.div>
         </motion.div>
       </div>
+
+      <StepNavBar
+        compact
+        activeStep={activeStep}
+        steps={STEPS}
+        onAdvance={advance}
+        onRetreat={retreat}
+        onJump={setActiveStep}
+      />
     </SlideShell>
   );
 }
