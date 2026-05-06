@@ -237,36 +237,6 @@ const CONCEPTS = [
   },
 ];
 
-const STATS = [
-  {
-    big: "+20.6%",
-    label: "Performance vs baseline",
-    sub: "เทียบกับการสืบค้นด้วยเวกเตอร์แบบปกติ",
-    color: "#10B981",
-    rgb: "16,185,129",
-    grad: ["#10B981", "#059669"] as [string, string],
-    ghost: "+",
-  },
-  {
-    big: "0.77",
-    label: "Faithfulness score",
-    sub: "เทียบกับระดับ 0.55–0.65 ของ RAG ทั่วไป",
-    color: "#7C3AED",
-    rgb: "124,58,237",
-    grad: ["#7C3AED", "#A855F7"] as [string, string],
-    ghost: "F",
-  },
-  {
-    big: "GraphRAG",
-    label: "Rejected",
-    sub: "ความล่าช้าในการซิงก์ 142 วินาที · HyDE ให้ความแม่นยำสูงกว่าและต้นทุนต่ำกว่า",
-    color: "#F59E0B",
-    rgb: "245,158,11",
-    grad: ["#F59E0B", "#F97316"] as [string, string],
-    ghost: "×",
-  },
-];
-
 // ── Components ────────────────────────────────────────────────────────────────
 
 function ConceptCard({
@@ -364,62 +334,6 @@ export function System05() {
           ))}
         </div>
 
-        {/* ── Bottom row: 3 stat callout boxes ── */}
-        <div style={{ display: "flex", gap: 16, flex: "0 0 auto" }}>
-          {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              {...scaleIn(stagger(0.55, 0.12, i), { duration: DURATION.med })}
-              style={{
-                flex: 1,
-                borderRadius: 16,
-                border: `1px solid rgba(${stat.rgb},0.2)`,
-                background: `rgba(${stat.rgb},0.04)`,
-                padding: "16px 20px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <BigGhostNumber
-                rgb={stat.rgb}
-                size={80}
-                opacity={0.06}
-                style={{ position: "absolute", right: 8, bottom: -10, letterSpacing: "-4px" }}
-              >
-                {stat.ghost}
-              </BigGhostNumber>
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 3,
-                  borderRadius: "16px 0 0 16px",
-                  background: `linear-gradient(180deg, ${stat.grad[0]}, ${stat.grad[1]})`,
-                }}
-              />
-              <div style={{ position: "relative" }}>
-                <GradientText
-                  from={stat.grad[0]}
-                  to={stat.grad[1]}
-                  style={{ fontSize: 28, fontWeight: 900, lineHeight: 1, display: "block", marginBottom: 4 }}
-                >
-                  {stat.big}
-                </GradientText>
-                <div style={{ fontSize: "var(--slide-card-heading)", fontWeight: 700, color: "#0A0A0A", marginBottom: 4 }}>
-                  {stat.label}
-                </div>
-                <div style={{ fontSize: "var(--slide-body)", color: "#9CA3AF", lineHeight: 1.5 }}>
-                  <ThaiText>{stat.sub}</ThaiText>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </SlideShell>
   );
