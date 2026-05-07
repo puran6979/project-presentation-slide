@@ -57,7 +57,7 @@ export function Cover() {
           <span
             style={{ fontSize: 16, color: "#9CA3AF", letterSpacing: "0.06em" }}
           >
-            2025
+            2026
           </span>
         </div>
       </motion.div>

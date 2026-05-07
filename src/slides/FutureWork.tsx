@@ -240,7 +240,7 @@ export function FutureWork() {
           gap: 6,
         }}
       >
-        Project <GradientText from="#7C3AED" to="#A855F7" style={{ fontWeight: 800 }}>AiQ</GradientText> · Intelligence That Drives Execution · Chulalongkorn University 2025
+        Project <GradientText from="#7C3AED" to="#A855F7" style={{ fontWeight: 800 }}>AiQ</GradientText> · Intelligence That Drives Execution · Chulalongkorn University 2026
       </motion.div>
 
     </SlideShell>
