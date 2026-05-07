@@ -298,26 +298,6 @@ export function EvalResults() {
         {/* ── Bottom row: Analysis ── */}
         <div style={{ display: "flex", gap: 16, flex: "0 0 auto", paddingBottom: 10 }}>
           <motion.div
-            {...fadeInUp(0.68, { distance: 20, duration: DURATION.med })}
-            style={{ flex: 1 }}
-          >
-            <Callout
-              eyebrow="vs Naive RAG Baseline"
-              color="#7C3AED"
-              rgb="124,58,237"
-              bgOpacity={0.04}
-              padding="18px 22px"
-              style={{ height: "100%" }}
-            >
-              <p style={{ margin: 0, fontSize: "var(--slide-body)", color: "#374151", lineHeight: 1.6 }}>
-                <ThaiText>
-                  ระบบ RAG ทั่วไปมักได้คะแนนเฉลี่ยที่ <strong style={{ color: "#7C3AED" }}>55%–65%</strong> แต่ไปป์ไลน์ HybridChunker + HyDE ของ AiQ สามารถทำคะแนนได้ถึง <strong style={{ color: "#7C3AED" }}>77%</strong> ซึ่งถือเป็นการพัฒนาครั้งสำคัญสำหรับการใช้งานระดับองค์กรที่ความน่าเชื่อถือของข้อมูลเป็นสิ่งสำคัญสูงสุด
-                </ThaiText>
-              </p>
-            </Callout>
-          </motion.div>
-
-          <motion.div
             {...fadeInUp(0.78, { distance: 20, duration: DURATION.med })}
             style={{ flex: 1 }}
           >
