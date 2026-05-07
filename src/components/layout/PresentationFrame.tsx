@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../hooks/useLanguage.ts';
 
 const SLIDE_WIDTH = 1920;
 const SLIDE_HEIGHT = 1080;
@@ -25,6 +26,7 @@ export function PresentationFrame({ children }: PresentationFrameProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isHoveringToolbar, setIsHoveringToolbar] = useState(false);
   const [isLaserActive, setIsLaserActive] = useState(false);
+  const { language, toggleLanguage } = useLanguage();
 
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
 
@@ -320,13 +322,49 @@ export function PresentationFrame({ children }: PresentationFrameProps) {
               gap: '6px',
               padding: '6px',
               borderRadius: '999px',
-              background: 'rgba(255, 255, 255, 0.08)',
+              background: 'rgba(17, 24, 39, 0.78)',
               backdropFilter: 'blur(16px) saturate(180%)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+              WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.35)',
               userSelect: 'none',
             }}
           >
+            {/* Language Toggle Button */}
+            <motion.button
+              onClick={toggleLanguage}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 14px',
+                borderRadius: '999px',
+                background: language === 'en' ? 'rgba(124, 58, 237, 0.25)' : 'transparent',
+                border: language === 'en' ? '1px solid rgba(124, 58, 237, 0.4)' : '1px solid transparent',
+                color: language === 'en' ? '#a78bfa' : '#fff',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: 600,
+                fontFamily: 'system-ui, sans-serif',
+                outline: 'none',
+                transition: 'background 0.2s, border-color 0.2s, color 0.2s',
+              }}
+              whileHover={{
+                background: language === 'en' ? 'rgba(124, 58, 237, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+              }}
+              whileTap={{ scale: 0.97 }}
+              aria-label="Toggle language"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20" />
+              </svg>
+              <span>{language === 'en' ? 'English' : 'TH + EN'}</span>
+            </motion.button>
+
+            {/* Divider */}
+            <div style={{ width: '1px', height: '20px', background: 'rgba(255, 255, 255, 0.15)', margin: '0 4px' }} />
+
             {/* Laser Pointer Button */}
             <motion.button
               onClick={() => setIsLaserActive(prev => !prev)}

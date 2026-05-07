@@ -78,7 +78,13 @@ export function TheProblem() {
               color: "#4B5563",
               textAlign: "center" 
             }}>
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    Meet <strong>Atom</strong>, a new Project Manager joining <strong>AINGO</strong>. He needs to find the technical specifications for a project launched last quarter.
+                  </>
+                }
+              >
                 พบกับ <strong>Atom</strong> ซึ่ง Project Manager หน้าใหม่ เข้ามาทำงานที่บริษัท <strong>AINGO</strong> และต้องการหา Technical Specifications ของโครงการที่เปิดตัวไปเมื่อไตรมาสที่แล้ว
               </ThaiText>
             </p>
@@ -107,12 +113,12 @@ export function TheProblem() {
               </IconTile>
             }
           >
-            <ThaiText>ความเป็นจริงที่ต้องเจอ</ThaiText>
+            <ThaiText en="The reality he runs into">ความเป็นจริงที่ต้องเจอ</ThaiText>
           </SectionTitle>
 
-          <Callout eyebrow={<ThaiText>ความต้องการ</ThaiText>} color="#7C3AED" rgb="124,58,237">
+          <Callout eyebrow={<ThaiText en="The request">ความต้องการ</ThaiText>} color="#7C3AED" rgb="124,58,237">
             <p style={{ fontSize: "var(--slide-body)", color: "#374151", margin: 0, lineHeight: 1.6 }}>
-              <ThaiText>
+              <ThaiText en="Find the technical specifications for the project launched last quarter.">
                 หา Technical Specifications
                 ของโครงการที่เปิดตัวไปเมื่อไตรมาสที่แล้ว
               </ThaiText>
@@ -121,10 +127,10 @@ export function TheProblem() {
 
           <IconCard
             icon={<SearchFailIcon />}
-            title={<ThaiText>การค้นหาไร้ประสิทธิภาพ</ThaiText>}
+            title={<ThaiText en="Ineffective search">การค้นหาไร้ประสิทธิภาพ</ThaiText>}
             titleColor="#EF4444"
           >
-            <ThaiText>
+            <ThaiText en="Traditional keyword search returns hundreds of files that have nothing to do with what he actually needs.">
               Keyword-Search แบบเดิมให้ผลลัพธ์เป็นรายการไฟล์นับร้อย
               โดยไม่เกี่ยวกับความต้องการจริง
             </ThaiText>
@@ -132,10 +138,10 @@ export function TheProblem() {
 
           <IconCard
             icon={<ScatterIcon />}
-            title={<ThaiText>ข้อมูลกระจัดกระจาย</ThaiText>}
+            title={<ThaiText en="Scattered information">ข้อมูลกระจัดกระจาย</ThaiText>}
             titleColor="#EF4444"
           >
-            <ThaiText>
+            <ThaiText en="Critical project information is fragmented and hidden across different systems — SharePoint, drives, emails — none of which give the full picture.">
               ข้อมูลสำคัญของโครงการถูกแยกส่วนและซ่อนอยู่ตามระบบต่าง ๆ เช่น
               SharePoint, ไดรฟ์, และอีเมล
               ซึ่งไม่สามารถให้ภาพรวมที่สมบูรณ์ได้
@@ -160,30 +166,30 @@ export function TheProblem() {
               </IconTile>
             }
           >
-            <ThaiText>ผลกระทบทางธุรกิจ</ThaiText>
+            <ThaiText en="Business impact">ผลกระทบทางธุรกิจ</ThaiText>
           </SectionTitle>
 
           <IconCard
             icon={<ClockIcon />}
-            title={<ThaiText>เวลาสูญเปล่า</ThaiText>}
+            title={<ThaiText en="Wasted time">เวลาสูญเปล่า</ThaiText>}
             titleColor="#F59E0B"
           >
-            <ThaiText>เสียเวลาหลายชั่วโมงในการค้นหาข้อมูล</ThaiText>
+            <ThaiText en="Hours lost just searching for the right information.">เสียเวลาหลายชั่วโมงในการค้นหาข้อมูล</ThaiText>
           </IconCard>
 
           <IconCard
             icon={<AlertCircleIcon />}
-            title={<ThaiText>ความล่าช้า</ThaiText>}
+            title={<ThaiText en="Delays">ความล่าช้า</ThaiText>}
             titleColor="#EF4444"
           >
-            <ThaiText>
+            <ThaiText en="Projects fall behind, and the same mistakes risk being repeated.">
               เกิดความล่าช้าของโครงการ เสี่ยงที่จะเกิดข้อผิดพลาดซ้ำ
             </ThaiText>
           </IconCard>
 
           <IconCard
             icon={<CostIcon />}
-            title={<ThaiText>ต้นทุนที่ซ่อนอยู่ขององค์กร</ThaiText>}
+            title={<ThaiText en="The hidden cost to the organization">ต้นทุนที่ซ่อนอยู่ขององค์กร</ThaiText>}
             titleColor="#F59E0B"
             align="center"
           />
