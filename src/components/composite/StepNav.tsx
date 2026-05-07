@@ -1,4 +1,4 @@
-import { useEffect, useState, type AnimatePresence as _AP } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── useStepNav ─────────────────────────────────────────────────────────────
@@ -186,6 +186,3 @@ export function NodeRing({
     </AnimatePresence>
   );
 }
-
-// suppress unused import warning — AnimatePresence re-exported for convenience
-void (undefined as unknown as typeof _AP);
