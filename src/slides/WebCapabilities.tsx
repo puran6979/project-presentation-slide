@@ -196,7 +196,7 @@ export function WebCapabilities() {
             {...fadeInUp(0.4)}
             style={{
               flexShrink: 0,
-              height: 500,
+              height: 475,
               borderRadius: 16,
               overflow: "hidden",
               border: "1px solid rgba(139,92,246,0.18)",
@@ -349,7 +349,7 @@ export function WebCapabilities() {
             {...fadeInUp(0.45)}
             style={{
               flexShrink: 0,
-              height: 500,
+              height: 475,
               borderRadius: 16,
               overflow: "hidden",
               border: "1px solid rgba(16,185,129,0.18)",

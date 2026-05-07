@@ -66,7 +66,7 @@ const SCOPES = [
   },
   {
     title: "User Interface",
-    th: "พัฒนา Minimal Web Chat MVP พร้อมฟังก์ชันถาม-ตอบ",
+    th: "Web Chat Application เพื่อให้ผู้ใช้สามารถถามตอบกับระบบได้อย่างสะดวกและมีประสิทธิภาพ พร้อม Feature ช่วยเหลือในการค้นหาเอกสารและแสดงแหล่งอ้างอิง",
     tag: "Web Chat · MVP",
     tagRgb: "6,182,212",
     pillColor: "#06B6D4",
