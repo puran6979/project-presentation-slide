@@ -17,7 +17,7 @@ interface CalloutProps {
 
 /**
  * Soft callout box with a colored left border and optional eyebrow label.
- * Used for "ความต้องการ" (Slide04) and the right-column caption (Slide05).
+ * Used for "Requirements" (Slide04) and the right-column caption (Slide05).
  */
 export function Callout({
   children,

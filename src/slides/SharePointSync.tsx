@@ -148,6 +148,7 @@ const STEP_DETAILS = [
     title: "Change Notification",
     subtitle: "Microsoft Graph → Webhook Service",
     thai: "เมื่อไฟล์ถูกเพิ่มหรือแก้ไขใน SharePoint drive, MS Graph จะส่ง HTTP POST พร้อม payload รายการเปลี่ยนแปลงไปยัง Webhook URL ที่ลงทะเบียนไว้ล่วงหน้า ระบบตรวจสอบ validationToken เมื่อมีการลงทะเบียน subscription ใหม่",
+    en: "When a file is added or edited in a SharePoint drive, Microsoft Graph sends an HTTP POST with the change payload to the pre-registered webhook URL. The system also validates the validationToken when a new subscription is created.",
     tags: ["MS Graph Subscription", "HTTP POST", "validationToken"],
     color: "#0EA5E9",
     rgb: "14,165,233",
@@ -157,6 +158,7 @@ const STEP_DETAILS = [
     title: "Delta Query",
     subtitle: "Webhook Service → Graph API delta endpoint",
     thai: "Webhook Service เรียก Graph API delta endpoint เพื่อดึงเฉพาะรายการที่เปลี่ยนแปลงตั้งแต่ครั้งก่อน โดยใช้ deltaLink ที่บันทึกไว้ใน DB จากนั้นเปรียบเทียบ eTag กับ record ใน FSS เพื่อตัดสินใจ Skip หรือ Sync",
+    en: "The Webhook Service calls the Graph API delta endpoint to fetch only changes since the previous sync using the stored deltaLink from the DB. It then compares the eTag with the FSS record to decide whether to skip or sync.",
     tags: ["GET /root/delta", "deltaLink", "eTag Compare"],
     color: "#6366F1",
     rgb: "99,102,241",
@@ -166,6 +168,7 @@ const STEP_DETAILS = [
     title: "Delegate Upload",
     subtitle: "Webhook Service → File Storage Service",
     thai: "Webhook Service ส่ง source URL และ Bearer token ไปให้ FSS จัดการดาวน์โหลดเองในเบื้องหลัง ทำให้สามารถตอบ 202 กลับไปยัง Microsoft ได้ทันทีโดยไม่บล็อก ระบบจะลองใหม่ได้ถึง 3 ครั้งแบบ exponential back-off",
+    en: "The Webhook Service sends the source URL and bearer token to FSS so it can download the file asynchronously in the background. This allows the system to return 202 to Microsoft immediately without blocking, with up to 3 retries using exponential backoff.",
     tags: ["POST /upload-from-url", "Bearer Token", "202 Accepted"],
     color: "#A855F7",
     rgb: "168,85,247",
@@ -175,6 +178,7 @@ const STEP_DETAILS = [
     title: "Status Webhook",
     subtitle: "File Storage Service → Backend (NestJS)",
     thai: "FSS แจ้ง Backend เมื่อสถานะเปลี่ยนจาก PROCESSING เป็น COMPLETED พร้อม file_id และ s3_key เพื่อให้ระบบอัปเดตข้อมูลและเตรียมรับ ingestion event ในขั้นตอนถัดไป ไฟล์ถูกจัดเก็บใน MinIO (S3) เรียบร้อยแล้ว",
+    en: "FSS notifies the Backend when status changes from PROCESSING to COMPLETED, including file_id and s3_key, so the system can update state and prepare for the next ingestion event. The file has already been stored in MinIO (S3).",
     tags: ["PROCESSING → COMPLETED", "NestJS Webhook", "s3_key"],
     color: "#F59E0B",
     rgb: "245,158,11",
@@ -184,6 +188,7 @@ const STEP_DETAILS = [
     title: "file_ready Event",
     subtitle: "File Storage Service → RabbitMQ",
     thai: "เมื่อจัดเก็บไฟล์ใน MinIO เรียบร้อยแล้ว FSS ส่ง file_ready event ไปยัง RabbitMQ เพื่อให้ Data Ingestion Service เริ่มกระบวนการ ETL — ตรวจจับ modality, สกัดเนื้อหา, แบ่ง Chunk และ vectorize",
+    en: "Once the file is stored in MinIO, FSS publishes a file_ready event to RabbitMQ so the Data Ingestion Service can start the ETL process: detect modality, extract content, chunk, and vectorize.",
     tags: ["file_ready", "RabbitMQ publish", "→ Ingestion Pipeline"],
     color: "#10B981",
     rgb: "16,185,129",
@@ -871,7 +876,7 @@ export function SharePointSync() {
                       overflow: "hidden",
                     }}
                   >
-                    <ThaiText>{sd.thai}</ThaiText>
+                    <ThaiText en={sd.en}>{sd.thai}</ThaiText>
                   </div>
                 </div>
               </motion.div>

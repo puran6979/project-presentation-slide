@@ -732,12 +732,21 @@ export function ReActFlow() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {[
-                "สลับกระบวนการระหว่าง ความคิด → การกระทำ → การสังเกต",
-                "จัดลำดับข้อมูลที่สืบค้นมาใหม่ (Re-rank) ในทุกรอบการให้เหตุผล",
-                "สิ้นสุดกระบวนการเมื่อได้ผลลัพธ์ถึงเกณฑ์ความมั่นใจที่ตั้งไว้",
+                {
+                  th: "สลับกระบวนการระหว่าง ความคิด → การกระทำ → การสังเกต",
+                  en: "Alternates between thinking, acting, and observing.",
+                },
+                {
+                  th: "จัดลำดับข้อมูลที่สืบค้นมาใหม่ (Re-rank) ในทุกรอบการให้เหตุผล",
+                  en: "Re-ranks newly retrieved information in every reasoning round.",
+                },
+                {
+                  th: "สิ้นสุดกระบวนการเมื่อได้ผลลัพธ์ถึงเกณฑ์ความมั่นใจที่ตั้งไว้",
+                  en: "Stops when the result reaches the target confidence threshold.",
+                },
               ].map((pt) => (
-                <DotPoint key={pt} gradient={["#EC4899", "#7C3AED"]}>
-                  <ThaiText>{pt}</ThaiText>
+                <DotPoint key={pt.th} gradient={["#EC4899", "#7C3AED"]}>
+                  <ThaiText en={pt.en}>{pt.th}</ThaiText>
                 </DotPoint>
               ))}
             </div>
@@ -814,12 +823,21 @@ export function ReActFlow() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {[
-                "สร้างมาตรฐานการเชื่อมต่อกับเครื่องมือภายนอกผ่านโปรโตคอล",
-                "ช่วยให้ระบบสามารถเลือกอ่านข้อมูลเชิงโครงสร้างเชิงลึกได้",
-                "เสริมความสามารถให้ AI Agent ด้วยเครื่องมือค้นหาเอกสารเฉพาะทาง",
+                {
+                  th: "สร้างมาตรฐานการเชื่อมต่อกับเครื่องมือภายนอกผ่านโปรโตคอล",
+                  en: "Standardizes how the system connects to external tools through a protocol.",
+                },
+                {
+                  th: "ช่วยให้ระบบสามารถเลือกอ่านข้อมูลเชิงโครงสร้างเชิงลึกได้",
+                  en: "Lets the system selectively read deep structured information.",
+                },
+                {
+                  th: "เสริมความสามารถให้ AI Agent ด้วยเครื่องมือค้นหาเอกสารเฉพาะทาง",
+                  en: "Extends the AI agent with domain-specific document search tools.",
+                },
               ].map((pt) => (
-                <DotPoint key={pt} gradient={["#F59E0B", "#F97316"]}>
-                  <ThaiText>{pt}</ThaiText>
+                <DotPoint key={pt.th} gradient={["#F59E0B", "#F97316"]}>
+                  <ThaiText en={pt.en}>{pt.th}</ThaiText>
                 </DotPoint>
               ))}
             </div>

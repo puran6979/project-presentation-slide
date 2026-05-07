@@ -27,6 +27,8 @@ const MODES = [
     title: "AUTO",
     subtitle: "The Autonomous Executor",
     desc: "Agent ต้องตัดสินใจเลือก Action (Decision-making prompt) วิเคราะห์ User Intent เพื่อเลือกใช้ Tool ที่เหมาะสมที่สุด",
+    enDesc:
+      "The agent decides which action to take via a decision-making prompt, analyzes user intent, and selects the most appropriate tool.",
     tools: ["search", "lookup"],
     color: "#7C3AED",
     icon: <BackendIcon />,
@@ -41,6 +43,8 @@ const MODES = [
     title: "SEARCH",
     subtitle: "The Semantic Engine",
     desc: "คำสั่งเจาะจงใช้ Search Tool เท่านั้น (Direct Command) ค้นหาข้อมูลจาก Vector Database ด้วยเทคนิค HyDE",
+    enDesc:
+      "A direct command that forces use of the Search tool only, retrieving information from the vector database with HyDE.",
     tools: ["search"],
     color: "#3B82F6",
     icon: <SearchFlowServiceIcon />,
@@ -55,6 +59,8 @@ const MODES = [
     title: "LOOKUP",
     subtitle: "The Direct Reader",
     desc: "คำสั่งเจาะจงอ่านไฟล์ที่ระบุ (Direct Command) ดึงข้อมูลจาก File Path และ Page Number ที่แน่นอน",
+    enDesc:
+      "A direct command that reads a specific file, pulling content from an exact file path and page number.",
     tools: ["lookup"],
     color: "#10B981",
     icon: <LookupIcon />,
@@ -69,6 +75,8 @@ const MODES = [
     title: "CHAT",
     subtitle: "The Conversational Assistant",
     desc: "เน้นการสนทนาโต้ตอบ (Direct Command) ตอบคำถามจาก Context ที่แนบมาเท่านั้น โดยไม่ใช้ Retrieval Tools",
+    enDesc:
+      "Focuses on conversation only, answering strictly from the attached context without using retrieval tools.",
     tools: [],
     color: "#F59E0B",
     icon: <ChatIcon />,
@@ -405,7 +413,7 @@ export function OperationalModes() {
                 <div
                   style={{ fontSize: 16, color: "#4B5563", lineHeight: 1.5 }}
                 >
-                  <ThaiText>{mode.desc}</ThaiText>
+                  <ThaiText en={mode.enDesc}>{mode.desc}</ThaiText>
                 </div>
 
                 {activeMode.id === mode.id && (

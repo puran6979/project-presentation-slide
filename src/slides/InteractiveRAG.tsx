@@ -153,7 +153,7 @@ export function InteractiveRAG() {
               step="2"
               title="Vector DB Search"
               desc={
-                <ThaiText>
+                <ThaiText en="Automatically searches and retrieves context every time a question is asked.">
                   ค้นหาและดึงข้อมูลอัตโนมัติทุกครั้งที่มีคำถามเข้ามา
                 </ThaiText>
               }
@@ -163,7 +163,7 @@ export function InteractiveRAG() {
               step="3"
               title="LLM Generation"
               desc={
-                <ThaiText>
+                <ThaiText en="Pushes all retrieved context into the prompt and answers immediately.">
                   นำ Context ทั้งหมดที่หาได้ ยัดใส่ Prompt เพื่อตอบคำถามทันที
                 </ThaiText>
               }
@@ -223,17 +223,17 @@ export function InteractiveRAG() {
               }}
             >
               <li>
-                <ThaiText>
+                <ThaiText en="Wastes tokens on automatic retrieval for questions that do not need it.">
                   สิ้นเปลือง Token จากการค้นหาอัตโนมัติในคำถามที่ไม่จำเป็น
                 </ThaiText>
               </li>
               <li>
-                <ThaiText>
+                <ThaiText en="Users cannot curate the evidence, so incorrect context can be used.">
                   User ไม่มีอำนาจคัดกรอง ข้อมูลผิดพลาดอาจถูกนำไปใช้
                 </ThaiText>
               </li>
               <li>
-                <ThaiText>
+                <ThaiText en="Cannot constrain context boundaries well across ongoing conversations.">
                   ไม่สามารถจำกัดขอบเขต Context สำหรับบทสนทนาต่อเนื่องได้ดี
                 </ThaiText>
               </li>
@@ -316,7 +316,7 @@ export function InteractiveRAG() {
               step="1"
               title="User Query"
               desc={
-                <ThaiText>
+                <ThaiText en="Receives the question in Chat mode or lets Auto mode decide whether retrieval is needed.">
                   รับคำถามผ่าน Chat Mode หรือให้ Auto Mode วิเคราะห์ความจำเป็น
                 </ThaiText>
               }
@@ -326,7 +326,7 @@ export function InteractiveRAG() {
               step="2"
               title="Search Tool Execution"
               desc={
-                <ThaiText>
+                <ThaiText en="The system searches documents and returns only citation IDs.">
                   ระบบค้นหาเอกสารและส่งกลับมาเพียงแค่รายการ Citations (IDs)
                 </ThaiText>
               }
@@ -336,7 +336,7 @@ export function InteractiveRAG() {
               step="3"
               title="User Curates Context"
               desc={
-                <ThaiText>
+                <ThaiText en="The user chooses exactly which content to attach.">
                   User เป็นคนตัดสินใจเลือก "แนบ"
                   เฉพาะเนื้อหาที่ตรงกับความต้องการ
                 </ThaiText>
@@ -347,7 +347,7 @@ export function InteractiveRAG() {
               step="4"
               title="Grounded Response"
               desc={
-                <ThaiText>
+                <ThaiText en="AI generates a grounded answer using only the selected context.">
                   AI ประมวลผลคำตอบโดยถูกตีกรอบให้อ้างอิงจาก Context
                   ที่ถูกเลือกไว้เท่านั้น
                 </ThaiText>
@@ -411,19 +411,19 @@ export function InteractiveRAG() {
               }}
             >
               <li>
-                <ThaiText>
+                <ThaiText en="Saves tokens because search is invoked only when truly needed.">
                   ประหยัด Token เพราะ Search ถูกเรียกใช้เมื่อจำเป็นจริงๆ
                   เท่านั้น
                 </ThaiText>
               </li>
               <li>
-                <ThaiText>
+                <ThaiText en="Users retain 100% control over evidence selection, eliminating AI reliance on incorrect context (hallucination).">
                   User มีอำนาจคัดกรอง 100% ขจัดปัญหา AI นำข้อมูลผิดมาอ้างอิง
                   (Hallucination)
                 </ThaiText>
               </li>
               <li>
-                <ThaiText>
+                <ThaiText en="Supports accurate multi-turn conversation over the same attached evidence set.">
                   สร้างการสนทนาที่ต่อเนื่องบนชุดข้อมูลเดิมที่แนบไว้ได้อย่างแม่นยำ
                 </ThaiText>
               </li>

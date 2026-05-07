@@ -16,7 +16,7 @@ interface SectionTitleProps {
 
 /**
  * Small icon + bold heading row. Used as in-column section headers
- * (slide 04 "ความเป็นจริงที่ต้องเจอ"), and pairs nicely with
+ * (slide 04 "The reality he runs into"), and pairs nicely with
  * `<IconTile>` (slide 04) or `<IconBadge>` (slides 08, 10).
  */
 export function SectionTitle({

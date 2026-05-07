@@ -27,6 +27,7 @@ interface LevelData {
   accentRgb: string;
   status: string;
   desc: string;
+  enDesc: string;
   icon: React.ReactNode;
   image?: string;
 }
@@ -39,6 +40,8 @@ const LEVELS: LevelData[] = [
     accentRgb: "239,68,68",
     status: "Legacy",
     desc: "ปัญหา: ใช้ Keyword ค้นหาเอกสาร ทำให้ไม่รู้ intent จริงๆ ของผู้ใช้ ได้ผลเป็นเอกสารมากมาย แต่ไม่ตรงกับที่หา",
+    enDesc:
+      "Problem: keyword search only matches terms, not user intent, so it returns many documents but not the right ones.",
     icon: <LegacySearchIcon />,
     image: keywordImg,
   },
@@ -49,6 +52,8 @@ const LEVELS: LevelData[] = [
     accentRgb: "245,158,11",
     status: "Partial",
     desc: "ปัญหา: ตอบคำถามด้วย Natural-Language ได้ แต่ยังขาด Context/Meta ที่ดีของข้อมูล",
+    enDesc:
+      "Problem: it can answer in natural language, but still lacks strong contextual and metadata grounding.",
     icon: <NaiveRagIcon />,
     image: ragImg,
   },
@@ -59,6 +64,8 @@ const LEVELS: LevelData[] = [
     accentRgb: "124,58,237",
     status: "Aingo",
     desc: "อัปเกรด Data Pipeline ทำให้ได้ Data ที่มีความเที่ยงตรง มี Agent ที่ฉลาดสำหรับการตอบคำถาม",
+    enDesc:
+      "Upgrading the data pipeline produces higher-fidelity data and enables smarter agents for question answering.",
     icon: <ProposedSystemIcon />,
     image: proposeImg,
   },
@@ -140,7 +147,7 @@ export function SystemEvolution() {
                   />
                 </>
               )}
-              
+
               {/* Watermark number */}
               <BigGhostNumber
                 rgb={lvl.accentRgb}
@@ -156,7 +163,7 @@ export function SystemEvolution() {
               >
                 {lvl.num}
               </BigGhostNumber>
-              
+
               <div
                 style={{
                   position: "absolute",
@@ -183,7 +190,7 @@ export function SystemEvolution() {
                     {lvl.icon}
                   </IconTile>
                 )}
-                
+
                 <div
                   style={{
                     position: "absolute",
@@ -267,7 +274,7 @@ export function SystemEvolution() {
                   flex: 1,
                 }}
               >
-                <ThaiText>{lvl.desc}</ThaiText>
+                <ThaiText en={lvl.enDesc}>{lvl.desc}</ThaiText>
               </p>
             </div>
 

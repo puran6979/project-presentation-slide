@@ -48,8 +48,9 @@ export function ExpectedResults() {
         title="Expected"
         highlight="Results."
         titleSize={64}
-        tagline="ผลที่ได้จากการพัฒนา"
-        thaiTagline
+        tagline={
+          <ThaiText en="Development outcomes">ผลที่ได้จากการพัฒนา</ThaiText>
+        }
         paddingBottom={20}
         marginBottom={24}
       />
@@ -73,10 +74,18 @@ export function ExpectedResults() {
           style={{ display: "flex", gap: 14, flex: 1, minHeight: 0 }}
         >
           <div style={{ flex: 1, overflow: "hidden" }}>
-            <img src={frustImg} alt="Frustrated User" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            <img
+              src={frustImg}
+              alt="Frustrated User"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           </div>
           <div style={{ flex: 1, overflow: "hidden" }}>
-            <img src={relaxImg} alt="Relaxed User" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            <img
+              src={relaxImg}
+              alt="Relaxed User"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           </div>
         </motion.div>
 
@@ -89,8 +98,16 @@ export function ExpectedResults() {
             before={{
               eyebrow: "Before",
               body: (
-                <ThaiText>
-                  <strong>Atom</strong> ใช้เวลาหลายชั่วโมงในการค้นหาและประเมินเอกสารที่กระจัดกระจายหลายฉบับ
+                <ThaiText
+                  en={
+                    <>
+                      <strong>Atom</strong> spends hours searching through and
+                      evaluating scattered documents.
+                    </>
+                  }
+                >
+                  <strong>Atom</strong>{" "}
+                  ใช้เวลาหลายชั่วโมงในการค้นหาและประเมินเอกสารที่กระจัดกระจายหลายฉบับ
                 </ThaiText>
               ),
               color: "#EF4444",
@@ -112,7 +129,15 @@ export function ExpectedResults() {
             after={{
               eyebrow: "After",
               body: (
-                <ThaiText>
+                <ThaiText
+                  en={
+                    <>
+                      <strong>Atom</strong> asks a question and immediately
+                      receives a complete, accurate answer with source
+                      citations.
+                    </>
+                  }
+                >
                   <strong>Atom</strong> ถามคำถามและได้รับคำตอบที่ถูกต้องสมบูรณ์
                   พร้อมอ้างอิงแหล่งที่มา ทันที
                 </ThaiText>

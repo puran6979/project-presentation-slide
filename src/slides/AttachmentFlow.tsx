@@ -677,7 +677,14 @@ export function AttachmentFlow() {
             isActive={isLabelActive("step1")}
             isInactive={isLabelInactive("step1")}
             desc={
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    <span style={{ fontWeight: 800 }}>1.</span> The web client
+                    sends a request asking AI to search for information.
+                  </>
+                }
+              >
                 <span style={{ fontWeight: 800 }}>1.</span> Web ส่ง Request
                 แจ้งให้ AI ทำการค้นหาข้อมูล
               </ThaiText>
@@ -691,7 +698,14 @@ export function AttachmentFlow() {
             isActive={isLabelActive("step2")}
             isInactive={isLabelInactive("step2")}
             desc={
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    <span style={{ fontWeight: 800 }}>2.</span> The AI agent
+                    asks the Embedding Service to search.
+                  </>
+                }
+              >
                 <span style={{ fontWeight: 800 }}>2.</span> AI Agent
                 สั่งค้นหาข้อมูลไปยัง Embedding Service
               </ThaiText>
@@ -705,7 +719,14 @@ export function AttachmentFlow() {
             isActive={isLabelActive("step3")}
             isInactive={isLabelInactive("step3")}
             desc={
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    <span style={{ fontWeight: 800 }}>3.</span> The Embedding
+                    Service returns results to AI.
+                  </>
+                }
+              >
                 <span style={{ fontWeight: 800 }}>3.</span> Embedding Service
                 ส่งผลลัพธ์กลับมาให้ AI
               </ThaiText>
@@ -719,7 +740,14 @@ export function AttachmentFlow() {
             isActive={isLabelActive("step4")}
             isInactive={isLabelInactive("step4")}
             desc={
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    <span style={{ fontWeight: 800 }}>4.</span> AI returns only
+                    document IDs to the web client.
+                  </>
+                }
+              >
                 <span style={{ fontWeight: 800 }}>4.</span> AI ส่งกลับเฉพาะ IDs
                 ของเอกสารให้ฝั่ง Web
               </ThaiText>
@@ -733,7 +761,14 @@ export function AttachmentFlow() {
             isActive={isLabelActive("step5")}
             isInactive={isLabelInactive("step5")}
             desc={
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    <span style={{ fontWeight: 800 }}>5.</span> The web client
+                    fetches full content from the Embedding Service.
+                  </>
+                }
+              >
                 <span style={{ fontWeight: 800 }}>5.</span> Web
                 ดึงเนื้อหาเต็มจาก Embedding Service
               </ThaiText>
@@ -747,7 +782,14 @@ export function AttachmentFlow() {
             isActive={isLabelActive("step6")}
             isInactive={isLabelInactive("step6")}
             desc={
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    <span style={{ fontWeight: 800 }}>6.</span> The web client
+                    sends a follow-up request to AI with verified attachments.
+                  </>
+                }
+              >
                 <span style={{ fontWeight: 800 }}>6.</span> Web ส่ง Request
                 กลับไปหา AI พร้อมแนบเอกสารยืนยัน
               </ThaiText>

@@ -27,7 +27,10 @@ const GAPS = [
     num: "01",
     en: "The Ingestion Gap",
     th: "ข้อมูลไม่เป็นระเบียบ",
+    enText: "The data is disorganized",
     desc: "ขาด data pipeline ที่ดีพอจะจัดการกับ Messy Data จากแหล่งข้อมูลองค์กร ส่งผลต่อความแม่นยำของ RAG",
+    enDesc:
+      "There is no robust data pipeline to handle messy data from enterprise sources, which directly hurts RAG accuracy.",
     accent: "#EF4444",
     accentRgb: "239,68,68",
   },
@@ -35,7 +38,10 @@ const GAPS = [
     num: "02",
     en: "The Contextual Gap",
     th: "การแตกส่วนของบริบท",
+    enText: "Context gets fragmented",
     desc: "Generic RAG ใช้การแบ่งแบบ Naive Chunking ไม่สนใจโครงสร้างและความหมายของเอกสาร",
+    enDesc:
+      "Generic RAG uses naive chunking that ignores document structure and meaning.",
     accent: "#F59E0B",
     accentRgb: "245,158,11",
   },
@@ -43,7 +49,10 @@ const GAPS = [
     num: "03",
     en: "The Synchronization Gap",
     th: "ไม่มีการติดตามการเปลี่ยนแปลง",
+    enText: "No change tracking",
     desc: "RAG ทั่วไปมองฐานความรู้เป็น Static Dataset ขาด Event-driven architecture ทำให้ข้อมูลไม่อัปเดท",
+    enDesc:
+      "Conventional RAG treats the knowledge base as a static dataset and lacks an event-driven architecture, so the data goes stale.",
     accent: "#7C3AED",
     accentRgb: "124,58,237",
   },
@@ -129,9 +138,13 @@ export function WhySystemFails() {
                       letterSpacing: "-0.4px",
                     }}
                   >
-                    <ThaiText>{gap.th}</ThaiText>
+                    <ThaiText en={gap.enText}>{gap.th}</ThaiText>
                   </span>
-                  <Pill color={gap.accent} rgb={gap.accentRgb} padding="2px 9px">
+                  <Pill
+                    color={gap.accent}
+                    rgb={gap.accentRgb}
+                    padding="2px 9px"
+                  >
                     {gap.en}
                   </Pill>
                 </div>
@@ -143,7 +156,7 @@ export function WhySystemFails() {
                     lineHeight: 1.65,
                   }}
                 >
-                  <ThaiText>{gap.desc}</ThaiText>
+                  <ThaiText en={gap.enDesc}>{gap.desc}</ThaiText>
                 </p>
               </div>
             </motion.div>
@@ -174,29 +187,151 @@ export function WhySystemFails() {
             }}
           >
             {/* Chaos background grid lines */}
-            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.04 }}>
-              {[0,1,2,3,4].map(i => (
-                <line key={`h${i}`} x1="0" y1={`${i*25}%`} x2="100%" y2={`${i*25}%`} stroke="#7C3AED" strokeWidth="1" strokeDasharray="4 6"/>
+            <svg
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0.04,
+              }}
+            >
+              {[0, 1, 2, 3, 4].map((i) => (
+                <line
+                  key={`h${i}`}
+                  x1="0"
+                  y1={`${i * 25}%`}
+                  x2="100%"
+                  y2={`${i * 25}%`}
+                  stroke="#7C3AED"
+                  strokeWidth="1"
+                  strokeDasharray="4 6"
+                />
               ))}
-              {[0,1,2,3,4].map(i => (
-                <line key={`v${i}`} x1={`${i*25}%`} y1="0" x2={`${i*25}%`} y2="100%" stroke="#7C3AED" strokeWidth="1" strokeDasharray="4 6"/>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <line
+                  key={`v${i}`}
+                  x1={`${i * 25}%`}
+                  y1="0"
+                  x2={`${i * 25}%`}
+                  y2="100%"
+                  stroke="#7C3AED"
+                  strokeWidth="1"
+                  strokeDasharray="4 6"
+                />
               ))}
             </svg>
 
             {/* Particle items (flying out from behind) */}
             {[
-              { label: "spec_v1.docx",      icon: "📄", left: "10%", delay: 0.0, dur: 4.5, xOff: -40, color: "#3B82F6" },
-              { label: "SharePoint",         icon: "🔗", left: "40%", delay: 1.2, dur: 5.2, xOff: 20,  color: "#0EA5E9" },
-              { label: "project_2023.xlsx",  icon: "📊", left: "25%", delay: 0.5, dur: 4.8, xOff: -10, color: "#10B981" },
-              { label: "Email Thread",       icon: "✉️", left: "60%", delay: 2.1, dur: 4.2, xOff: 50,  color: "#F59E0B" },
-              { label: "Drive/Archive",      icon: "🗂️", left: "15%", delay: 3.4, dur: 5.5, xOff: -30, color: "#6366F1" },
-              { label: "???.pdf",            icon: "📎", left: "45%", delay: 0.8, dur: 4.0, xOff: 10,  color: "#EF4444" },
-              { label: "Teams Chat",         icon: "💬", left: "70%", delay: 1.7, dur: 5.0, xOff: 40,  color: "#8B5CF6" },
-              { label: "README.txt",         icon: "📝", left: "35%", delay: 2.8, dur: 4.7, xOff: -20, color: "#64748B" },
-              { label: "Jira Ticket",        icon: "🎫", left: "20%", delay: 4.1, dur: 5.3, xOff: -50, color: "#F97316" },
-              { label: "Conf. Notes",        icon: "🗒️", left: "55%", delay: 1.5, dur: 4.4, xOff: 30,  color: "#EC4899" },
-              { label: "API_docs_OLD.json",  icon: "⚙️", left: "50%", delay: 3.1, dur: 5.1, xOff: 0,   color: "#14B8A6" },
-              { label: "backup_FINAL2.zip",  icon: "🗜️", left: "30%", delay: 0.3, dur: 4.6, xOff: -15, color: "#A855F7" },
+              {
+                label: "spec_v1.docx",
+                icon: "📄",
+                left: "10%",
+                delay: 0.0,
+                dur: 4.5,
+                xOff: -40,
+                color: "#3B82F6",
+              },
+              {
+                label: "SharePoint",
+                icon: "🔗",
+                left: "40%",
+                delay: 1.2,
+                dur: 5.2,
+                xOff: 20,
+                color: "#0EA5E9",
+              },
+              {
+                label: "project_2023.xlsx",
+                icon: "📊",
+                left: "25%",
+                delay: 0.5,
+                dur: 4.8,
+                xOff: -10,
+                color: "#10B981",
+              },
+              {
+                label: "Email Thread",
+                icon: "✉️",
+                left: "60%",
+                delay: 2.1,
+                dur: 4.2,
+                xOff: 50,
+                color: "#F59E0B",
+              },
+              {
+                label: "Drive/Archive",
+                icon: "🗂️",
+                left: "15%",
+                delay: 3.4,
+                dur: 5.5,
+                xOff: -30,
+                color: "#6366F1",
+              },
+              {
+                label: "???.pdf",
+                icon: "📎",
+                left: "45%",
+                delay: 0.8,
+                dur: 4.0,
+                xOff: 10,
+                color: "#EF4444",
+              },
+              {
+                label: "Teams Chat",
+                icon: "💬",
+                left: "70%",
+                delay: 1.7,
+                dur: 5.0,
+                xOff: 40,
+                color: "#8B5CF6",
+              },
+              {
+                label: "README.txt",
+                icon: "📝",
+                left: "35%",
+                delay: 2.8,
+                dur: 4.7,
+                xOff: -20,
+                color: "#64748B",
+              },
+              {
+                label: "Jira Ticket",
+                icon: "🎫",
+                left: "20%",
+                delay: 4.1,
+                dur: 5.3,
+                xOff: -50,
+                color: "#F97316",
+              },
+              {
+                label: "Conf. Notes",
+                icon: "🗒️",
+                left: "55%",
+                delay: 1.5,
+                dur: 4.4,
+                xOff: 30,
+                color: "#EC4899",
+              },
+              {
+                label: "API_docs_OLD.json",
+                icon: "⚙️",
+                left: "50%",
+                delay: 3.1,
+                dur: 5.1,
+                xOff: 0,
+                color: "#14B8A6",
+              },
+              {
+                label: "backup_FINAL2.zip",
+                icon: "🗜️",
+                left: "30%",
+                delay: 0.3,
+                dur: 4.6,
+                xOff: -15,
+                color: "#A855F7",
+              },
             ].map(({ label, icon, left, delay, dur, xOff, color }) => (
               <motion.div
                 key={label}
@@ -234,7 +369,9 @@ export function WhySystemFails() {
                   userSelect: "none",
                 }}
               >
-                <span style={{ fontSize: "0.8rem", lineHeight: 1 }}>{icon}</span>
+                <span style={{ fontSize: "0.8rem", lineHeight: 1 }}>
+                  {icon}
+                </span>
                 {label}
               </motion.div>
             ))}
@@ -272,7 +409,9 @@ export function WhySystemFails() {
                 marginBottom: 4,
               }}
             >
-              <ThaiText>ลักษณะระบบเดิม</ThaiText>
+              <ThaiText en="Legacy system characteristics">
+                ลักษณะระบบเดิม
+              </ThaiText>
             </div>
             <p
               style={{
@@ -282,7 +421,7 @@ export function WhySystemFails() {
                 lineHeight: 1.6,
               }}
             >
-              <ThaiText>
+              <ThaiText en="The legacy system failed not because it lacked data, but because it lacked the right architecture.">
                 ระบบเดิมล้มเหลวไม่ใช่เพราะขาดข้อมูล —
                 แต่เพราะขาดสถาปัตยกรรมที่ถูกต้อง
               </ThaiText>

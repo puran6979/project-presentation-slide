@@ -124,7 +124,7 @@ export function WebCapabilities2() {
               size={52}
               radius={16}
               gradient={["#3B82F6", "#60A5FA"]}
-              shadow="rgba(59,130,246,0.4)"
+              shadow="rgba(59,130,246,0.3)"
             >
               <div style={{ color: "white" }}>
                 <ChatIcon />
@@ -159,7 +159,19 @@ export function WebCapabilities2() {
             }}
           >
             <div style={{ fontSize: 15, color: "#4B5563", lineHeight: 1.6 }}>
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    This feature lets users{" "}
+                    <span style={{ color: "#2563EB", fontWeight: 700 }}>
+                      branch a conversation
+                    </span>{" "}
+                    from any point in the history to explore alternative answer
+                    paths without affecting the main thread, then switch between
+                    branches quickly.
+                  </>
+                }
+              >
                 ฟีเจอร์นี้ช่วยให้ผู้ใช้สามารถ{" "}
                 <span style={{ color: "#2563EB", fontWeight: 700 }}>
                   แตกสายการสนทนา (Branch)
@@ -186,7 +198,7 @@ export function WebCapabilities2() {
               Use Cases
             </Pill>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#6B7280" }}>
-              <ThaiText>
+              <ThaiText en="Try different question angles · compare answers · keep separate contexts">
                 ทดลองคำถามต่างมุม · เปรียบเทียบคำตอบ · เก็บ Context แยก
               </ThaiText>
             </span>
@@ -314,7 +326,19 @@ export function WebCapabilities2() {
             }}
           >
             <div style={{ fontSize: 15, color: "#4B5563", lineHeight: 1.6 }}>
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    Users can{" "}
+                    <span style={{ color: "#B45309", fontWeight: 700 }}>
+                      manage SharePoint documents
+                    </span>{" "}
+                    directly, choosing whether to index them for AI access or
+                    unindex documents that should not be used. This gives
+                    precise control over the system&apos;s knowledge scope.
+                  </>
+                }
+              >
                 ผู้ใช้สามารถ{" "}
                 <span style={{ color: "#B45309", fontWeight: 700 }}>
                   จัดการเอกสารบน SharePoint
@@ -341,7 +365,7 @@ export function WebCapabilities2() {
               Controls
             </Pill>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#6B7280" }}>
-              <ThaiText>Index · Unindex · Preview · Sync Status</ThaiText>
+              Index · Unindex · Preview · Sync Status
             </span>
           </motion.div>
 

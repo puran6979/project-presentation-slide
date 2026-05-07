@@ -124,7 +124,7 @@ export function WebCapabilities() {
               size={52}
               radius={16}
               gradient={["#8B5CF6", "#C084FC"]}
-              shadow="rgba(139,92,246,0.4)"
+              shadow="rgba(139,92,246,0.3)"
             >
               <div style={{ color: "white" }}>
                 <StorageIcon />
@@ -159,7 +159,20 @@ export function WebCapabilities() {
             }}
           >
             <div style={{ fontSize: 15, color: "#4B5563", lineHeight: 1.6 }}>
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    If the user already knows which document they want to
+                    reference, they can skip search and go straight to{" "}
+                    <span style={{ color: "#7C3AED", fontWeight: 700 }}>
+                      &quot;Direct Attach&quot;
+                    </span>
+                    . This lets AI answer immediately from the chosen source,
+                    with File / Page / Chunk granularity and the ability to
+                    exclude unwanted content from the context.
+                  </>
+                }
+              >
                 หากผู้ใช้ทราบอยู่แล้วว่าต้องการอ้างอิงข้อมูลจากเอกสารใด
                 สามารถข้ามขั้นตอนการ Search ไปยังการ{" "}
                 <span style={{ color: "#7C3AED", fontWeight: 700 }}>
@@ -187,7 +200,7 @@ export function WebCapabilities() {
               Granularity
             </Pill>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#6B7280" }}>
-              <ThaiText>File · Page · Chunk Level</ThaiText>
+              File · Page · Chunk Level
             </span>
           </motion.div>
 
@@ -313,7 +326,19 @@ export function WebCapabilities() {
             }}
           >
             <div style={{ fontSize: 15, color: "#4B5563", lineHeight: 1.6 }}>
-              <ThaiText>
+              <ThaiText
+                en={
+                  <>
+                    Users can specify{" "}
+                    <span style={{ color: "#059669", fontWeight: 700 }}>
+                      metadata
+                    </span>{" "}
+                    to narrow the search scope more precisely, reducing
+                    irrelevant vector search results. Supported filters include
+                    file type, department, team, project, and tags.
+                  </>
+                }
+              >
                 ผู้ใช้สามารถระบุ{" "}
                 <span style={{ color: "#059669", fontWeight: 700 }}>
                   Metadata
@@ -340,7 +365,7 @@ export function WebCapabilities() {
               Supported Filters
             </Pill>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#6B7280" }}>
-              <ThaiText>File type · Dept · Team · Project · Tags</ThaiText>
+              File type · Dept · Team · Project · Tags
             </span>
           </motion.div>
 

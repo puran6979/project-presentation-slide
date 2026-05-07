@@ -27,6 +27,8 @@ const STEPS = [
     num: "01",
     title: "Structural Intersection",
     body: "ใช้ Docling เพื่อแกะคำและตรวจจับโครงสร้าง เพื่อสกัดเนื้อหาออกมาจากไฟล์ Input",
+    enBody:
+      "Use Docling to parse content and detect structure so information can be extracted from the input file.",
     color: "#F59E0B",
     rgb: "245,158,11",
     grad: ["#F59E0B", "#F97316"] as [string, string],
@@ -35,6 +37,8 @@ const STEPS = [
     num: "02",
     title: "Structural Serialization",
     body: "ใช้ HybridChunker ตรวจจับขอบเขตของความหมาย เพื่อแบ่งข้อมูล (Chunks) ตามจุดแบ่งที่เหมาะสม (เช่น หัวข้อหลักและหัวข้อย่อย)",
+    enBody:
+      "Use HybridChunker to detect semantic boundaries and split content into chunks at appropriate breakpoints, such as section headers and subsections.",
     color: "#7C3AED",
     rgb: "124,58,237",
     grad: ["#7C3AED", "#A855F7"] as [string, string],
@@ -43,6 +47,8 @@ const STEPS = [
     num: "03",
     title: "Token-Aware Merging",
     body: "โดยจะจำกัดขนาดของ Chunk ที่ 512 Token หลังจากนั้น Chunk ต่างๆจะถูก embedded และเก็บไว้ใน Vector Database",
+    enBody:
+      "Each chunk is limited to 512 tokens, then embedded and stored in the vector database.",
     color: "#10B981",
     rgb: "16,185,129",
     grad: ["#10B981", "#059669"] as [string, string],
@@ -218,9 +224,11 @@ function DoclingPreview() {
             lineHeight: 1.6,
           }}
         >
-          Docling ถอดความหมายจากเอกสาร DOCX, PDF, PPTX และภาพ
-          เพื่อแปลงข้อมูลออกเป็น Text, HTML, Markdown และเสริมบริบทก่อนส่งเข้า
-          Vector Store.
+          <ThaiText en="Docling interprets DOCX, PDF, PPTX, and image documents, converting them into text, HTML, and Markdown while enriching context before sending them to the vector store.">
+            Docling ถอดความหมายจากเอกสาร DOCX, PDF, PPTX และภาพ
+            เพื่อแปลงข้อมูลออกเป็น Text, HTML, Markdown และเสริมบริบทก่อนส่งเข้า
+            Vector Store.
+          </ThaiText>
         </p>
         <div
           style={{
@@ -234,7 +242,7 @@ function DoclingPreview() {
           }}
         >
           <div style={{ marginBottom: 6, fontWeight: 700, color: "#0F172A" }}>
-            ตัวอย่าง text output
+            <ThaiText en="Example text output">ตัวอย่าง text output</ThaiText>
           </div>
           <div>'page_no': 1</div>
           <div>'self_ref': '#/texts/0'</div>
@@ -269,7 +277,9 @@ function DoclingPreview() {
             padding: 12,
           }}
         >
-          ภาพถูกวิเคราะห์เพื่อจับข้อความและเชื่อมต่อกับโครงสร้างเอกสาร
+          <ThaiText en="Images are analyzed to capture text and connect it back to document structure.">
+            ภาพถูกวิเคราะห์เพื่อจับข้อความและเชื่อมต่อกับโครงสร้างเอกสาร
+          </ThaiText>
         </div>
         <div
           style={{
@@ -278,8 +288,10 @@ function DoclingPreview() {
             lineHeight: 1.5,
           }}
         >
-          ข้อมูลภาพถูกแปลงเป็นข้อความและผสานกับ metadata จาก Docling ก่อนส่งเข้า
-          pipeline.
+          <ThaiText en="Image content is converted to text and merged with metadata from Docling before entering the pipeline.">
+            ข้อมูลภาพถูกแปลงเป็นข้อความและผสานกับ metadata จาก Docling
+            ก่อนส่งเข้า pipeline.
+          </ThaiText>
         </div>
       </div>
     </div>
@@ -647,7 +659,7 @@ export function IngestionPipeline() {
                       lineHeight: 1.6,
                     }}
                   >
-                    <ThaiText>{step.body}</ThaiText>
+                    <ThaiText en={step.enBody}>{step.body}</ThaiText>
                   </p>
                 </div>
                 <div
