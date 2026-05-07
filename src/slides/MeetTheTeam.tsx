@@ -181,8 +181,8 @@ export function MeetTheTeam() {
         },
       ]}
     >
-      {/* Cat walks in after 5 s idle on this slide */}
-      <WalkingCat delayMs={5000} />
+      {/* Cat walks in after 1 s idle on this slide */}
+      <WalkingCat delayMs={1000} />
       <div
         style={{
           display: "flex",
