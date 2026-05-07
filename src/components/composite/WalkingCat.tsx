@@ -4,7 +4,7 @@
  * "03_Walk_LittleFriends" animation, then switches to "02_Idle_LittleFriends".
  */
 import { Suspense, useEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
 import catGlb from "../../assets/models/little_cat/scene.glb?url";
@@ -22,6 +22,32 @@ const START_X = 6.0;
 const STOP_X = 3.0;
 // Duration (seconds) of the turn-CCW rotation after stopping
 const TURN_DURATION = 0.6;
+
+// ─── Canvas size fixer ──────────────────────────────────────────────────────
+// The slide is wrapped in `transform: scale()`, so r3f's getBoundingClientRect
+// reads the post-transform size and WebGLRenderer.setSize writes it into the
+// canvas's inline CSS — the ancestor then scales it a second time, leaving
+// the canvas at half the slide's size. Override setSize to skip the CSS
+// update and force the canvas to fill its parent via inline style.
+function FixCanvasCss() {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    const canvas = gl.domElement as HTMLCanvasElement;
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+
+    const original = gl.setSize.bind(gl);
+    gl.setSize = (w: number, h: number) => {
+      original(w, h, false);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+    };
+    return () => {
+      gl.setSize = original;
+    };
+  }, [gl]);
+  return null;
+}
 
 // ─── Inner 3-D mesh ──────────────────────────────────────────────────────────
 function CatMesh({ active }: { active: boolean }) {
@@ -54,7 +80,7 @@ function CatMesh({ active }: { active: boolean }) {
     if (!active || !group.current) return;
 
     if (!stopped.current) {
-      xRef.current -= dt * WALK_SPEED;
+      xRef.current = Math.max(STOP_X, xRef.current - dt * WALK_SPEED);
       group.current.position.x = xRef.current;
 
       if (xRef.current <= STOP_X) {
@@ -121,6 +147,7 @@ export function WalkingCat({ delayMs = 5000 }: { delayMs?: number }) {
         gl={{ alpha: true }}
         style={{ background: "transparent" }}
       >
+        <FixCanvasCss />
         {/* Soft two-point lighting so the fur texture reads well */}
         <ambientLight intensity={1.8} />
         <directionalLight
